@@ -21,12 +21,15 @@
 
 #include <string>
 
-/// Types of records in config file, returned by check_record_type()
+/**
+ * @brief Types of records in config file, returned by check_record_type()
+ * 
+ */
 enum class RecordType {
-	UNK = -1, /// unknown record type
-	ENTRY, /// "key = value" pair
-	HEADING, /// [string] style subsection header
-	EMPTY /// empty string
+	UNK = -1, ///< unknown record type
+	ENTRY, ///< "key = value" pair
+	HEADING, ///< [string] style subsection header
+	EMPTY ///< empty string
 };
 
 /**

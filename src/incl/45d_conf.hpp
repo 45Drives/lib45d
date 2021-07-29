@@ -32,6 +32,10 @@
 #include <boost/lexical_cast.hpp>
 #endif
 
+/**
+ * @brief 45Drives Namespace
+ * 
+ */
 namespace ffd {
 	/** Exceptions
 	 * @brief Exceptions thrown by this library
@@ -76,7 +80,7 @@ namespace ffd {
 	};
 
 	/**
-	 * @brief Node
+	 * @brief Struct for config_map_ entries
 	 * 
 	 */
 	struct Node {
@@ -121,7 +125,9 @@ namespace ffd {
 	}
 
 	/**
-	 * @brief Main configuration parser class to inherit from in your code
+	 * @brief Main configuration parser class to inherit from in your code  
+	 * Example usage:
+	 * \include tests/test.cpp
 	 * 
 	 */
 	class ConfigParser {

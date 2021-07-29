@@ -1,7 +1,16 @@
+/**
+ * \code
+ *
+ */
+
 #include "45d_conf.hpp"
 #include <cassert>
 #include <iostream>
 
+/**
+ * @brief Test implmentation of an ffd::ConfigParser with important fields
+ * 
+ */
 class ConfigFailFlag : public ffd::ConfigParser {
 	bool parse_failed_ = false;
 public:
@@ -31,6 +40,10 @@ public:
 	}
 };
 
+/**
+ * @brief Test implmentation of an ffd::ConfigParser with unimportant fields
+ * 
+ */
 class ConfigFallback : public ffd::ConfigParser {
 public:
 	int integer_test_ = get<int>("Integer Test", -1);
@@ -69,3 +82,8 @@ int main (int argc, char *argv[]) {
 	std::cout << std::endl;
 	return 0;
 }
+
+/**
+ * \endcode
+ * 
+ */

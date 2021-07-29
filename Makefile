@@ -72,3 +72,9 @@ test: build-test
 build-test: $(STATIC_TARGET)
 	mkdir -p dist/tests
 	$(CC) -g -std=c++17 tests/*.cpp -Isrc/incl -static -Ldist/static -l45d_conf -o dist/tests/test
+
+docs:
+	doxygen doc/Doxyfile
+
+clean-docs:
+	-rm -rf doc/html

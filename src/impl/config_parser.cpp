@@ -58,12 +58,12 @@ void ffd::ConfigParser::parse_entry(const std::string &line) {
 	strip_whitespace(key);
 	remove_comments(value);
 	strip_whitespace(value);
-	config_map_[key] = value;
+	config_map_[key] = {value, nullptr};
 }
 
 std::string ffd::ConfigParser::dump_str(void) const {
 	std::string result;
 	for (auto &i : config_map_)
-		result += i.first + " = " + i.second + '\n';
+		result += i.first + " = " + i.second.value_ + '\n';
 	return result;
 }

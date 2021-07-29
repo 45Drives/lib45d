@@ -61,6 +61,14 @@ src/incl/%.hpp: /opt/45drives/include/%.hpp
 	mkdir -p $(dir $<)
 	cp -f $@ $<
 
-test: $(STATIC_TARGET)
+test: build-test
+	for i in tests/test_confs/*.conf; do \
+		echo "################ INPUT ################"; \
+		cat $$i; \
+		echo "################ OUTPUT ################"; \
+		dist/tests/test $$i; \
+	done
+
+build-test: $(STATIC_TARGET)
 	mkdir -p dist/tests
-	$(CC) -std=c++17 tests/*.cpp -Isrc/incl -static -Ldist/static -l45d_conf -o dist/tests/test
+	$(CC) -g -std=c++17 tests/*.cpp -Isrc/incl -static -Ldist/static -l45d_conf -o dist/tests/test

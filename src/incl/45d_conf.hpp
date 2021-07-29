@@ -83,9 +83,30 @@ namespace ffd {
 	 * @brief Struct for config_map_ entries
 	 * 
 	 */
-	struct Node {
+	class Node {
+	public:
 		std::string value_ = ""; ///< string from config file after '='
 		std::unordered_map<std::string, Node> *sub_map_ = nullptr; ///< Pointer to submap for config sections
+		/**
+		 * @brief Construct a new Node object
+		 * 
+		 * @param value String containing config value or subsection header
+		 * @param sub_map nullptr or pointer to an std::unordered_map<std::string, ffd::Node> if subsection
+		 */
+		explicit Node(std::string value, std::unordered_map<std::string, Node> *sub_map) : value_(value), sub_map_(sub_map) {}
+		/**
+		 * @brief Destroy the Node object
+		 * Deletes the sub_map_ member if allocated
+		 */
+		Node() {}
+		Node(const Node &other) {
+			value_ = other.value_;
+			sub_map_ = other.sub_map_;
+		}
+		~Node() {
+			if (sub_map_)
+				delete sub_map_;
+		}
 	};
 
 	/**
@@ -97,9 +118,9 @@ namespace ffd {
 	 * @return T Value returned from config
 	 */
 	template<class T>
-	T get(const std::string &key, const std::unordered_map<std::string, Node> &config_map) {
+	T get_as(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
 		std::stringstream ss;
-					Node node = config_map.at(key);
+					Node node = config_map->at(key);
 		#ifdef USE_BOOST
 					T result = boost::lexical_cast<T>(node.value_);
 		#else
@@ -110,20 +131,19 @@ namespace ffd {
 					return result;
 	}
 
-	template<>
-	std::string get<std::string>(const std::string &key, const std::unordered_map<std::string, Node> &config_map) {
-		std::stringstream ss;
-					Node node = config_map.at(key);
-		#ifdef USE_BOOST
-					std::string result = boost::lexical_cast<std::string>(node.value_);
-		#else
-					ss.str(node.value_);
-					T result;
-					ss >> result;
-		#endif
-					return result;
-	}
-
+	// template<>
+	// std::string get_as<std::string>(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
+	// 	std::stringstream ss;
+	// 				Node node = config_map->at(key);
+	// 	#ifdef USE_BOOST
+	// 				std::string result = boost::lexical_cast<std::string>(node.value_);
+	// 	#else
+	// 				ss.str(node.value_);
+	// 				T result;
+	// 				ss >> result;
+	// 	#endif
+	// 				return result;
+	// }
 	/**
 	 * @brief Main configuration parser class to inherit from in your code  
 	 * Example usage:
@@ -132,6 +152,7 @@ namespace ffd {
 	 */
 	class ConfigParser {
 	private:
+		std::unordered_map<std::string, Node> *config_map_ptr_;
 		std::string path_; ///< Path to config file
 		std::unordered_map<std::string, Node> config_map_; ///< Map of config keys to values (Node)
 		std::vector<Node *> sub_confs_; ///< Vector of config subsections
@@ -160,31 +181,29 @@ namespace ffd {
 		 * @return std::string String containing config_map_ contents
 		 */
 		std::string dump_str(void) const;
-
 		/**
-		 * @brief Adapter for ffd::get(). This can throw.
+		 * @brief Adapter for ffd::get_as(). This can throw.
 		 * 
 		 * @tparam T Type of variable to get
 		 * @param key Key to index config_map_
 		 * @return T Value returned from config
 		 */
 		template<class T>
-		T get(const std::string &key) const {
-			return ffd::get<T>(key, config_map_);
+		T get_as(const std::string &key) const {
+			return ffd::get_as<T>(key, config_map_ptr_);
 		}
-
 		/**
 		 * @brief Try to get value from config, default to fallback if fails. Guaranteed no-throw.
 		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
-		 * @param fallback Default value to return if ffd::get() fails.
+		 * @param fallback Default value to return if ffd::get_as() fails.
 		 * @return T Value returned from config
 		 */
 		template<class T>
-		T get(const std::string &key, const T &fallback) const noexcept {
+		T get_as(const std::string &key, const T &fallback) const noexcept {
 			try {
-				return get<T>(key);
+				return get_as<T>(key);
 #ifdef USE_BOOST
 			} catch (const boost::bad_lexical_cast &) {
 #else
@@ -195,19 +214,18 @@ namespace ffd {
 				return fallback;
 			}
 		}
-
 		/**
 		 * @brief Try to get value from config. If ffd::get fails, return T() or 0 and set fail_flag. Guaranteed no-throw.
 		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
-		 * @param fail_flag Flag to set if ffd::get() fails
+		 * @param fail_flag Flag to set if ffd::get_as() fails
 		 * @return T Value returned from config
 		 */
 		template<class T>
-		T get(const std::string &key, bool &fail_flag) const noexcept{
+		T get_as(const std::string &key, bool &fail_flag) const noexcept{
 			try {
-				return get<T>(key);
+				return get_as<T>(key);
 #ifdef USE_BOOST
 			} catch (const boost::bad_lexical_cast &) {
 #else

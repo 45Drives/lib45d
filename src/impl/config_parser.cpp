@@ -39,7 +39,7 @@ void ffd::ConfigParser::parse(std::ifstream &file) {
 				parse_entry(line);
 				break;
 			case RecordType::HEADING:
-
+				parse_heading(line);
 				break;
 			case RecordType::EMPTY:
 			default:
@@ -56,7 +56,15 @@ void ffd::ConfigParser::parse_entry(const std::string &line) {
 	strip_whitespace(key);
 	remove_comments(value);
 	strip_whitespace(value);
-	config_map_[key] = {value, nullptr};
+	config_map_.insert(std::pair<std::string, Node>(key, Node{value, nullptr}));
+}
+
+void ffd::ConfigParser::parse_heading(const std::string &line) {
+	std::string name = line;
+	remove_comments(name);
+	strip_whitespace(name);
+	name = name.substr(1, name.length() - 2);
+	std::cout << "Heading name: " << name << std::endl;
 }
 
 std::string ffd::ConfigParser::dump_str(void) const {

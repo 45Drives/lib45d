@@ -168,6 +168,12 @@ namespace ffd {
 		 * @param line String containing some form of "key = value"
 		 */
 		void parse_entry(const std::string &line);
+		/**
+		 * @brief Extract name of subsection and create new Node containing new config map in vector, and assigned config_map_ptr_ to address of new map
+		 * 
+		 * @param line String containing some form of "[Section Name]"
+		 */
+		void parse_heading(const std::string &line);
 	public:
 		/**
 		 * @brief Construct a new Config Parser object

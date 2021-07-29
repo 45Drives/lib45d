@@ -2,3 +2,5 @@
 build/
 dist/
 doc/html
+tests/*/*.test
+tests/*/*.out

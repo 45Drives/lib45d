@@ -61,17 +61,17 @@ src/incl/%.hpp: /opt/45drives/include/%.hpp
 	mkdir -p $(dir $<)
 	cp -f $@ $<
 
-test: build-test
-	for i in tests/test_confs/*.conf; do \
-		echo "################ INPUT ################"; \
-		cat $$i; \
-		echo "################ OUTPUT ################"; \
-		dist/tests/test $$i; \
-	done
+# test: build-test
+# 	for i in tests/test_confs/*.conf; do \
+# 		echo "################ INPUT ################"; \
+# 		cat $$i; \
+# 		echo "################ OUTPUT ################"; \
+# 		dist/tests/test $$i; \
+# 	done
 
-build-test: $(STATIC_TARGET)
-	mkdir -p dist/tests
-	$(CC) -g -std=c++17 tests/*.cpp -Isrc/incl -static -Ldist/static -l45d_conf -o dist/tests/test
+# build-test: $(STATIC_TARGET)
+# 	mkdir -p dist/tests
+# 	$(CC) -g -std=c++17 tests/*.cpp -Isrc/incl -static -Ldist/static -l45d_conf -o dist/tests/test
 
 docs:
 	doxygen doc/Doxyfile

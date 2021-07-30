@@ -20,6 +20,7 @@ all: $(TEST_TARGETS)
 	@$(shell find $(dir $@) -name *.test) $< > $@ 2>&1
 	@diff $@ $(patsubst %.out, %.gold, $@) && echo $@ PASSED || echo $@ FAILED
 
+test: clean
 test: all $(TEST_OUTPUTS)
 
 clean:

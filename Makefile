@@ -2,7 +2,7 @@ SHARED_TARGET = dist/shared/lib45d_conf.so
 STATIC_TARGET = dist/static/lib45d_conf.a
 HEADER_TARGET = src/incl/45d_conf.hpp
 CC = g++
-CFLAGS = -Wall -Wextra -Isrc/incl -fpic
+CFLAGS = -Wall -Wextra -Isrc/incl -fpic -std=c++17
 LIBS =
 
 CFLAGS += $(EXTRA_CFLAGS) # allow additional cflags passed with `make EXTRA_CFLAGS="-flag1 -flag2"`

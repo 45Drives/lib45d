@@ -13,21 +13,21 @@ public:
 	bool global_bool_test_ = get<bool>("Bool Test", &parse_failed_);
 	int global_integer_test_ = get<int>("Integer Test", &parse_failed_);
 	unsigned global_unsigned_test_ = get<unsigned>("Unsigned Test", &parse_failed_);
-	double global_float_test_ = get<float>("Float Test", &parse_failed_);
+	float global_float_test_ = get<float>("Float Test", &parse_failed_);
 	double global_double_test_ = get<double>("Double Test", &parse_failed_);
 	std::string global_string_test_ = get<std::string>("String Test", &parse_failed_);
 
 	bool section1_bool_test_ = get_from<bool>("Section 1", "Bool Test", &parse_failed_);
 	int section1_integer_test_ = get_from<int>("Section 1", "Integer Test", &parse_failed_);
 	unsigned section1_unsigned_test_ = get_from<unsigned>("Section 1", "Unsigned Test", &parse_failed_);
-	double section1_float_test_ = get_from<float>("Section 1", "Float Test", &parse_failed_);
+	float section1_float_test_ = get_from<float>("Section 1", "Float Test", &parse_failed_);
 	double section1_double_test_ = get_from<double>("Section 1", "Double Test", &parse_failed_);
 	std::string section1_string_test_ = get_from<std::string>("Section 1", "String Test", &parse_failed_);
 
 	bool section2_bool_test_ = get_from<bool>("Section 2", "Bool Test", &parse_failed_);
 	int section2_integer_test_ = get_from<int>("Section 2", "Integer Test", &parse_failed_);
 	unsigned section2_unsigned_test_ = get_from<unsigned>("Section 2", "Unsigned Test", &parse_failed_);
-	double section2_float_test_ = get_from<float>("Section 2", "Float Test", &parse_failed_);
+	float section2_float_test_ = get_from<float>("Section 2", "Float Test", &parse_failed_);
 	double section2_double_test_ = get_from<double>("Section 2", "Double Test", &parse_failed_);
 	std::string section2_string_test_ = get_from<std::string>("Section 2", "String Test", &parse_failed_);
 	ConfigSubSections(std::string path) : ffd::ConfigParser(path) {}

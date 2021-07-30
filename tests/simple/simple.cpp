@@ -17,7 +17,7 @@ public:
 	bool bool_test_ = get<bool>("Bool Test", &parse_failed_);
 	int integer_test_ = get<int>("Integer Test", &parse_failed_);
 	unsigned unsigned_test_ = get<unsigned>("Unsigned Test", &parse_failed_);
-	double float_test_ = get<float>("Float Test", &parse_failed_);
+	float float_test_ = get<float>("Float Test", &parse_failed_);
 	double double_test_ = get<double>("Double Test", &parse_failed_);
 	std::string string_test_ = get<std::string>("String Test", &parse_failed_);
 	ConfigFailFlag(std::string path) : ffd::ConfigParser(path) {

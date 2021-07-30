@@ -1,6 +1,5 @@
 /**
- * \code
- *
+ * @code
  */
 
 #include "45d_conf.hpp"
@@ -51,6 +50,5 @@ int main (int argc, char *argv[]) {
 }
 
 /**
- * \endcode
- * 
+ * @endcode
  */

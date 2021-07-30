@@ -85,7 +85,7 @@ namespace ffd {
 	 */
 	class ConfigNode {
 	private:
-		bool is_copy_;
+		bool is_copy_; ///< Set in copy constructor to avoid double deletion of *sub_map_
 	public:
 		std::string value_; ///< string from config file after '='
 		std::unordered_map<std::string, ConfigNode> *sub_map_; ///< Pointer to submap for config sections
@@ -103,7 +103,9 @@ namespace ffd {
 		ConfigNode(void) : is_copy_(false), value_(""), sub_map_(nullptr) {}
 		/**
 		 * @brief Copy construct a new ConfigNode object
+		 * 
 		 * Sets is_copy_ flag to prevent double deletion of *sub_map_
+		 * 
 		 * @param other ConfigNode to be copied
 		 */
 		ConfigNode(const ConfigNode &other)
@@ -112,7 +114,9 @@ namespace ffd {
 			, sub_map_(other.sub_map_) {}
 		/**
 		 * @brief Move constructor
+		 * 
 		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
+		 * 
 		 * @param other ConfigNode to be moved
 		 */
 		ConfigNode(ConfigNode &&other)
@@ -123,7 +127,9 @@ namespace ffd {
 		}
 		/**
 		 * @brief Assignment move constructor
+		 * 
 		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
+		 * 
 		 * @param other ConfigNode to be moved
 		 * @return ConfigNode& *this
 		 */
@@ -136,6 +142,7 @@ namespace ffd {
 		}
 		/**
 		 * @brief Destroy the ConfigNode object
+		 * 
 		 * Deletes the sub_map_ member if allocated and not a copy
 		 */
 		~ConfigNode() {
@@ -165,20 +172,22 @@ namespace ffd {
 		#endif
 					return result;
 	}
+
 	/**
-	 * @brief Main configuration parser class to inherit from in your code  
+	 * @brief Main configuration parser class to inherit from in your code
+	 * 
 	 * Example usage:
-	 * \include tests/test.cpp
+	 * @include tests/simple/simple.cpp
 	 * 
 	 */
 	class ConfigParser {
 		friend class ConfigSubsectionGuard;
 	private:
-		std::unordered_map<std::string, ConfigNode> *config_map_ptr_;
+		std::unordered_map<std::string, ConfigNode> *config_map_ptr_; ///< Pointer to current config map
 		std::string path_; ///< Path to config file
-		std::unordered_map<std::string, ConfigNode> config_map_; ///< Map of config keys to values (ConfigNode)
+		std::unordered_map<std::string, ConfigNode> config_map_; ///< Map of config keys (std::string) to values (ConfigNode)
 		/**
-		 * @brief Iterate each line of config file and determine how to parse with check_record_type()
+		 * @brief (Private) Iterate each line of config file and determine how to parse with check_record_type()
 		 * 
 		 * @param file Opened file stream for config file
 		 */
@@ -190,16 +199,30 @@ namespace ffd {
 		 */
 		void parse_entry(const std::string &line);
 		/**
-		 * @brief Extract name of subsection and create new ConfigNode containing new config map in vector, and assigned config_map_ptr_ to address of new map
+		 * @brief Create new subconfig
+		 * 
+		 * construct new ConfigNode containing name and new config map,
+		 * assign config_map_ptr_ to address of new config map,
+		 * place into global config_map_,
+		 * push address of new ConfigNode into sub_confs_
 		 * 
 		 * @param line String containing some form of "[Section Name]"
 		 */
 		void parse_heading(const std::string &line);
+		/**
+		 * @brief Update config_map_ptr_ to the subconfig map for section
+		 * 
+		 * @param section The config section to set to
+		 */
 		void set_subsection(const std::string &section) {
 			config_map_ptr_ = config_map_.at(section).sub_map_;
 			if(config_map_ptr_ == nullptr)
 				throw std::out_of_range("ConfigNode has no sub_map_");
 		}
+		/**
+		 * @brief Set config_map_ptr_ back to the address of config_map_
+		 * 
+		 */
 		void reset_subsection(void) noexcept {
 			config_map_ptr_ = &config_map_;
 		}
@@ -214,7 +237,7 @@ namespace ffd {
 		ConfigParser(std::string path);
 		/**
 		 * @brief Dump config to stdout as a string
-		 * 
+		 *
 		 * @return std::string String containing config_map_ contents
 		 */
 		std::string dump_str(void) const;
@@ -231,6 +254,9 @@ namespace ffd {
 		}
 		/**
 		 * @brief Try to get value from config, default to fallback if fails. Guaranteed no-throw.
+		 * 
+		 * Example:
+		 * @include tests/fallback/fallback.cpp
 		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
@@ -254,9 +280,12 @@ namespace ffd {
 		/**
 		 * @brief Try to get value from config. If ffd::get fails, return T() or 0 and set fail_flag. Guaranteed no-throw.
 		 * 
+		 * Example:
+		 * @include tests/simple/simple.cpp
+		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
-		 * @param fail_flag Flag to set if ffd::get() fails
+		 * @param fail_flag Pointer to flag to set if ffd::get() fails
 		 * @return T Value returned from config
 		 */
 		template<class T>
@@ -283,12 +312,32 @@ namespace ffd {
 					return T();
 			}
 		}
+		/**
+		 * @brief Adapter for ffd::get(). Sets config_map_ptr_ to address of sub config with name section. This can throw.
+		 * 
+		 * @tparam T Type of variable to get
+		 * @param section Subsection heading from config
+		 * @param key Key to index config_map_
+		 * @return T Value returned from config
+		 */
 		template<class T>
 		T get_from(const std::string &section, const std::string &key) {
 			set_subsection(section);
 			return ffd::get<T>(key, config_map_ptr_);
 			reset_subsection();
 		}
+		/**
+		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,const T&) const noexcept, return fallback if the subsection DNE
+		 * 
+		 * Example:
+		 * @include tests/subsections/subsections.cpp
+		 * 
+		 * @tparam T Type to return
+		 * @param section Config section name to get value from
+		 * @param key Key identifying value in config
+		 * @param fallback Returned if error or DNE
+		 * @return T Value returned from config or fallback
+		 */
 		template<class T>
 		T get_from(const std::string &section, const std::string &key, const T &fallback) noexcept {
 			try {
@@ -300,6 +349,15 @@ namespace ffd {
 			return ffd::ConfigParser::get<T>(key, fallback);
 			reset_subsection();
 		}
+		/**
+		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,bool*) const noexcept, set fail_flag if the subsection DNE
+		 * 
+		 * @tparam T Type to return
+		 * @param section Config section name to get value from
+		 * @param key Key identifying value in config
+		 * @param fail_flag Pointer to flag to be set if error or DNE
+		 * @return T Value returned from config or T() or 0
+		 */
 		template<class T>
 		T get_from(const std::string &section, const std::string &key, bool *fail_flag) noexcept {
 			try {
@@ -318,13 +376,46 @@ namespace ffd {
 		}
 	};
 
+	/**
+	 * @brief Use this to switch to a certain config subsection to get a group of values
+	
+	Inside ConfigParser method:
+	\code
+	{
+		ConfigSubsectionGuard guard(*this, "Subsection 1");
+		int section_1_value = get<int>("Value", -1);
+		// section is switched back when guard goes out of scope
+	}
+	\endcode
+	Any other scope:
+	\code
+	ConfigParser config("/etc/example.conf");
+	{
+		ConfigSubsectionGuard guard(config, "Subsection 1");
+		int section_1_value = config.get<int>("Value", -1);
+		// section is switched back when guard goes out of scope
+	}
+	\endcode
+	Full Example:
+	@include tests/dynamic_subsections/dynamic_subsections.cpp
+	 */
 	class ConfigSubsectionGuard {
 	private:
-		ConfigParser &config_;
+		ConfigParser &config_; ///< Reference to ConfigParser or inhereting class
 	public:
+		/**
+		 * @brief Construct a new Config Subsection Guard object
+		 * 
+		 * @param config ///< Reference to a ConfigParser or inhereting class
+		 * @param section ///< Section name to switch to
+		 */
 		ConfigSubsectionGuard(ConfigParser &config, const std::string &section) : config_(config) {
 			config_.set_subsection(section);
 		}
+		/**
+		 * @brief Destroy the Config Subsection Guard object
+		 * 
+		 */
 		~ConfigSubsectionGuard(void) {
 			config_.reset_subsection();
 		}

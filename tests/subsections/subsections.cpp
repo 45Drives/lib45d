@@ -1,3 +1,7 @@
+/**
+ * @code
+ */
+
 #include "45d_conf.hpp"
 #include <cassert>
 #include <iostream>
@@ -61,3 +65,7 @@ int main (int argc, char *argv[]) {
 	config.dump();
 	return 0;
 }
+
+/**
+ * @endcode
+ */

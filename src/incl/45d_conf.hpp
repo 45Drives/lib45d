@@ -172,11 +172,11 @@ namespace ffd {
 	 * 
 	 */
 	class ConfigParser {
+		friend class ConfigSubsectionGuard;
 	private:
 		std::unordered_map<std::string, Node> *config_map_ptr_;
 		std::string path_; ///< Path to config file
 		std::unordered_map<std::string, Node> config_map_; ///< Map of config keys to values (Node)
-		std::vector<Node *> sub_confs_; ///< Vector of config subsections
 		/**
 		 * @brief Iterate each line of config file and determine how to parse with check_record_type()
 		 * 
@@ -195,6 +195,16 @@ namespace ffd {
 		 * @param line String containing some form of "[Section Name]"
 		 */
 		void parse_heading(const std::string &line);
+		void set_subsection(const std::string &section) {
+			config_map_ptr_ = config_map_.at(section).sub_map_;
+			if(config_map_ptr_ == nullptr)
+				throw std::out_of_range("Node has no sub_map_");
+		}
+		void reset_subsection(void) noexcept {
+			config_map_ptr_ = &config_map_;
+		}
+	protected:
+		std::vector<Node *> sub_confs_; ///< Vector of config subsections
 	public:
 		/**
 		 * @brief Construct a new Config Parser object
@@ -275,36 +285,48 @@ namespace ffd {
 		}
 		template<class T>
 		T get_from(const std::string &section, const std::string &key) {
-			config_map_ptr_ = config_map_.at(section).sub_map_;
+			set_subsection(section);
 			return ffd::get<T>(key, config_map_ptr_);
-			config_map_ptr_ = &config_map_;
+			reset_subsection();
 		}
 		template<class T>
 		T get_from(const std::string &section, const std::string &key, const T &fallback) noexcept {
 			try {
-				config_map_ptr_ = config_map_.at(section).sub_map_;
+				set_subsection(section);
 			} catch (const std::out_of_range &) {
-				config_map_ptr_ = &config_map_;
+				reset_subsection();
 				return fallback;
 			}
 			return ffd::ConfigParser::get<T>(key, fallback);
-			config_map_ptr_ = &config_map_;
+			reset_subsection();
 		}
 		template<class T>
 		T get_from(const std::string &section, const std::string &key, bool *fail_flag) noexcept {
 			try {
-				config_map_ptr_ = config_map_.at(section).sub_map_;
+				set_subsection(section);
 			} catch (const std::out_of_range &) {
 				std::cerr << "Section not in config." << std::endl;
 				*fail_flag = true;
-				config_map_ptr_ = &config_map_;
+				reset_subsection();
 				if (std::is_fundamental<T>::value)
 					return 0;
 				else
 					return T();
 			}
 			return ffd::ConfigParser::get<T>(key, fail_flag);
-			config_map_ptr_ = &config_map_;
+			reset_subsection();
+		}
+	};
+
+	class ConfigSubsectionGuard {
+	private:
+		ConfigParser &config_;
+	public:
+		ConfigSubsectionGuard(ConfigParser &config, const std::string &section) : config_(config) {
+			config_.set_subsection(section);
+		}
+		~ConfigSubsectionGuard(void) {
+			config_.reset_subsection();
 		}
 	};
 }

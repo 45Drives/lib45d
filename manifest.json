@@ -1,0 +1,59 @@
+{
+    "__version": "45D-R1",
+    "name": "lib45d_conf",
+    "title": "Lib45d_conf",
+    "prerelease": true,
+    "version": "0.1.0",
+    "buildVersion": "1",
+    "author": "Joshua Boudreau <jboudreau@45drives.com>",
+    "url": "https://github.com/45Drives/lib45d_conf",
+    "category": "utils",
+    "priority": "optional",
+    "licence": "GPL-3.0+",
+    "architecture": {
+        "deb": "amd64",
+        "el": "x86_64"
+    },
+    "description": {
+        "long": "C++ INI Style Configuration Parser",
+        "short": "C++ INI Style Configuration Parser"
+    },
+    "defaults": {
+        "urgency": "medium"
+    },
+    "dependencies": {
+        "deb": [],
+        "el": []
+    },
+    "releases": [
+        {
+            "image": "ubuntu-focal-builder",
+            "codeName": "focal",
+            "type": "deb"
+        },
+        {
+            "image": "rocky-el8-builder",
+            "codeName": "el8",
+            "type": "el"
+        },
+        {
+            "image": "ubuntu-focal-builder",
+            "codeName": "focal-dev",
+            "type": "deb"
+        },
+        {
+            "image": "rocky-el8-builder",
+            "codeName": "el8-devel",
+            "type": "el"
+        }
+    ],
+    "changelog": {
+        "urgency": "medium",
+        "version": "0.1.0",
+        "buildVersion": "1",
+        "ignore": [],
+        "date": null,
+        "packager": "Joshua Boudreau <jboudreau@45drives.com>",
+        "changes": []
+    }
+}

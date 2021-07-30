@@ -57,7 +57,7 @@ void ffd::ConfigParser::parse_entry(const std::string &line) {
 	strip_whitespace(key);
 	remove_comments(value);
 	strip_whitespace(value);
-	config_map_ptr_->insert(std::pair<std::string, Node>(key, Node(value, nullptr)));
+	config_map_ptr_->insert(std::pair<std::string, ConfigNode>(key, ConfigNode(value, nullptr)));
 }
 
 void ffd::ConfigParser::parse_heading(const std::string &line) {
@@ -65,9 +65,9 @@ void ffd::ConfigParser::parse_heading(const std::string &line) {
 	remove_comments(name);
 	strip_whitespace(name);
 	name = name.substr(1, name.length() - 2);
-	Node node(name, new std::unordered_map<std::string, Node>());
+	ConfigNode node(name, new std::unordered_map<std::string, ConfigNode>());
 	config_map_ptr_ = node.sub_map_;
-	config_map_.insert(std::pair<std::string, Node>(name, std::move(node)));
+	config_map_.insert(std::pair<std::string, ConfigNode>(name, std::move(node)));
 	sub_confs_.push_back(&config_map_.at(name));
 }
 
@@ -87,9 +87,9 @@ std::string ffd::ConfigParser::dump_str(void) const {
 }
 
 template<>
-bool ffd::get<bool>(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
+bool ffd::get<bool>(const std::string &key, const std::unordered_map<std::string, ConfigNode> *config_map) {
 	std::stringstream ss;
-	Node node = config_map->at(key);
+	ConfigNode node = config_map->at(key);
 	ss.str(node.value_);
 	bool result;
 	ss >> std::boolalpha >> result;

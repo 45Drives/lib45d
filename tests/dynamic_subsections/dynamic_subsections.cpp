@@ -32,7 +32,7 @@ public:
 	double double_test_ = get<double>("Double Test", -1.0);
 	std::string string_test_ = get<std::string>("String Test", "fallback");
 	DynamicSubsectionConfig(const std::string &path, std::vector<SubConf> &sub_confs) : ConfigParser(path) {
-		for (ffd::Node *i : sub_confs_) {
+		for (ffd::ConfigNode *i : sub_confs_) {
 			{
 				ffd::ConfigSubsectionGuard guard(*this, i->value_);
 				sub_confs.emplace_back(SubConf{

@@ -83,39 +83,39 @@ namespace ffd {
 	 * @brief Struct for config_map_ entries
 	 * 
 	 */
-	class Node {
+	class ConfigNode {
 	private:
 		bool is_copy_;
 	public:
 		std::string value_; ///< string from config file after '='
-		std::unordered_map<std::string, Node> *sub_map_; ///< Pointer to submap for config sections
+		std::unordered_map<std::string, ConfigNode> *sub_map_; ///< Pointer to submap for config sections
 		/**
-		 * @brief Construct a new Node object
+		 * @brief Construct a new ConfigNode object
 		 * 
 		 * @param value String containing config value or subsection header
-		 * @param sub_map nullptr or pointer to an std::unordered_map<std::string, ffd::Node> if subsection
+		 * @param sub_map nullptr or pointer to an std::unordered_map<std::string, ffd::ConfigNode> if subsection
 		 */
-		Node(std::string value, std::unordered_map<std::string, Node> *sub_map) : is_copy_(false), value_(value), sub_map_(sub_map) {}
+		ConfigNode(std::string value, std::unordered_map<std::string, ConfigNode> *sub_map) : is_copy_(false), value_(value), sub_map_(sub_map) {}
 		/**
-		 * @brief Construct a new empty Node object
+		 * @brief Construct a new empty ConfigNode object
 		 * 
 		 */
-		Node(void) : is_copy_(false), value_(""), sub_map_(nullptr) {}
+		ConfigNode(void) : is_copy_(false), value_(""), sub_map_(nullptr) {}
 		/**
-		 * @brief Copy construct a new Node object
+		 * @brief Copy construct a new ConfigNode object
 		 * Sets is_copy_ flag to prevent double deletion of *sub_map_
-		 * @param other Node to be copied
+		 * @param other ConfigNode to be copied
 		 */
-		Node(const Node &other)
+		ConfigNode(const ConfigNode &other)
 			: is_copy_(true)
 			, value_(other.value_)
 			, sub_map_(other.sub_map_) {}
 		/**
 		 * @brief Move constructor
 		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
-		 * @param other Node to be moved
+		 * @param other ConfigNode to be moved
 		 */
-		Node(Node &&other)
+		ConfigNode(ConfigNode &&other)
 			: is_copy_(false)
 			, value_(std::move(other.value_))
 			, sub_map_(std::move(other.sub_map_)) {
@@ -124,10 +124,10 @@ namespace ffd {
 		/**
 		 * @brief Assignment move constructor
 		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
-		 * @param other Node to be moved
-		 * @return Node& *this
+		 * @param other ConfigNode to be moved
+		 * @return ConfigNode& *this
 		 */
-		Node &operator=(Node &&other) {
+		ConfigNode &operator=(ConfigNode &&other) {
 			is_copy_ = false;
 			value_ = std::move(other.value_);
 			sub_map_ = std::move(other.sub_map_);
@@ -135,10 +135,10 @@ namespace ffd {
 			return *this;
 		}
 		/**
-		 * @brief Destroy the Node object
+		 * @brief Destroy the ConfigNode object
 		 * Deletes the sub_map_ member if allocated and not a copy
 		 */
-		~Node() {
+		~ConfigNode() {
 			if (sub_map_ && !is_copy_)
 				delete sub_map_;
 		}
@@ -149,13 +149,13 @@ namespace ffd {
 	 * 
 	 * @tparam T Type of variable to return
 	 * @param key Key to index map, from config file before '='
-	 * @param config_map Map of keys to Node structs
+	 * @param config_map Map of keys to ConfigNode structs
 	 * @return T Value returned from config
 	 */
 	template<class T>
-	T get(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
+	T get(const std::string &key, const std::unordered_map<std::string, ConfigNode> *config_map) {
 		std::stringstream ss;
-					Node node = config_map->at(key);
+					ConfigNode node = config_map->at(key);
 		#ifdef USE_BOOST
 					T result = boost::lexical_cast<T>(node.value_);
 		#else
@@ -174,9 +174,9 @@ namespace ffd {
 	class ConfigParser {
 		friend class ConfigSubsectionGuard;
 	private:
-		std::unordered_map<std::string, Node> *config_map_ptr_;
+		std::unordered_map<std::string, ConfigNode> *config_map_ptr_;
 		std::string path_; ///< Path to config file
-		std::unordered_map<std::string, Node> config_map_; ///< Map of config keys to values (Node)
+		std::unordered_map<std::string, ConfigNode> config_map_; ///< Map of config keys to values (ConfigNode)
 		/**
 		 * @brief Iterate each line of config file and determine how to parse with check_record_type()
 		 * 
@@ -184,13 +184,13 @@ namespace ffd {
 		 */
 		void parse(std::ifstream &file);
 		/**
-		 * @brief Extract value from config line and insert node into config_map_
+		 * @brief Extract value from config line and insert ConfigNode into config_map_
 		 * 
 		 * @param line String containing some form of "key = value"
 		 */
 		void parse_entry(const std::string &line);
 		/**
-		 * @brief Extract name of subsection and create new Node containing new config map in vector, and assigned config_map_ptr_ to address of new map
+		 * @brief Extract name of subsection and create new ConfigNode containing new config map in vector, and assigned config_map_ptr_ to address of new map
 		 * 
 		 * @param line String containing some form of "[Section Name]"
 		 */
@@ -198,13 +198,13 @@ namespace ffd {
 		void set_subsection(const std::string &section) {
 			config_map_ptr_ = config_map_.at(section).sub_map_;
 			if(config_map_ptr_ == nullptr)
-				throw std::out_of_range("Node has no sub_map_");
+				throw std::out_of_range("ConfigNode has no sub_map_");
 		}
 		void reset_subsection(void) noexcept {
 			config_map_ptr_ = &config_map_;
 		}
 	protected:
-		std::vector<Node *> sub_confs_; ///< Vector of config subsections
+		std::vector<ConfigNode *> sub_confs_; ///< Vector of config subsections
 	public:
 		/**
 		 * @brief Construct a new Config Parser object

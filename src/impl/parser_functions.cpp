@@ -22,10 +22,10 @@
 #include <string>
 
 void strip_whitespace(std::string &str) {
-	size_t start, end;
+	std::string::size_type start, end;
 	start = str.find_first_not_of(" \t");
 	end = str.find_last_not_of(" \t");
-	if (start == end) {
+	if (start == std::string::npos || end == std::string::npos) {
 		str.clear();
 		return;
 	}
@@ -33,19 +33,19 @@ void strip_whitespace(std::string &str) {
 }
 
 void remove_comments(std::string &str) {
-	size_t comment_pos = str.find_first_of('#');
+	std::string::size_type comment_pos = str.find_first_of('#');
 	if (comment_pos == std::string::npos)
 		return;
 	str.erase(comment_pos);
 }
 
 inline bool check_if_heading(const std::string &record) {
-	size_t first_not_space = record.find_first_not_of(" \t");
+	std::string::size_type first_not_space = record.find_first_not_of(" \t");
 	if (first_not_space == std::string::npos)
 		return false; // all whitespace
 	if (record[first_not_space] != '[') // first non-whitespace must be '['
 		return false; // character other than '['
-	size_t closing_bracket = record.find(']', first_not_space);
+	std::string::size_type closing_bracket = record.find(']', first_not_space);
 	if (closing_bracket == std::string::npos)
 		return false; // no closing ']'
 	return true; // section header found

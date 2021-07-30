@@ -41,7 +41,7 @@ namespace ffd {
 	 * @brief Exceptions thrown by this library
 	 * 
 	 */
-	class Exception {
+	class ConfigException {
 	private:
 		std::string what_; ///< String containing explanation message
 	public:
@@ -50,7 +50,7 @@ namespace ffd {
 		 * 
 		 * @param what String containing explanation message
 		 */
-		Exception(std::string what) : what_(what) {}
+		ConfigException(std::string what) : what_(what) {}
 		/**
 		 * @brief Return string containing explanation message
 		 * 
@@ -65,18 +65,18 @@ namespace ffd {
 	 * @brief Throw this exception when the config file fails to open
 	 * 
 	 */
-	class NoConfigException : public Exception {
+	class NoConfigException : public ConfigException {
 	public:
-		NoConfigException(std::string what) : Exception(what) {}
+		NoConfigException(std::string what) : ConfigException(what) {}
 	};
 
 	/**
 	 * @brief Throw this exception when a config entry is missing
 	 * 
 	 */
-	class MissingOptionException : public Exception {
+	class MissingOptionException : public ConfigException {
 	public:
-		MissingOptionException(std::string what) : Exception(what) {}
+		MissingOptionException(std::string what) : ConfigException(what) {}
 	};
 
 	/**
@@ -253,4 +253,4 @@ namespace ffd {
 			}
 		}
 	};
-};
+}

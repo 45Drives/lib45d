@@ -26,6 +26,7 @@ ffd::ConfigParser::ConfigParser(std::string path) : config_map_ptr_(&config_map_
 		throw(ffd::NoConfigException("No config file at " + path_));
 	parse(file);
 	file.close();
+	config_map_ptr_ = &config_map_; // reset to global
 }
 
 void ffd::ConfigParser::parse(std::ifstream &file) {
@@ -56,7 +57,7 @@ void ffd::ConfigParser::parse_entry(const std::string &line) {
 	strip_whitespace(key);
 	remove_comments(value);
 	strip_whitespace(value);
-	config_map_.insert(std::pair<std::string, Node>(key, Node{value, nullptr}));
+	config_map_ptr_->insert(std::pair<std::string, Node>(key, Node(value, nullptr)));
 }
 
 void ffd::ConfigParser::parse_heading(const std::string &line) {
@@ -64,12 +65,33 @@ void ffd::ConfigParser::parse_heading(const std::string &line) {
 	remove_comments(name);
 	strip_whitespace(name);
 	name = name.substr(1, name.length() - 2);
-	std::cout << "Heading name: " << name << std::endl;
+	Node node(name, new std::unordered_map<std::string, Node>());
+	config_map_ptr_ = node.sub_map_;
+	config_map_.insert(std::pair<std::string, Node>(name, std::move(node)));
+	sub_confs_.push_back(&config_map_.at(name));
 }
 
 std::string ffd::ConfigParser::dump_str(void) const {
 	std::string result;
-	for (auto &i : config_map_)
-		result += i.first + " = " + i.second.value_ + '\n';
+	for (auto &i : config_map_) {
+		if (i.second.sub_map_ == nullptr) {
+			result += i.first + " = " + i.second.value_ + '\n';
+		} else {
+			result += "[" + i.first + "]" + '\n';
+			for (auto &j : *i.second.sub_map_) {
+				result += "  " + j.first + " = " + j.second.value_ + '\n';
+			}
+		}
+	}
+	return result;
+}
+
+template<>
+bool ffd::get<bool>(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
+	std::stringstream ss;
+	Node node = config_map->at(key);
+	ss.str(node.value_);
+	bool result;
+	ss >> std::boolalpha >> result;
 	return result;
 }

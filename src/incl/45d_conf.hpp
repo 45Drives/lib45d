@@ -84,27 +84,62 @@ namespace ffd {
 	 * 
 	 */
 	class Node {
+	private:
+		bool is_copy_;
 	public:
-		std::string value_ = ""; ///< string from config file after '='
-		std::unordered_map<std::string, Node> *sub_map_ = nullptr; ///< Pointer to submap for config sections
+		std::string value_; ///< string from config file after '='
+		std::unordered_map<std::string, Node> *sub_map_; ///< Pointer to submap for config sections
 		/**
 		 * @brief Construct a new Node object
 		 * 
 		 * @param value String containing config value or subsection header
 		 * @param sub_map nullptr or pointer to an std::unordered_map<std::string, ffd::Node> if subsection
 		 */
-		explicit Node(std::string value, std::unordered_map<std::string, Node> *sub_map) : value_(value), sub_map_(sub_map) {}
+		Node(std::string value, std::unordered_map<std::string, Node> *sub_map) : is_copy_(false), value_(value), sub_map_(sub_map) {}
+		/**
+		 * @brief Construct a new empty Node object
+		 * 
+		 */
+		Node(void) : is_copy_(false), value_(""), sub_map_(nullptr) {}
+		/**
+		 * @brief Copy construct a new Node object
+		 * Sets is_copy_ flag to prevent double deletion of *sub_map_
+		 * @param other Node to be copied
+		 */
+		Node(const Node &other)
+			: is_copy_(true)
+			, value_(other.value_)
+			, sub_map_(other.sub_map_) {}
+		/**
+		 * @brief Move constructor
+		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
+		 * @param other Node to be moved
+		 */
+		Node(Node &&other)
+			: is_copy_(false)
+			, value_(std::move(other.value_))
+			, sub_map_(std::move(other.sub_map_)) {
+			other.sub_map_ = nullptr;
+		}
+		/**
+		 * @brief Assignment move constructor
+		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
+		 * @param other Node to be moved
+		 * @return Node& *this
+		 */
+		Node &operator=(Node &&other) {
+			is_copy_ = false;
+			value_ = std::move(other.value_);
+			sub_map_ = std::move(other.sub_map_);
+			other.sub_map_ = nullptr;
+			return *this;
+		}
 		/**
 		 * @brief Destroy the Node object
-		 * Deletes the sub_map_ member if allocated
+		 * Deletes the sub_map_ member if allocated and not a copy
 		 */
-		Node() {}
-		Node(const Node &other) {
-			value_ = other.value_;
-			sub_map_ = other.sub_map_;
-		}
 		~Node() {
-			if (sub_map_)
+			if (sub_map_ && !is_copy_)
 				delete sub_map_;
 		}
 	};
@@ -118,7 +153,7 @@ namespace ffd {
 	 * @return T Value returned from config
 	 */
 	template<class T>
-	T get_as(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
+	T get(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
 		std::stringstream ss;
 					Node node = config_map->at(key);
 		#ifdef USE_BOOST
@@ -130,20 +165,6 @@ namespace ffd {
 		#endif
 					return result;
 	}
-
-	// template<>
-	// std::string get_as<std::string>(const std::string &key, const std::unordered_map<std::string, Node> *config_map) {
-	// 	std::stringstream ss;
-	// 				Node node = config_map->at(key);
-	// 	#ifdef USE_BOOST
-	// 				std::string result = boost::lexical_cast<std::string>(node.value_);
-	// 	#else
-	// 				ss.str(node.value_);
-	// 				T result;
-	// 				ss >> result;
-	// 	#endif
-	// 				return result;
-	// }
 	/**
 	 * @brief Main configuration parser class to inherit from in your code  
 	 * Example usage:
@@ -188,28 +209,28 @@ namespace ffd {
 		 */
 		std::string dump_str(void) const;
 		/**
-		 * @brief Adapter for ffd::get_as(). This can throw.
+		 * @brief Adapter for ffd::get(). This can throw.
 		 * 
 		 * @tparam T Type of variable to get
 		 * @param key Key to index config_map_
 		 * @return T Value returned from config
 		 */
 		template<class T>
-		T get_as(const std::string &key) const {
-			return ffd::get_as<T>(key, config_map_ptr_);
+		T get(const std::string &key) const {
+			return ffd::get<T>(key, config_map_ptr_);
 		}
 		/**
 		 * @brief Try to get value from config, default to fallback if fails. Guaranteed no-throw.
 		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
-		 * @param fallback Default value to return if ffd::get_as() fails.
+		 * @param fallback Default value to return if ffd::get() fails.
 		 * @return T Value returned from config
 		 */
 		template<class T>
-		T get_as(const std::string &key, const T &fallback) const noexcept {
+		T get(const std::string &key, const T &fallback) const noexcept {
 			try {
-				return get_as<T>(key);
+				return get<T>(key);
 #ifdef USE_BOOST
 			} catch (const boost::bad_lexical_cast &) {
 #else
@@ -225,32 +246,65 @@ namespace ffd {
 		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
-		 * @param fail_flag Flag to set if ffd::get_as() fails
+		 * @param fail_flag Flag to set if ffd::get() fails
 		 * @return T Value returned from config
 		 */
 		template<class T>
-		T get_as(const std::string &key, bool &fail_flag) const noexcept{
+		T get(const std::string &key, bool *fail_flag) const noexcept {
 			try {
-				return get_as<T>(key);
+				return get<T>(key);
 #ifdef USE_BOOST
 			} catch (const boost::bad_lexical_cast &) {
 #else
 			} catch (const std::invalid_argument &) {
 #endif
 				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
-				fail_flag = true;
+				*fail_flag = true;
 				if (std::is_fundamental<T>::value)
 					return 0;
 				else
 					return T();
 			} catch (const std::out_of_range &) {
 				std::cerr << "Option not in config: " << key << std::endl;
-				fail_flag = true;
+				*fail_flag = true;
 				if (std::is_fundamental<T>::value)
 					return 0;
 				else
 					return T();
 			}
+		}
+		template<class T>
+		T get_from(const std::string &section, const std::string &key) {
+			config_map_ptr_ = config_map_.at(section).sub_map_;
+			return ffd::get<T>(key, config_map_ptr_);
+			config_map_ptr_ = &config_map_;
+		}
+		template<class T>
+		T get_from(const std::string &section, const std::string &key, const T &fallback) noexcept {
+			try {
+				config_map_ptr_ = config_map_.at(section).sub_map_;
+			} catch (const std::out_of_range &) {
+				config_map_ptr_ = &config_map_;
+				return fallback;
+			}
+			return ffd::ConfigParser::get<T>(key, fallback);
+			config_map_ptr_ = &config_map_;
+		}
+		template<class T>
+		T get_from(const std::string &section, const std::string &key, bool *fail_flag) noexcept {
+			try {
+				config_map_ptr_ = config_map_.at(section).sub_map_;
+			} catch (const std::out_of_range &) {
+				std::cerr << "Section not in config." << std::endl;
+				*fail_flag = true;
+				config_map_ptr_ = &config_map_;
+				if (std::is_fundamental<T>::value)
+					return 0;
+				else
+					return T();
+			}
+			return ffd::ConfigParser::get<T>(key, fail_flag);
+			config_map_ptr_ = &config_map_;
 		}
 	};
 }

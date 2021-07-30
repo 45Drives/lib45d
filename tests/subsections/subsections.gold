@@ -1,0 +1,18 @@
+Global Bool Test: true
+Global Integer Test: 0
+Global Unsigned Test: 0
+Global Float Test: 0.1
+Global Double Test: 0.1
+Global String Test: Global String
+Section 1 Bool Test: true
+Section 1 Integer Test: -1
+Section 1 Unsigned Test: 1
+Section 1 Float Test: 1.1
+Section 1 Double Test: 1.1
+Section 1 String Test: Section 1 String
+Section 2 Bool Test: true
+Section 2 Integer Test: -2
+Section 2 Unsigned Test: 2
+Section 2 Float Test: 2.1
+Section 2 Double Test: 2.1
+Section 2 String Test: Section 2 String

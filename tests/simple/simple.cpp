@@ -14,16 +14,18 @@
 class ConfigFailFlag : public ffd::ConfigParser {
 	bool parse_failed_ = false;
 public:
-	int integer_test_ = get_as<int>("Integer Test", parse_failed_);
-	unsigned unsigned_test_ = get_as<unsigned>("Unsigned Test", parse_failed_);
-	double float_test_ = get_as<float>("Float Test", parse_failed_);
-	double double_test_ = get_as<double>("Double Test", parse_failed_);
-	std::string string_test_ = get_as<std::string>("String Test", parse_failed_);
+	bool bool_test_ = get<bool>("Bool Test", &parse_failed_);
+	int integer_test_ = get<int>("Integer Test", &parse_failed_);
+	unsigned unsigned_test_ = get<unsigned>("Unsigned Test", &parse_failed_);
+	double float_test_ = get<float>("Float Test", &parse_failed_);
+	double double_test_ = get<double>("Double Test", &parse_failed_);
+	std::string string_test_ = get<std::string>("String Test", &parse_failed_);
 	ConfigFailFlag(std::string path) : ffd::ConfigParser(path) {
 		if (parse_failed_)
 			throw ffd::MissingOptionException("################ Config Fail Flag ################\nOne or more options missing from configuration.");
 	}
 	void dump(void) {
+		std::cout << "Bool Test: " << std::boolalpha << bool_test_ << std::endl;
 		std::cout << "Integer Test: " << integer_test_ << std::endl;
 		std::cout << "Unsigned Test: " << unsigned_test_ << std::endl;
 		std::cout << "Float Test: " << float_test_ << std::endl;

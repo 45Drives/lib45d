@@ -8,11 +8,11 @@
  */
 class ConfigFallback : public ffd::ConfigParser {
 public:
-	int integer_test_ = get_as<int>("Integer Test", -1);
-	unsigned unsigned_test_ = get_as<unsigned>("Unsigned Test", (unsigned)-1);
-	double float_test_ = get_as<float>("Float Test", -1.0);
-	double double_test_ = get_as<double>("Double Test", -1.0);
-	std::string string_test_ = get_as<std::string>("String Test", "fallback");
+	int integer_test_ = get<int>("Integer Test", -1);
+	unsigned unsigned_test_ = get<unsigned>("Unsigned Test", (unsigned)-1);
+	double float_test_ = get<float>("Float Test", -1.0);
+	double double_test_ = get<double>("Double Test", -1.0);
+	std::string string_test_ = get<std::string>("String Test", "fallback");
 	ConfigFallback(std::string path) : ffd::ConfigParser(path) {}
 	void dump(void) {
 		std::cout << "Integer Test: " << integer_test_ << std::endl;

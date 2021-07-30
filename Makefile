@@ -17,7 +17,11 @@ ifeq ($(PREFIX),)
 	PREFIX := /opt/45drives/lib
 endif
 
+ifdef DEVEL
+default: dev
+else
 default: shared
+endif
 all: default
 
 static: $(STATIC_TARGET)
@@ -49,9 +53,6 @@ install: dev $(HEADER_INSTALL_TARGET) install-ld-conf
 else
 install: default install-ld-conf
 endif
-	mkdir -p $(DESTDIR)$(PREFIX)
-	cp -f $(SHARED_TARGET) $(STATIC_TARGET) $(DESTDIR)$(PREFIX)
-
 	mkdir -p $(DESTDIR)$(PREFIX)
 	cp -f $(SHARED_TARGET) $(STATIC_TARGET) $(DESTDIR)$(PREFIX)
 

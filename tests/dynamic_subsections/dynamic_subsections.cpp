@@ -1,3 +1,6 @@
+/**
+ * @code
+ */
 #include "45d_conf.hpp"
 #include <cassert>
 #include <iostream>
@@ -65,5 +68,8 @@ int main(int argc, char *argv[]) {
 	for (auto i : sub_confs)
 		i.dump();
 	return 0;
-	return 0;
 }
+
+/**
+ * @endcode
+ */

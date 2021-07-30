@@ -1,6 +1,5 @@
 SHARED_TARGET = dist/shared/lib45d_conf.so
 STATIC_TARGET = dist/static/lib45d_conf.a
-HEADER_TARGET = src/incl/45d_conf.hpp
 CC = g++
 CFLAGS = -Wall -Wextra -Isrc/incl -fpic -std=c++17
 LIBS =
@@ -12,12 +11,13 @@ SOURCE_FILES := $(shell find src/impl -name *.cpp)
 OBJECT_FILES := $(patsubst src/impl/%.cpp, build/%.o, $(SOURCE_FILES))
 
 LD_CONF := /etc/ld.so.conf.d/45drives.conf
+HEADER_INSTALL_TARGET = /opt/45drives/include/45d_conf.hpp
 
 ifeq ($(PREFIX),)
 	PREFIX := /opt/45drives/lib
 endif
 
-default: $(SHARED_TARGET)
+default: shared
 all: default
 
 static: $(STATIC_TARGET)
@@ -44,11 +44,14 @@ clean-build:
 clean-target:
 	-rm -f $(SHARED_TARGET) $(STATIC_TARGET)
 
-install: $(SHARED_TARGET) install-ld-conf
+ifdef DEVEL
+install: dev $(HEADER_INSTALL_TARGET) install-ld-conf
+else
+install: default install-ld-conf
+endif
 	mkdir -p $(DESTDIR)$(PREFIX)
-	cp -f $(SHARED_TARGET) $(DESTDIR)$(PREFIX)
+	cp -f $(SHARED_TARGET) $(STATIC_TARGET) $(DESTDIR)$(PREFIX)
 
-install-dev: $(SHARED_TARGET) $(STATIC_TARGET) $(HEADER_TARGET) install-ld-conf
 	mkdir -p $(DESTDIR)$(PREFIX)
 	cp -f $(SHARED_TARGET) $(STATIC_TARGET) $(DESTDIR)$(PREFIX)
 
@@ -57,9 +60,12 @@ install-ld-conf:
 	echo "$(PREFIX)" > $(DESTDIR)$(LD_CONF)
 
 # install header
-src/incl/%.hpp: /opt/45drives/include/%.hpp
-	mkdir -p $(dir $<)
-	cp -f $@ $<
+/opt/45drives/include/%.hpp: src/incl/%.hpp
+	mkdir -p $(dir $@)
+	cp -f $< $@
+
+uninstall:
+	-rm -f $(DESTDIR)$(PREFIX)$(SHARED_TARGET) $(DESTDIR)$(PREFIX)$(STATIC_TARGET) $(DESTDIR)$(HEADER_INSTALL_TARGET)
 
 test:
 	cd tests && make test

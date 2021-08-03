@@ -20,7 +20,7 @@
 #include "parser_functions.hpp"
 #include <string>
 
-void strip_whitespace(std::string &str) {
+void l::strip_whitespace(std::string &str) {
 	std::string::size_type start, end;
 	start = str.find_first_not_of(" \t");
 	end = str.find_last_not_of(" \t");
@@ -31,7 +31,7 @@ void strip_whitespace(std::string &str) {
 	str.assign(str, start, end - start + 1);
 }
 
-void remove_comments(std::string &str) {
+void l::remove_comments(std::string &str) {
 	std::string::size_type comment_pos = str.find_first_of('#');
 	if (comment_pos == std::string::npos)
 		return;
@@ -50,7 +50,7 @@ inline bool check_if_heading(const std::string &record) {
 	return true; // section header found
 }
 
-l::RecordType check_record_type(const std::string &record) {
+l::RecordType l::check_record_type(const std::string &record) {
 	if (check_if_heading(record))
 		return l::RecordType::HEADING;
 	if (record.find('=') != std::string::npos)

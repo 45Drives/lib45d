@@ -209,7 +209,14 @@ namespace ffd {
 		std::string path_; ///< Path to config file
 		std::unordered_map<std::string, ConfigNode> config_map_; ///< Map of config keys (std::string) to values (ConfigNode)
 		/**
-		 * @brief (Private) Iterate each line of config file and determine how to parse with check_record_type()
+		 * @brief Iterate each line of config file and determine how to parse with l::check_record_type()
+		 * 
+		| Case | Function Called |
+		| ---- | --------------- |
+		| l::RecordType::UNK | prints error message and continues |
+		| l::RecordType::ENTRY | ConfigParser::parse_entry() |
+		| l::RecordType::HEADING | ConfigParser::parse_heading() |
+		| l::RecordType::EMPTY | continues |
 		 * 
 		 * @param file Opened file stream for config file
 		 */
@@ -254,6 +261,8 @@ namespace ffd {
 		/**
 		 * @brief Construct a new Config Parser object
 		 * 
+		 * Opens file at path as an std::ifstream and calls ConfigParser::parse()
+		 * 
 		 * @param path Path to config file
 		 */
 		ConfigParser(std::string path);
@@ -264,8 +273,15 @@ namespace ffd {
 		 */
 		std::string dump_str(void) const;
 		/**
-		 * @brief Adapter for ffd::get(). This can throw.
+		 * @brief Adapter for ffd::get(). This can throw. Use this in a try...catch block.
 		 * 
+		 * @code
+		try {
+			int integer = get<int>("Field");
+		} catch (const ffd::ConfigException &err) {
+			std::cerr << err.what();
+		}
+		 * @endcode
 		 * @tparam T Type of variable to get
 		 * @param key Key to index config_map_
 		 * @return T Value returned from config
@@ -300,7 +316,9 @@ namespace ffd {
 			}
 		}
 		/**
-		 * @brief Try to get value from config. If ffd::get fails, return T() or 0 and set fail_flag. Guaranteed no-throw.
+		 * @brief Try to get value from config. If ffd::get fails,
+		 * return T() or 0 and set fail_flag. Guaranteed no-throw. Prints message
+		 * to std::cerr to explain error.
 		 * 
 		 * Example:
 		 * @include tests/simple/simple.cpp

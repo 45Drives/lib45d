@@ -1,0 +1,20 @@
+/**
+@mainpage lib45d_conf
+
+@section doc_sec Documentation
+Class to inherit: @ref ffd::ConfigParser
+
+@section usage Usage
+Create a config class that inherits from ffd::ConfigParser,
+and call ffd::ConfigParser::get() to initialize the config class's members.
+
+@section examp_sec Example Usage
+@subsection fail_flag Fail Flag
+@include tests/simple/simple.cpp
+@subsection fallback Fallback Values
+@include tests/fallback/fallback.cpp
+@subsection subsection_static Static Subsections
+@include tests/subsections/subsections.cpp
+@subsection subsection_dynamic Dynamic Subsections with @ref ffd::ConfigSubsectionGuard
+@include tests/dynamic_subsections/dynamic_subsections.cpp
+ */

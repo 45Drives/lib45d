@@ -9,6 +9,7 @@ LIBS += $(EXTRA_LIBS) # allow additional link flags passed with `make EXTRA_LIBS
 
 SOURCE_FILES := $(shell find src/impl -name *.cpp)
 OBJECT_FILES := $(patsubst src/impl/%.cpp, build/%.o, $(SOURCE_FILES))
+HEADER_FILES := $(shell find src/incl -name *.hpp)
 
 LD_CONF := /etc/ld.so.conf.d/45drives.conf
 HEADER_INSTALL_TARGET = /opt/45drives/include/45d_conf.hpp
@@ -76,12 +77,9 @@ clean-tests:
 
 docs: api-doc dev-doc
 
-api-doc:
-	doxygen doc/api-doc.doxyfile
-	mv doc/html $@
-
-dev-doc:
-	doxygen doc/dev-doc.doxyfile
+%-doc: doc/%-doc.doxyfile $(HEADER_FILES) doc/main-page.dox
+	-rm $@ -rf
+	doxygen $<
 	mv doc/html $@
 
 clean-docs:

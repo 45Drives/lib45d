@@ -28,7 +28,7 @@
  */
 namespace l {
 	/**
-	* @brief Types of records in config file, returned by check_record_type()
+	* @brief Types of records in config file, returned by l::check_record_type()
 	* @private
 	*/
 	enum class RecordType {
@@ -47,7 +47,7 @@ namespace l {
 	void strip_whitespace(std::string &str);
 
 	/**
-	* @brief Modifies str by removing anything after a '#'
+	* @brief Modifies str by removing anything after a '#' (inclusive)
 	* 
 	* @param str String to be modified
 	* @private
@@ -55,7 +55,7 @@ namespace l {
 	void remove_comments(std::string &str);
 
 	/**
-	* @brief Returns RecordType based on contents of record
+	* @brief Returns l::RecordType based on contents of record
 	* 
 	* @param record line of config file to check
 	* @return RecordType 

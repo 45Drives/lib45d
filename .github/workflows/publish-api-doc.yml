@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
     steps:
     - name: print ID
-      run:  id
+      run:  git config --global -l
     - name: Git Checkout
       uses: actions/checkout@v2
     - name: Create clean gh-pages branch

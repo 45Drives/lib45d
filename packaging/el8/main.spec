@@ -27,5 +27,5 @@ make DESTDIR=%{buildroot} install
 /etc/ld.so.conf.d/45drives.conf
 
 %changelog
-* Fri Jul 30 2021 Joshua Boudreau <jboudreau@45drives.com> 0.1.0-1
-- First autopackage build
+* Tue Aug 03 2021 Joshua Boudreau <jboudreau@45drives.com> 0.1.0-1
+- First autopackaging buid.

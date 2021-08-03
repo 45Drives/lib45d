@@ -1,5 +1,5 @@
-lib45d_conf (0.1.0-1focal) focal; urgency=medium
+lib45dconf (0.1.0-1focal-dev) focal-dev; urgency=medium
 
-  * First autopackage build
+  * First autopackaging buid.
 
- -- Joshua Boudreau <jboudreau@45drives.com>  Fri, 30 Jul 2021 13:44:41 -0300
+ -- Joshua Boudreau <jboudreau@45drives.com>  Tue, 03 Aug 2021 12:58:59 -0300

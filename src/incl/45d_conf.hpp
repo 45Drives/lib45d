@@ -193,7 +193,11 @@ namespace ffd {
 	 * 
 	 */
 	class ConfigParser {
-		friend class ConfigSubsectionGuard; ///< Guard to change config subsection within a scope
+		/**
+		 * @brief Guard to change config subsection within a scope
+		 * @ref ConfigSubsectionGuard
+		 */
+		friend class ConfigSubsectionGuard;
 	private:
 		/**
 		 * @brief true if a ConfigSubsectionGuard is in scope

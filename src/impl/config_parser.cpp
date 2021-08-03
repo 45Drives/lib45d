@@ -32,17 +32,17 @@ ffd::ConfigParser::ConfigParser(std::string path) : guarded_(false), config_map_
 void ffd::ConfigParser::parse(std::ifstream &file) {
 	std::string line;
 	while (getline(file, line)) {
-		switch(check_record_type(line)) {
-			case RecordType::UNK:
+		switch(l::check_record_type(line)) {
+			case l::RecordType::UNK:
 				std::cerr << "Unknown config entry: " << line << std::endl;
 				break;
-			case RecordType::ENTRY:
+			case l::RecordType::ENTRY:
 				parse_entry(line);
 				break;
-			case RecordType::HEADING:
+			case l::RecordType::HEADING:
 				parse_heading(line);
 				break;
-			case RecordType::EMPTY:
+			case l::RecordType::EMPTY:
 			default:
 				break;
 		}
@@ -54,16 +54,16 @@ void ffd::ConfigParser::parse_entry(const std::string &line) {
 	std::stringstream ss(line);
 	getline(ss, key, '=');
 	getline(ss, value);
-	strip_whitespace(key);
-	remove_comments(value);
-	strip_whitespace(value);
+	l::strip_whitespace(key);
+	l::remove_comments(value);
+	l::strip_whitespace(value);
 	config_map_ptr_->insert(std::pair<std::string, ConfigNode>(key, ConfigNode(value, nullptr)));
 }
 
 void ffd::ConfigParser::parse_heading(const std::string &line) {
 	std::string name = line;
-	remove_comments(name);
-	strip_whitespace(name);
+	l::remove_comments(name);
+	l::strip_whitespace(name);
 	name = name.substr(1, name.length() - 2);
 	ConfigNode node(name, new std::unordered_map<std::string, ConfigNode>());
 	config_map_ptr_ = node.sub_map_;

@@ -10,6 +10,8 @@ jobs:
   api-doc:
     runs-on: self-hosted
     steps:
+    - name: print ID
+      run:  id
     - name: Git Checkout
       uses: actions/checkout@v2
     - name: Create clean gh-pages branch

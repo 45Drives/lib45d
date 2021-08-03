@@ -154,6 +154,8 @@ namespace ffd {
 	/**
 	 * @brief Get config entry as type T from configuration map
 	 * 
+	 * @private
+	 * 
 	 * @tparam T Type of variable to return
 	 * @param key Key to index map, from config file before '='
 	 * @param config_map Map of keys to ConfigNode structs

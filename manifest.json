@@ -39,11 +39,13 @@
         {
             "image": "cephgeorep-ubuntu-focal-builder",
             "codeName": "focal-dev",
+            "packageSuffix": "-dev",
             "type": "deb"
         },
         {
             "image": "cephgeorep-rocky-el8-builder",
             "codeName": "el8-devel",
+            "packageSuffix": "-devel",
             "type": "el"
         }
     ],

@@ -1,7 +1,7 @@
 {
     "__version": "45D-R1",
     "name": "lib45d_conf",
-    "title": "Lib45d_conf",
+    "title": "lib45d_conf",
     "prerelease": true,
     "version": "0.1.0",
     "buildVersion": "1",

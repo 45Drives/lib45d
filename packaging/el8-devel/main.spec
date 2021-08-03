@@ -4,10 +4,10 @@ Release: ::package_build_version::%{?dist}
 Summary: ::package_description_short::
 License: ::package_licence::
 URL: ::package_url::
-Source0: %{name}-%{version}.tar.gz
+Source0: ::package_name::-%{version}.tar.gz
 BuildArch: ::package_architecture_el::
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRoot: %{_tmppath}/::package_name::-%{version}-%{release}-root
 
 %description
 ::package_title::

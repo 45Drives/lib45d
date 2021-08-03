@@ -74,8 +74,15 @@ test:
 clean-tests:
 	cd tests && make clean
 
-docs:
-	doxygen doc/Doxyfile
+docs: api-doc dev-doc
+
+api-doc:
+	doxygen doc/api-doc.doxyfile
+	mv doc/html $@
+
+dev-doc:
+	doxygen doc/dev-doc.doxyfile
+	mv doc/html $@
 
 clean-docs:
 	-rm -rf doc/html

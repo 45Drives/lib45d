@@ -16,12 +16,10 @@ jobs:
       run:  git checkout -b gh-pages
     - name: Generate autodocs
       run:  make docs
-    - name: Move generated autodocs to target directory
-      run:  mv doc/html api-doc
     - name: Add generated autodocs to Git repo in the gh-pages branch
       run:  |
         export HOME=/root
-        git add api-doc
+        git add api-doc dev-doc
         git commit -am "Generated API doc"
         git push -f origin gh-pages:gh-pages
     - name: Result URLs
@@ -29,5 +27,6 @@ jobs:
         REPO_OWNER=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)
         REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)
         echo "Formatted API docs:  https://$REPO_OWNER.github.io/$REPO_NAME/api-doc"
+        echo "Formatted dev docs:  https://$REPO_OWNER.github.io/$REPO_NAME/dev-doc"
         echo ""
         echo "GitHub pages branch: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/tree/gh-pages" 

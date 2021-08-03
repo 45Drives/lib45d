@@ -1,4 +1,3 @@
-
 /*
 	Copyright (C) 2021 Joshua Boudreau <jboudreau@45drives.com>
 
@@ -51,15 +50,15 @@ inline bool check_if_heading(const std::string &record) {
 	return true; // section header found
 }
 
-RecordType check_record_type(const std::string &record) {
+l::RecordType check_record_type(const std::string &record) {
 	if (check_if_heading(record))
-		return RecordType::HEADING;
+		return l::RecordType::HEADING;
 	if (record.find('=') != std::string::npos)
-		return RecordType::ENTRY;
+		return l::RecordType::ENTRY;
 	std::string::const_iterator itr = record.begin();
 	while (itr != record.end() && (*itr == ' ' || *itr == '\t'))
 		++itr;
 	if (itr == record.end() || *itr == '#')
-		return RecordType::EMPTY;
-	return RecordType::UNK;
+		return l::RecordType::EMPTY;
+	return l::RecordType::UNK;
 }

@@ -24,6 +24,9 @@ make dev
 %install
 make DESTDIR=%{buildroot} DEVEL=1 install
 
+%post
+ldconfig -v
+
 %files
 /opt/45drives/*
 /etc/ld.so.conf.d/45drives.conf

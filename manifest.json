@@ -27,22 +27,22 @@
     },
     "releases": [
         {
-            "image": "ubuntu-focal-builder",
+            "image": "cephgeorep-ubuntu-focal-builder",
             "codeName": "focal",
             "type": "deb"
         },
         {
-            "image": "rocky-el8-builder",
+            "image": "cephgeorep-rocky-el8-builder",
             "codeName": "el8",
             "type": "el"
         },
         {
-            "image": "ubuntu-focal-builder",
+            "image": "cephgeorep-ubuntu-focal-builder",
             "codeName": "focal-dev",
             "type": "deb"
         },
         {
-            "image": "rocky-el8-builder",
+            "image": "cephgeorep-rocky-el8-builder",
             "codeName": "el8-devel",
             "type": "el"
         }

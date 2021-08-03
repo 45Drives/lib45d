@@ -1,7 +1,7 @@
 SHARED_TARGET = dist/shared/lib45d_conf.so
 STATIC_TARGET = dist/static/lib45d_conf.a
 CC = g++
-CFLAGS = -Wall -Wextra -Isrc/incl -fpic -std=c++17
+CFLAGS = -Wall -Wextra -Isrc/incl -fpic -std=c++11
 LIBS =
 
 CFLAGS += $(EXTRA_CFLAGS) # allow additional cflags passed with `make EXTRA_CFLAGS="-flag1 -flag2"`

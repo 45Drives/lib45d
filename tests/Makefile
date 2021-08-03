@@ -4,7 +4,7 @@ TEST_INPUTS = $(shell find . -name *.conf)
 TEST_OUTPUTS = $(patsubst %.conf, %.out, $(TEST_INPUTS))
 
 CC = g++
-CFLAGS = -g -std=c++17 -Wall -Wextra -I../src/incl
+CFLAGS = -g -std=c++11 -Wall -Wextra -I../src/incl
 LIBS =-static -L../dist/static -l45d_conf
 
 all: $(TEST_TARGETS)

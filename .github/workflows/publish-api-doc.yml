@@ -20,7 +20,7 @@ jobs:
       run:  mv doc/html api-doc
     - name: Add generated autodocs to Git repo in the gh-pages branch
       run:  |
-        HOME=/root
+        export HOME=/root
         git add api-doc
         git commit -am "Generated API doc"
         git push -f origin gh-pages:gh-pages

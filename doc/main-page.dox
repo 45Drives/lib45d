@@ -15,6 +15,7 @@ and call ffd::ConfigParser::get() to initialize the config class's members.
 @include tests/fallback/fallback.cpp
 @subsection subsection_static Static Subsections
 @include tests/subsections/subsections.cpp
-@subsection subsection_dynamic Dynamic Subsections with @ref ffd::ConfigSubsectionGuard
+@subsection subsection_dynamic Dynamic Subsections
+using @ref ffd::ConfigSubsectionGuard
 @include tests/dynamic_subsections/dynamic_subsections.cpp
  */

@@ -10,6 +10,8 @@ jobs:
   api-doc:
     runs-on: self-hosted
     steps:
+     name: Set Variables
+        run: echo "HOME=/root" >> $GITHUB_ENV
     - name: print ID
       run:  git config --global -l
     - name: Git Checkout

@@ -17,6 +17,7 @@ public:
 	float float_test_ = get<float>("Float Test", -1.0);
 	double double_test_ = get<double>("Double Test", -1.0);
 	std::string string_test_ = get<std::string>("String Test", "fallback");
+	
 	ConfigFallback(std::string path) : ffd::ConfigParser(path) {}
 	void dump(void) {
 		std::cout << "Integer Test: " << integer_test_ << std::endl;

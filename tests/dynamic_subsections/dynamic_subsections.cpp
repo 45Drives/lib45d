@@ -34,6 +34,7 @@ public:
 	float float_test_ = get<float>("Float Test", -1.0);
 	double double_test_ = get<double>("Double Test", -1.0);
 	std::string string_test_ = get<std::string>("String Test", "fallback");
+	
 	DynamicSubsectionConfig(const std::string &path, std::vector<SubConf> &sub_confs) : ConfigParser(path) {
 		for (ffd::ConfigNode *i : sub_confs_) {
 			{

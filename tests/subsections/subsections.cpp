@@ -34,6 +34,7 @@ public:
 	float section2_float_test_ = get_from<float>("Section 2", "Float Test", &parse_failed_);
 	double section2_double_test_ = get_from<double>("Section 2", "Double Test", &parse_failed_);
 	std::string section2_string_test_ = get_from<std::string>("Section 2", "String Test", &parse_failed_);
+	
 	ConfigSubSections(std::string path) : ffd::ConfigParser(path) {}
 	void dump(void) {
 		std::cout << "Global Bool Test: " << std::boolalpha << global_bool_test_ << std::endl;

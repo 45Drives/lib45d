@@ -20,7 +20,7 @@
 #include "45d_conf.hpp"
 #include "parser_functions.hpp"
 
-ffd::ConfigParser::ConfigParser(std::string path) : config_map_ptr_(&config_map_), path_(path) {
+ffd::ConfigParser::ConfigParser(std::string path) : guarded_(false), config_map_ptr_(&config_map_), path_(path) {
 	std::ifstream file(path_);
 	if (!file)
 		throw(ffd::NoConfigException("No config file at " + path_));

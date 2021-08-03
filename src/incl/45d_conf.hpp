@@ -80,6 +80,16 @@ namespace ffd {
 	};
 
 	/**
+	 * @brief Throw this exception when a ConfigGuard is constructed 
+	 * or get_from() is called when the config is already guarded
+	 * 
+	 */
+	class ConfigGuardException : public ConfigException {
+	public:
+		ConfigGuardException(std::string what) : ConfigException(what) {}
+	};
+
+	/**
 	 * @brief Struct for config_map_ entries
 	 * 
 	 */
@@ -183,8 +193,14 @@ namespace ffd {
 	 * 
 	 */
 	class ConfigParser {
-		friend class ConfigSubsectionGuard;
+		friend class ConfigSubsectionGuard; ///< Guard to change config subsection within a scope
 	private:
+		/**
+		 * @brief true if a ConfigSubsectionGuard is in scope
+		 * Set in ConfigSubsectionGuard::ConfigSubsectionGuard()
+		 * Cleared in ConfigSubsectionGuard::~ConfigSubsectionGuard()
+		 */
+		bool guarded_;
 		std::unordered_map<std::string, ConfigNode> *config_map_ptr_; ///< Pointer to current config map
 		std::string path_; ///< Path to config file
 		std::unordered_map<std::string, ConfigNode> config_map_; ///< Map of config keys (std::string) to values (ConfigNode)
@@ -324,6 +340,8 @@ namespace ffd {
 		 */
 		template<class T>
 		T get_from(const std::string &section, const std::string &key) {
+			if (guarded_)
+				throw(ffd::ConfigGuardException("Cannot call get_from while ConfigSubsectionGuard is in scope"));
 			set_subsection(section);
 			return ffd::get<T>(key, config_map_ptr_);
 			reset_subsection();
@@ -342,6 +360,10 @@ namespace ffd {
 		 */
 		template<class T>
 		T get_from(const std::string &section, const std::string &key, const T &fallback) noexcept {
+			if (guarded_) {
+				std::cerr << "Cannot call get_from while ConfigSubsectionGuard is in scope" << std::endl;
+				return fallback;
+			}
 			try {
 				set_subsection(section);
 			} catch (const std::out_of_range &) {
@@ -362,6 +384,14 @@ namespace ffd {
 		 */
 		template<class T>
 		T get_from(const std::string &section, const std::string &key, bool *fail_flag) noexcept {
+			if (guarded_) {
+				std::cerr << "Cannot call get_from while ConfigSubsectionGuard is in scope" << std::endl;
+				*fail_flag = true;
+				if (std::is_fundamental<T>::value)
+					return 0;
+				else
+					return T();
+			}
 			try {
 				set_subsection(section);
 			} catch (const std::out_of_range &) {
@@ -412,6 +442,9 @@ namespace ffd {
 		 * @param section ///< Section name to switch to
 		 */
 		ConfigSubsectionGuard(ConfigParser &config, const std::string &section) : config_(config) {
+			if (config_.guarded_)
+				throw(ffd::ConfigGuardException("Tried to guard config when ConfigSubsectionGuard already in scope"));
+			config_.guarded_ = true;
 			config_.set_subsection(section);
 		}
 		/**
@@ -420,6 +453,7 @@ namespace ffd {
 		 */
 		~ConfigSubsectionGuard(void) {
 			config_.reset_subsection();
+			config_.guarded_ = false;
 		}
 	};
 }

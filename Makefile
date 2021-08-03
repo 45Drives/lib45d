@@ -55,7 +55,8 @@ else
 install: default install-ld-conf
 endif
 	mkdir -p $(DESTDIR)$(PREFIX)
-	cp -f $(SHARED_TARGET) $(STATIC_TARGET) $(DESTDIR)$(PREFIX)
+	cp -f $(SHARED_TARGET) $(DESTDIR)$(PREFIX)
+	[ -f $(STATIC_TARGET) ] && cp -f $(STATIC_TARGET) $(DESTDIR)$(PREFIX)
 
 install-ld-conf:
 	mkdir -p $(dir $(DESTDIR)$(LD_CONF))

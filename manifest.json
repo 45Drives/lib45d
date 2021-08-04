@@ -12,7 +12,8 @@
     "licence": "GPL-3.0+",
     "architecture": {
         "deb": "amd64",
-        "el": "x86_64"
+        "el": "x86_64",
+        "arch": "x86_64"
     },
     "description": {
         "long": "C++ INI Style Configuration Parser",
@@ -39,7 +40,7 @@
         {
             "image": "arch-builder",
             "codeName": "arch",
-            "type": "el"
+            "type": "arch"
         },
         {
             "image": "cephgeorep-ubuntu-focal-builder",
@@ -57,7 +58,7 @@
             "image": "arch-builder",
             "codeName": "arch-devel",
             "packageSuffix": "-devel",
-            "type": "el"
+            "type": "arch"
         }
     ],
     "changelog": {

@@ -1,7 +1,7 @@
 pkgname=::package_name::
 pkgver=::package_version::
 pkgrel=::package_build_version::
-pkgdesc=::package_description_short::
+pkgdesc="::package_description_short::"
 arch=(::package_architecture_el::)
 url=::package_url::
 license=(::package_licence::)

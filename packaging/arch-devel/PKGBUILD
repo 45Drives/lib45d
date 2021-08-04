@@ -9,7 +9,7 @@ groups=('base-devel')
 depends=()
 makedepends=('boost-libs')
 optdepends=()
-source=("$pkgname.tar.gz")
+source=("$pkgname-$pkgver.tar.gz")
 
 build() {
     cd "$srcdir/$pkgname"

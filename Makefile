@@ -50,7 +50,7 @@ clean-target:
 	-rm -f $(SHARED_TARGET) $(STATIC_TARGET)
 
 ifdef DEVEL
-install: dev $(HEADER_INSTALL_TARGET) install-ld-conf
+install: dev $(DESTDIR)$(HEADER_INSTALL_TARGET) install-ld-conf
 else
 install: default install-ld-conf
 endif
@@ -65,7 +65,7 @@ install-ld-conf:
 	echo "$(PREFIX)" > $(DESTDIR)$(LD_CONF)
 
 # install header
-/opt/45drives/include/%.hpp: src/incl/%.hpp
+$(DESTDIR)/opt/45drives/include/%.hpp: src/incl/%.hpp
 	mkdir -p $(dir $@)
 	cp -f $< $@
 

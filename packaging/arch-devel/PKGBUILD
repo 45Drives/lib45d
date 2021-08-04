@@ -1,0 +1,22 @@
+pkgname=::package_name::-devel
+pkgver=::package_version::
+pkgrel=::package_build_version::
+pkgdesc=::package_description_short::
+arch=(::package_architecture_el::)
+url=::package_url::
+license=(::package_licence::)
+groups=('base-devel')
+depends=()
+makedepends=('boost-libs')
+optdepends=()
+source=("$pkgname.tar.gz")
+
+build() {
+    cd "$srcdir/$pkgname"
+    make dev -j$(nproc)
+}
+
+package() {
+    cd "$srcdir/$pkgname"
+    make DESTDIR="$pkgdir" PKG_FQPV="$pkgver-$pkgrel" DEVEL=1 install
+}

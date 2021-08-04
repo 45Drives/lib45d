@@ -37,6 +37,11 @@
             "type": "el"
         },
         {
+            "image": "arch-builder",
+            "codeName": "arch",
+            "type": "el"
+        },
+        {
             "image": "cephgeorep-ubuntu-focal-builder",
             "codeName": "focal-dev",
             "packageSuffix": "-dev",
@@ -45,6 +50,12 @@
         {
             "image": "cephgeorep-rocky-el8-builder",
             "codeName": "el8-devel",
+            "packageSuffix": "-devel",
+            "type": "el"
+        },
+        {
+            "image": "arch-builder",
+            "codeName": "arch-devel",
             "packageSuffix": "-devel",
             "type": "el"
         }

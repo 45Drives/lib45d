@@ -33,4 +33,4 @@ ldconfig -v
 
 %changelog
 * Tue Aug 03 2021 Joshua Boudreau <jboudreau@45drives.com> 0.1.0-1
-- First autopackaging buid.
+- First autopackaging build.

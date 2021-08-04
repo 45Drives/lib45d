@@ -12,11 +12,11 @@ optdepends=()
 source=("$pkgname-$pkgver.tar.gz")
 
 build() {
-    cd "$srcdir/$pkgname"
+    cd "$srcdir/$pkgname-$pkgver"
     make -j$(nproc)
 }
 
 package() {
-    cd "$srcdir/$pkgname"
+    cd "$srcdir/$pkgname-$pkgver"
     make DESTDIR="$pkgdir" PKG_FQPV="$pkgver-$pkgrel" install
 }

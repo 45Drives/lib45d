@@ -4,7 +4,7 @@
     "title": "lib45d_conf",
     "prerelease": true,
     "version": "0.1.0",
-    "buildVersion": "1",
+    "buildVersion": "2",
     "author": "Joshua Boudreau <jboudreau@45drives.com>",
     "url": "https://github.com/45Drives/lib45d_conf",
     "category": "utils",
@@ -67,7 +67,7 @@
     "changelog": {
         "urgency": "medium",
         "version": "0.1.0",
-        "buildVersion": "1",
+        "buildVersion": "2",
         "ignore": [],
         "date": null,
         "packager": "Joshua Boudreau <jboudreau@45drives.com>",

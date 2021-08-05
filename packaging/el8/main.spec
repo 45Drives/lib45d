@@ -32,5 +32,9 @@ ldconfig -v
 /etc/ld.so.conf.d/45drives.conf
 
 %changelog
+* Thu Aug 05 2021 Joshua Boudreau <jboudreau@45drives.com> 0.1.0-2
+- Fix devel packaging.
+* Thu Aug 05 2021 Joshua Boudreau <jboudreau@45drives.com> 0.1.0-2
+- Fix devel packaging.
 * Tue Aug 03 2021 Joshua Boudreau <jboudreau@45drives.com> 0.1.0-1
 - First autopackaging build.

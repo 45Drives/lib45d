@@ -44,19 +44,22 @@
         },
         {
             "image": "cephgeorep-ubuntu-focal-builder",
-            "codeName": "focal-dev",
+            "codeName": "focal",
+            "packageDirectory": "focal-dev",
             "packageSuffix": "-dev",
             "type": "deb"
         },
         {
             "image": "cephgeorep-rocky-el8-builder",
-            "codeName": "el8-devel",
+            "codeName": "el8",
+            "packageDirectory": "el8-devel",
             "packageSuffix": "-devel",
             "type": "el"
         },
         {
             "image": "arch-builder",
             "codeName": "arch-devel",
+            "packageDirectory": "arch-devel",
             "packageSuffix": "-devel",
             "type": "arch"
         }

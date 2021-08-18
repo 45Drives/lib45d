@@ -1,3 +1,3 @@
-## lib45dconf 0.1.0-2
+## lib45dconf 0.2.0-1
 
-* Fix devel packaging.
+* Rename 45d_conf to 45dconf for consistency

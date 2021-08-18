@@ -20,18 +20,14 @@
 
 #pragma once
 
-#define USE_BOOST
-
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-#ifdef USE_BOOST
 #include <boost/lexical_cast.hpp>
-#endif
+#include <boost/exception/all.hpp>
 
 /**
  * @brief 45Drives Namespace
@@ -42,7 +38,7 @@ namespace ffd {
 	 * @brief Exceptions thrown by this library
 	 * 
 	 */
-	class ConfigException {
+	class ConfigException : public std::exception {
 	private:
 		std::string what_; ///< String containing explanation message
 	public:
@@ -57,8 +53,8 @@ namespace ffd {
 		 * 
 		 * @return std::string 
 		 */
-		std::string what(void) const {
-			return what_;
+		const char *what(void) const noexcept {
+			return what_.c_str();
 		}
 	};
 
@@ -90,6 +86,128 @@ namespace ffd {
 		ConfigGuardException(std::string what) : ConfigException(what) {}
 	};
 
+	/**
+	 * @brief Throw this exception when Bytes::set() fails to parse string
+	 * 
+	 */
+	class ByteParseException : public ConfigException {
+	private:
+		std::string what_; ///< String containing explanation message
+	public:
+		ByteParseException(std::string what) : ConfigException(what) {}
+	};
+
+	class Bytes {
+	private:
+		uintmax_t bytes_;
+	public:
+		/**
+		 * @brief Construct a new Bytes object from formatted string
+		 * 
+		 * @param str formatted string for bytes
+		 */
+		Bytes(const std::string &str);
+		/**
+		 * @brief Construct a new Bytes object from integral type
+		 * 
+		 * @param bytes 
+		 */
+		Bytes(uintmax_t bytes) : bytes_(bytes) {}
+		/**
+		 * @brief Construct a new empty Bytes object
+		 * 
+		 */
+		Bytes(void) : bytes_(0) {}
+		/**
+		 * @brief Copy construct a new Bytes object
+		 * 
+		 * @param other Bytes to be copied
+		 */
+		Bytes(const Bytes &other) : bytes_(other.bytes_) {}
+		/**
+		 * @brief Move constructor
+		 * 
+		 * @param other Bytes to be moved
+		 */
+		Bytes(Bytes &&other) : bytes_(std::move(other.bytes_)) {}
+		/**
+		 * @brief Copy assignment
+		 * 
+		 * @param other Bytes to be copied
+		 * @return Bytes& *this
+		 */
+		Bytes &operator=(const Bytes &other) {
+			bytes_ = other.bytes_;
+			return *this;
+		}
+		/**
+		 * @brief Assignment move constructor
+		 * 
+		 * @param other Bytes to be moved
+		 * @return Bytes& *this
+		 */
+		Bytes &operator=(Bytes &&other) {
+			bytes_ = std::move(other.bytes_);
+			return *this;
+		}
+		/**
+		 * @brief Destroy the Bytes object
+		 */
+		~Bytes() = default;
+		/**
+		 * @brief Get value in bytes
+		 * 
+		 * @return uintmax_t 
+		 */
+		uintmax_t get(void) const;
+		/**
+		 * @brief Get value as formatted string
+		 * 
+		 * @param base1024 false for base 1000 output, true for base 1024 output
+		 * 
+		 * @return std::string 
+		 */
+		std::string get_str(bool base1024 = true) const;
+		/**
+		 * @brief Set value from integral type
+		 * 
+		 * @param val 
+		 */
+		void set(uintmax_t val) {
+			bytes_ = val;
+		}
+		/**
+		 * @brief Set value from formatted string
+		 * 
+		 * @param str 
+		 */
+		void set(const std::string &str);
+		/**
+		 * @brief Stream insertion operator
+		 * 
+		 * @param os 
+		 * @param bytes 
+		 * @return std::ostream& 
+		 */
+		friend std::ostream& operator<<(std::ostream& os, Bytes const &bytes) {
+			return os << bytes.get_str();
+		}
+		/**
+		 * @brief Stream extraction operator
+		 * 
+		 * @param is 
+		 * @param bytes 
+		 * @return std::istream& 
+		 */
+		friend std::istream& operator>>(std::istream& is, Bytes &bytes) {
+			std::string str;
+			is >> str;
+			bytes.set(str);
+			return is;
+		}
+	};
+
+	
 	/**
 	 * @brief Struct for config_map_ entries
 	 * 
@@ -174,16 +292,9 @@ namespace ffd {
 	 */
 	template<class T>
 	T get(const std::string &key, const std::unordered_map<std::string, ConfigNode> *config_map) {
-		std::stringstream ss;
-					ConfigNode node = config_map->at(key);
-		#ifdef USE_BOOST
-					T result = boost::lexical_cast<T>(node.value_);
-		#else
-					ss.str(node.value_);
-					T result;
-					ss >> result;
-		#endif
-					return result;
+		ConfigNode node = config_map->at(key);
+		T result = boost::lexical_cast<T>(node.value_);
+		return result;
 	}
 
 	/**
@@ -306,15 +417,20 @@ namespace ffd {
 		T get(const std::string &key, const T &fallback) const noexcept {
 			try {
 				return get<T>(key);
-#ifdef USE_BOOST
-			} catch (const boost::bad_lexical_cast &) {
-#else
-			} catch (const std::invalid_argument &) {
-#endif
-				return fallback;
 			} catch (const std::out_of_range &) {
-				return fallback;
+				// silently return fallback
+			} catch (const boost::bad_lexical_cast &) {
+				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
+			} catch (const ByteParseException &e) {
+				std::cerr << e.what() << std::endl;
+			} catch (const std::exception &e) {
+				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+			} catch (const boost::exception &e) {
+				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+			} catch ( ... ) {
+				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
 			}
+			return fallback;
 		}
 		/**
 		 * @brief Try to get value from config. If ffd::get fails,
@@ -333,25 +449,24 @@ namespace ffd {
 		T get(const std::string &key, bool *fail_flag) const noexcept {
 			try {
 				return get<T>(key);
-#ifdef USE_BOOST
 			} catch (const boost::bad_lexical_cast &) {
-#else
-			} catch (const std::invalid_argument &) {
-#endif
 				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
-				*fail_flag = true;
-				if (std::is_fundamental<T>::value)
-					return 0;
-				else
-					return T();
 			} catch (const std::out_of_range &) {
 				std::cerr << "Option not in config: " << key << std::endl;
-				*fail_flag = true;
-				if (std::is_fundamental<T>::value)
-					return 0;
-				else
-					return T();
+			} catch (const ByteParseException &e) {
+				std::cerr << e.what() << std::endl;
+			} catch (const std::exception &e) {
+				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+			} catch (const boost::exception &e) {
+				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+			} catch ( ... ) {
+				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
 			}
+			*fail_flag = true;
+			if (std::is_fundamental<T>::value)
+				return 0;
+			else
+				return T();
 		}
 		/**
 		 * @brief Adapter for ffd::get(). Sets config_map_ptr_ to address of sub config with name section. This can throw.

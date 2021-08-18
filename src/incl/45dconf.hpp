@@ -1,3 +1,4 @@
+// <45dconf> -*- C++ -*-
 /*
  *    Copyright (C) 2021 Joshua Boudreau <jboudreau@45drives.com>
  *    

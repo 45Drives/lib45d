@@ -12,7 +12,7 @@ OBJECT_FILES := $(patsubst src/impl/%.cpp, build/%.o, $(SOURCE_FILES))
 HEADER_FILES := $(shell find src/incl -name *.hpp)
 
 LD_CONF := /etc/ld.so.conf.d/45drives.conf
-HEADER_INSTALL_TARGET = /opt/45drives/include/45dconf.hpp
+HEADER_INSTALL_TARGET = /opt/45drives/include/45dconf
 
 ifeq ($(PREFIX),)
 	PREFIX := /opt/45drives/lib
@@ -65,7 +65,7 @@ install-ld-conf:
 	echo "$(PREFIX)" > $(DESTDIR)$(LD_CONF)
 
 # install header
-$(DESTDIR)/opt/45drives/include/%.hpp: src/incl/%.hpp
+$(DESTDIR)/opt/45drives/include/%: src/incl/%.hpp
 	mkdir -p $(dir $@)
 	cp -f $< $@
 

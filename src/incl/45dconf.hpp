@@ -97,6 +97,10 @@ namespace ffd {
 		ByteParseException(std::string what) : ConfigException(what) {}
 	};
 
+	/**
+	 * @brief Use this class for byte-formatted values. e.g.: "123 KiB"
+	 * 
+	 */
 	class Bytes {
 	private:
 		uintmax_t bytes_;
@@ -159,7 +163,9 @@ namespace ffd {
 		 * 
 		 * @return uintmax_t 
 		 */
-		uintmax_t get(void) const;
+		uintmax_t get(void) const {
+			return bytes_;
+		}
 		/**
 		 * @brief Get value as formatted string
 		 * 
@@ -167,7 +173,7 @@ namespace ffd {
 		 * 
 		 * @return std::string 
 		 */
-		std::string get_str(bool base1024 = true) const;
+		std::string get_str(bool base1024 = true, int precision = 2) const;
 		/**
 		 * @brief Set value from integral type
 		 * 
@@ -201,7 +207,7 @@ namespace ffd {
 		 */
 		friend std::istream& operator>>(std::istream& is, Bytes &bytes) {
 			std::string str;
-			is >> str;
+			std::getline(is, str);
 			bytes.set(str);
 			return is;
 		}

@@ -1,5 +1,5 @@
 /**
-@mainpage lib45d_conf
+@mainpage lib45dconf
 
 @section doc_sec Documentation
 Class to inherit: @ref ffd::ConfigParser

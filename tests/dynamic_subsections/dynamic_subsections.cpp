@@ -1,7 +1,7 @@
 /**
  * @code
  */
-#include "45d_conf.hpp"
+#include "45dconf.hpp"
 #include <cassert>
 #include <iostream>
 #include <vector>

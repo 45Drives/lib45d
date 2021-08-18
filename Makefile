@@ -1,5 +1,5 @@
-SHARED_TARGET = dist/shared/lib45d_conf.so
-STATIC_TARGET = dist/static/lib45d_conf.a
+SHARED_TARGET = dist/shared/lib45dconf.so
+STATIC_TARGET = dist/static/lib45dconf.a
 CC = g++
 CFLAGS = -Wall -Wextra -Isrc/incl -fpic -std=c++11
 LIBS =
@@ -12,7 +12,7 @@ OBJECT_FILES := $(patsubst src/impl/%.cpp, build/%.o, $(SOURCE_FILES))
 HEADER_FILES := $(shell find src/incl -name *.hpp)
 
 LD_CONF := /etc/ld.so.conf.d/45drives.conf
-HEADER_INSTALL_TARGET = /opt/45drives/include/45d_conf.hpp
+HEADER_INSTALL_TARGET = /opt/45drives/include/45dconf.hpp
 
 ifeq ($(PREFIX),)
 	PREFIX := /opt/45drives/lib

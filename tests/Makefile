@@ -5,15 +5,15 @@ TEST_OUTPUTS = $(patsubst %.conf, %.out, $(TEST_INPUTS))
 
 CC = g++
 CFLAGS = -g -std=c++11 -Wall -Wextra -I../src/incl
-LIBS =-static -L../dist/static -l45d_conf
+LIBS =-static -L../dist/static -l45dconf
 
 all: $(TEST_TARGETS)
 
-%.test: %.cpp ../dist/static/lib45d_conf.a
+%.test: %.cpp ../dist/static/lib45dconf.a
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
-../dist/static/lib45d_conf.a:
+../dist/static/lib45dconf.a:
 	cd .. && make static && cd -
 
 %.out: %.conf

@@ -28,16 +28,17 @@ ffd::Bytes::Bytes(const std::string &str) {
 void ffd::Bytes::set(const std::string &str) {
 	double val;
 	std::smatch m;
-	if (!regex_search(str, m, std::regex("^(\\d+\\.?\\d*)\\s*([kKmMgGtTpPeEzZyY]?)(i?)[bB]$"))){
+	if (!regex_search(str, m, std::regex("^(-?)\\s*(\\d+\\.?\\d*)\\s*([kKmMgGtTpPeEzZyY]?)(i?)[bB]$"))){
 		throw(ffd::ByteParseException("Failed to parse string as bytes: " + str));
 	}
+	int sign = (m.str(1).empty()) ? 1 : -1;
 	try {
-		val = std::stod(m[1]);
+		val = std::stod(m.str(2));
 	} catch (const std::invalid_argument &) {
-		throw(ffd::ByteParseException("Failed to interpret string as double: " + m.str(1)));
+		throw(ffd::ByteParseException("Failed to interpret string as double: " + m.str(2)));
 	}
-	char prefix = (m.str(2).empty())? 0 : m.str(2).front();
-	double base = (m.str(3).empty())? 1000.0 : 1024.0;
+	char prefix = (m.str(3).empty())? 0 : m.str(3).front();
+	double base = (m.str(4).empty())? 1000.0 : 1024.0;
 	double exp;
 	switch(prefix){
 		case 0:
@@ -78,18 +79,26 @@ void ffd::Bytes::set(const std::string &str) {
 		default:
 			throw(ffd::ByteParseException(std::string("Invalid unit prefix: ") + prefix + " (" + str + ")"));
 	}
-	bytes_ = val * pow(base, exp);
+	bytes_ = sign * val * pow(base, exp);
 }
 
 std::string ffd::Bytes::get_str(ffd::Bytes::PrefixType prefix_type, int precision) const {
 	const int N_PREFIXES = 9;
 	const char prefixes[N_PREFIXES] = {'\0', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
+	int sign = 1;
+	uintmax_t bytes = bytes_;
+	if (bytes_ < 0) {
+		sign = -1;
+		bytes = -bytes;
+	}
 	std::stringstream formatted_ss;
 	if(bytes_ == 0) return "0 B";
 	double base = (prefix_type == ffd::Bytes::PrefixType::BINARY) ? 1024.0 : 1000;
-	int prefix_ind = std::min(int(log(bytes_) / log(base)), N_PREFIXES - 1);
+	int prefix_ind = std::min(int(log(bytes) / log(base)), N_PREFIXES - 1);
 	double p = pow(base, prefix_ind);
-	double formatted = double(bytes_) / p;
+	double formatted = double(bytes) / p;
+	if (sign == -1)
+		formatted_ss << '-';
 	if (prefixes[prefix_ind]) {
 		formatted_ss << std::fixed << std::setprecision(precision) << formatted << " ";
 		formatted_ss << prefixes[prefix_ind];

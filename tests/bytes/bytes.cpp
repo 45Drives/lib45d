@@ -26,12 +26,12 @@ public:
 			throw ffd::MissingOptionException("################ Config Bytes ################\nOne or more options missing from configuration.");
 	}
 	void dump(void) {
-		std::cout << "Bytes Test: " << bytes_test_ << std::endl;
-		std::cout << "Kilobytes Test: " << kilobytes_test_ << std::endl;
+		std::cout << "Bytes Test: " << bytes_test_.get_str(ffd::Bytes::PrefixType::SI) << std::endl;
+		std::cout << "Kilobytes Test: " << kilobytes_test_.get_str(ffd::Bytes::PrefixType::SI) << std::endl;
 		std::cout << "Kibibytes Test: " << kibibytes_test_ << std::endl;
-		std::cout << "Megabytes Test: " << megabytes_test_ << std::endl;
+		std::cout << "Megabytes Test: " << megabytes_test_.get_str(ffd::Bytes::PrefixType::SI) << std::endl;
 		std::cout << "Mebibytes Test: " << mebibytes_test_ << std::endl;
-		std::cout << "Gigabytes Test: " << gigabytes_test_ << std::endl;
+		std::cout << "Gigabytes Test: " << gigabytes_test_.get_str(ffd::Bytes::PrefixType::SI) << std::endl;
 		std::cout << "Gibibytes Test: " << gibibytes_test_ << std::endl;
 	}
 	bool ok(void) {

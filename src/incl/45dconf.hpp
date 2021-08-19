@@ -103,8 +103,9 @@ namespace ffd {
 	 */
 	class Bytes {
 	private:
-		uintmax_t bytes_;
+		intmax_t bytes_;
 	public:
+		enum PrefixType {BINARY, SI};
 		/**
 		 * @brief Construct a new Bytes object from formatted string
 		 * 
@@ -116,7 +117,7 @@ namespace ffd {
 		 * 
 		 * @param bytes 
 		 */
-		Bytes(uintmax_t bytes) : bytes_(bytes) {}
+		Bytes(intmax_t bytes) : bytes_(bytes) {}
 		/**
 		 * @brief Construct a new empty Bytes object
 		 * 
@@ -169,11 +170,12 @@ namespace ffd {
 		/**
 		 * @brief Get value as formatted string
 		 * 
-		 * @param base1024 false for base 1000 output, true for base 1024 output
+		 * @param prefix_type ffd::Bytes::PrefixType::BINARY for multiples of 1024,
+		 * ffd::Bytes::PrefixType::SI for multiples of 1000.
 		 * 
 		 * @return std::string 
 		 */
-		std::string get_str(bool base1024 = true, int precision = 2) const;
+		std::string get_str(enum PrefixType prefix_type = BINARY, int precision = 2) const;
 		/**
 		 * @brief Set value from integral type
 		 * 
@@ -211,8 +213,22 @@ namespace ffd {
 			bytes.set(str);
 			return is;
 		}
+		friend Bytes operator+(const Bytes &a, const Bytes &b) {
+			return Bytes(a.bytes_ + b.bytes_);
+		}
+		friend Bytes operator-(const Bytes &a, const Bytes &b) {
+			return Bytes(a.bytes_ - b.bytes_);
+		}
+		friend Bytes operator*(const Bytes &a, int &b) {
+			return Bytes(a.bytes_ * b);
+		}
+		friend Bytes operator*(int a, const Bytes &b) {
+			return b * a;
+		}
+		friend Bytes operator/(const Bytes &a, int &b) {
+			return Bytes(a.bytes_ / b);
+		}
 	};
-
 	
 	/**
 	 * @brief Struct for config_map_ entries

@@ -81,20 +81,22 @@ void ffd::Bytes::set(const std::string &str) {
 	bytes_ = val * pow(base, exp);
 }
 
-std::string ffd::Bytes::get_str(bool base1024, int precision) const {
+std::string ffd::Bytes::get_str(ffd::Bytes::PrefixType prefix_type, int precision) const {
 	const int N_PREFIXES = 9;
 	const char prefixes[N_PREFIXES] = {'\0', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
 	std::stringstream formatted_ss;
 	if(bytes_ == 0) return "0 B";
-	double base = (base1024 ? 1024.0 : 1000);
+	double base = (prefix_type == ffd::Bytes::PrefixType::BINARY) ? 1024.0 : 1000;
 	int prefix_ind = std::min(int(log(bytes_) / log(base)), N_PREFIXES - 1);
 	double p = pow(base, prefix_ind);
 	double formatted = double(bytes_) / p;
-	formatted_ss << std::fixed << std::setprecision(precision) << formatted << " ";
 	if (prefixes[prefix_ind]) {
+		formatted_ss << std::fixed << std::setprecision(precision) << formatted << " ";
 		formatted_ss << prefixes[prefix_ind];
-		if (base1024)
+		if (prefix_type == ffd::Bytes::PrefixType::BINARY)
 			formatted_ss << 'i';
+	} else {
+		formatted_ss << formatted << " ";
 	}
 	formatted_ss << 'B';
 	return formatted_ss.str();

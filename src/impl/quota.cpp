@@ -21,8 +21,8 @@
 
 #include <regex>
 
-ffd::Quota::Quota(const Bytes &max, std::string &str, RoundingMethod method)
-	: Bytes(max), rounding_method_(method) {
+ffd::Quota::Quota(const ffd::Bytes &max, const std::string &str, ffd::Quota::RoundingMethod method)
+	: ffd::Bytes(max), rounding_method_(method) {
     parse_fraction(str);
 }
 
@@ -37,6 +37,6 @@ void ffd::Quota::parse_fraction(const std::string &str) {
 	} catch (const std::invalid_argument &) {
 		throw(ffd::QuotaParseException("Failed to interpret string as double: " + m.str(1)));
 	}
-    double divisor = (m.str(2).empty()) ? 1 : 100; // decimal or percent
+    double divisor = (m.str(2).empty()) ? 1.0 : 100.0; // decimal or percent
     fraction_ = val / divisor;
 }

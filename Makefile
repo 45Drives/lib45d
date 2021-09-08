@@ -14,7 +14,7 @@ HEADER_FILES := $(shell find src/incl/45d -name *.hpp)
 INCLUDE_PREFIX = /usr/include
 LIB_PREFIX = /usr/lib
 
-HEADER_INSTALL_TARGETS := $(patsubst src/impl/45d/%.hpp, $(DESTDIR)$(INCLUDE_PREFIX)/45d/%.hpp, $(HEADER_FILES))
+HEADER_INSTALL_TARGETS := $(patsubst src/incl/45d/%.hpp, $(DESTDIR)$(INCLUDE_PREFIX)/45d/%.hpp, $(HEADER_FILES))
 
 ifdef DEVEL
 default: dev
@@ -65,7 +65,7 @@ $(DESTDIR)$(INCLUDE_PREFIX)/45d/%.hpp: src/incl/45d/%.hpp
 	cp -f $< $@
 
 uninstall:
-	-rm -f $(DESTDIR)$(LIB_PREFIX)/$(notdir $(SHARED_TARGET)) $(DESTDIR)$(LIB_PREFIX)/$(notdir $(STATIC_TARGET)) $(HEADER_INSTALL_TARGETS)
+	echo -rm -f $(DESTDIR)$(LIB_PREFIX)/$(notdir $(SHARED_TARGET)) $(DESTDIR)$(LIB_PREFIX)/$(notdir $(STATIC_TARGET)) $(HEADER_INSTALL_TARGETS)
 
 test:
 	cd tests && make test

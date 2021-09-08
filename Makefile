@@ -68,10 +68,10 @@ uninstall:
 	-rm -f $(DESTDIR)$(LIB_PREFIX)/$(notdir $(SHARED_TARGET)) $(DESTDIR)$(LIB_PREFIX)/$(notdir $(STATIC_TARGET)) $(HEADER_INSTALL_TARGETS)
 
 test:
-	cd tests && make test
+	$(MAKE) -C tests
 
 clean-tests:
-	cd tests && make clean
+	$(MAKE) clean -C tests
 
 docs: api-doc dev-doc
 

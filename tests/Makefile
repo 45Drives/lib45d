@@ -1,27 +1,4 @@
-TEST_SOURCES = $(shell find . -name *.cpp)
-TEST_TARGETS = $(patsubst %.cpp, %.test, $(TEST_SOURCES))
-TEST_INPUTS = $(shell find . -name *.conf)
-TEST_OUTPUTS = $(patsubst %.conf, %.out, $(TEST_INPUTS))
+TEST_SUITES = $(shell find . -type d)
 
-CC = g++
-CFLAGS = -g -std=c++11 -Wall -Wextra -I../src/incl
-LIBS =-static -L../dist/static -l45dconf
-
-all: $(TEST_TARGETS)
-
-%.test: %.cpp ../dist/static/lib45dconf.a
-	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $< $(LIBS) -o $@
-
-../dist/static/lib45dconf.a:
-	cd .. && make static && cd -
-
-%.out: %.conf
-	@$(shell find $(dir $@) -name *.test) $< > $@ 2>&1
-	@diff $@ $(patsubst %.out, %.gold, $@) && echo $@ PASSED || echo $@ FAILED
-
-test: clean
-test: all $(TEST_OUTPUTS)
-
-clean:
-	-rm -f $(TEST_TARGETS) $(TEST_OUTPUTS)
+$(TEST_SUITES):
+	$(MAKE) -C $@

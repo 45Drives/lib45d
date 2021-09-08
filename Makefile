@@ -65,7 +65,7 @@ $(DESTDIR)$(INCLUDE_PREFIX)/45d/%.hpp: src/incl/45d/%.hpp
 	cp -f $< $@
 
 uninstall:
-	echo -rm -f $(DESTDIR)$(LIB_PREFIX)/$(notdir $(SHARED_TARGET)) $(DESTDIR)$(LIB_PREFIX)/$(notdir $(STATIC_TARGET)) $(HEADER_INSTALL_TARGETS)
+	-rm -f $(DESTDIR)$(LIB_PREFIX)/$(notdir $(SHARED_TARGET)) $(DESTDIR)$(LIB_PREFIX)/$(notdir $(STATIC_TARGET)) $(HEADER_INSTALL_TARGETS)
 
 test:
 	cd tests && make test

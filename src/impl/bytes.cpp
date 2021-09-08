@@ -1,25 +1,28 @@
 /*
  *    Copyright (C) 2021 Joshua Boudreau <jboudreau@45drives.com>
  *    
- *    This file is part of lib45dconf.
+ *    This file is part of lib45d.
  * 
- *    lib45dconf is free software: you can redistribute it and/or modify
+ *    lib45d is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
  * 
- *    lib45dconf is distributed in the hope that it will be useful,
+ *    lib45d is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  * 
  *    You should have received a copy of the GNU General Public License
- *    along with lib45dconf.  If not, see <https://www.gnu.org/licenses/>.
+ *    along with lib45d.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "45dconf.hpp"
+#include "45d/Bytes.hpp"
+#include "45d/Exceptions.hpp"
 
 #include <regex>
+#include <iomanip>
+#include <cmath>
 
 ffd::Bytes::Bytes(const std::string &str) {
 	set(str);

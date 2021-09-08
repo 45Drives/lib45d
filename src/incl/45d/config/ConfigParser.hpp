@@ -1,438 +1,35 @@
-// <45dconf> -*- C++ -*-
+// -*- C++ -*-
 /*
  *    Copyright (C) 2021 Joshua Boudreau <jboudreau@45drives.com>
  *    
- *    This file is part of lib45dconf.
+ *    This file is part of lib45d.
  * 
- *    lib45dconf is free software: you can redistribute it and/or modify
+ *    lib45d is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
  * 
- *    lib45dconf is distributed in the hope that it will be useful,
+ *    lib45d is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  * 
  *    You should have received a copy of the GNU General Public License
- *    along with lib45dconf.  If not, see <https://www.gnu.org/licenses/>.
+ *    along with lib45d.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #pragma once
 
+#include <45d/config/ConfigNode.hpp>
+#include <45d/Exceptions.hpp>
+#include <45d/Quota.hpp>
 #include <string>
-#include <vector>
 #include <unordered_map>
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#include <vector>
 #include <boost/lexical_cast.hpp>
-#include <boost/exception/all.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 
-/**
- * @brief 45Drives Namespace
- * 
- */
-namespace ffd {
-	/** Exceptions
-	 * @brief Exceptions thrown by this library
-	 * 
-	 */
-	class ConfigException : public std::exception {
-	private:
-		std::string what_; ///< String containing explanation message
-	public:
-		/**
-		 * @brief Construct a new Exception object
-		 * 
-		 * @param what String containing explanation message
-		 */
-		ConfigException(std::string what) : what_(what) {}
-		/**
-		 * @brief Return string containing explanation message
-		 * 
-		 * @return std::string 
-		 */
-		const char *what(void) const noexcept {
-			return what_.c_str();
-		}
-	};
-
-	/**
-	 * @brief Throw this exception when the config file fails to open
-	 * 
-	 */
-	class NoConfigException : public ConfigException {
-	public:
-		NoConfigException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
-	 * @brief Throw this exception when a config entry is missing
-	 * 
-	 */
-	class MissingOptionException : public ConfigException {
-	public:
-		MissingOptionException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
-	 * @brief Throw this exception when a ConfigGuard is constructed 
-	 * or get_from() is called when the config is already guarded
-	 * 
-	 */
-	class ConfigGuardException : public ConfigException {
-	public:
-		ConfigGuardException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
-	 * @brief Throw this exception when Bytes::set() fails to parse string
-	 * 
-	 */
-	class ByteParseException : public ConfigException {
-	private:
-		std::string what_; ///< String containing explanation message
-	public:
-		ByteParseException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
-	 * @brief Throw this exception when Quota::parse_fraction() fails to parse string
-	 * 
-	 */
-	class QuotaParseException : public ConfigException {
-	private:
-		std::string what_; ///< String containing explanation message
-	public:
-		QuotaParseException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
-	 * @brief Use this class for byte-formatted values. e.g.: "123 KiB"
-	 * 
-	 */
-	class Bytes {
-	protected:
-		intmax_t bytes_;
-	public:
-		enum PrefixType {BINARY, SI};
-		/**
-		 * @brief Construct a new Bytes object from formatted string
-		 * 
-		 * @param str formatted string for bytes
-		 */
-		Bytes(const std::string &str);
-		/**
-		 * @brief Construct a new Bytes object from integral type
-		 * 
-		 * @param bytes 
-		 */
-		Bytes(intmax_t bytes) : bytes_(bytes) {}
-		/**
-		 * @brief Construct a new empty Bytes object
-		 * 
-		 */
-		Bytes(void) : bytes_(0) {}
-		/**
-		 * @brief Copy construct a new Bytes object
-		 * 
-		 * @param other Bytes to be copied
-		 */
-		Bytes(const Bytes &other) : bytes_(other.bytes_) {}
-		/**
-		 * @brief Move constructor
-		 * 
-		 * @param other Bytes to be moved
-		 */
-		Bytes(Bytes &&other) : bytes_(std::move(other.bytes_)) {}
-		/**
-		 * @brief Copy assignment
-		 * 
-		 * @param other Bytes to be copied
-		 * @return Bytes& *this
-		 */
-		Bytes &operator=(const Bytes &other) {
-			bytes_ = other.get();
-			return *this;
-		}
-		/**
-		 * @brief Assignment move constructor
-		 * 
-		 * @param other Bytes to be moved
-		 * @return Bytes& *this
-		 */
-		Bytes &operator=(Bytes &&other) {
-			bytes_ = std::move(other.bytes_);
-			return *this;
-		}
-		/**
-		 * @brief Destroy the Bytes object
-		 */
-		~Bytes() = default;
-		/**
-		 * @brief Get value in bytes
-		 * 
-		 * @return intmax_t 
-		 */
-		virtual intmax_t get(void) const {
-			return bytes_;
-		}
-		/**
-		 * @brief Get value as formatted string
-		 * 
-		 * @param prefix_type ffd::Bytes::PrefixType::BINARY for multiples of 1024,
-		 * ffd::Bytes::PrefixType::SI for multiples of 1000.
-		 * 
-		 * @return std::string 
-		 */
-		std::string get_str(enum PrefixType prefix_type = BINARY, int precision = 2) const;
-		/**
-		 * @brief Set value from integral type
-		 * 
-		 * @param val 
-		 */
-		void set(intmax_t val) {
-			bytes_ = val;
-		}
-		/**
-		 * @brief Set value from formatted string
-		 * 
-		 * @param str 
-		 */
-		void set(const std::string &str);
-		/**
-		 * @brief Stream insertion operator
-		 * 
-		 * @param os 
-		 * @param bytes 
-		 * @return std::ostream& 
-		 */
-		friend std::ostream& operator<<(std::ostream& os, Bytes const &bytes) {
-			return os << bytes.get_str();
-		}
-		/**
-		 * @brief Stream extraction operator
-		 * 
-		 * @param is 
-		 * @param bytes 
-		 * @return std::istream& 
-		 */
-		friend std::istream& operator>>(std::istream& is, Bytes &bytes) {
-			std::string str;
-			std::getline(is, str);
-			bytes.set(str);
-			return is;
-		}
-		friend Bytes operator+(const Bytes &a, const Bytes &b) {
-			return Bytes(a.get() + b.get());
-		}
-		friend Bytes operator-(const Bytes &a, const Bytes &b) {
-			return Bytes(a.get() - b.get());
-		}
-		friend Bytes operator*(const Bytes &a, int &b) {
-			return Bytes(a.get() * b);
-		}
-		friend Bytes operator*(int a, const Bytes &b) {
-			return b * a;
-		}
-		friend Bytes operator/(const Bytes &a, int &b) {
-			return Bytes(a.get() / b);
-		}
-	};
-
-	/**
-	 * @brief This class extends ffd::Bytes to specify percents of an amount of bytes.
-	 * 
-	 */
-	class Quota : public Bytes {
-	public:
-		/**
-		 * @brief Rounding method to use when reporing bytes
-		 * 
-		 */
-		enum RoundingMethod {NEAREST, DOWN, UP};
-	private:
-		double fraction_;
-		RoundingMethod rounding_method_;
-		intmax_t round(double x) const {
-			switch (rounding_method_) {
-				case RoundingMethod::NEAREST:
-					return intmax_t(::round(x));
-				case RoundingMethod::DOWN:
-					return intmax_t(x);
-				case RoundingMethod::UP:
-					return intmax_t(ceil(x));
-				default:
-					return intmax_t(::round(x));
-			}
-		}
-		void parse_fraction(const std::string &str);
-	public:
-		/**
-		 * @brief Construct a new Quota object
-		 * 
-		 * @param max Bytes to set maximum amount
-		 * @param str String to be parsed into fraction
-		 */
-		Quota(const Bytes &max, const std::string &str, RoundingMethod method = NEAREST);
-		/**
-		 * @brief Construct a new Quota object
-		 * 
-		 * @param max Bytes to set maximum amount
-		 * @param fraction Fraction of max to represent
-		 * @param method Rounding nearest, down, or up
-		 */
-		Quota(const Bytes &max, double fraction = 1.0, RoundingMethod method = NEAREST)
-			: Bytes(max), fraction_(fraction), rounding_method_(method) {}
-		/**
-		 * @brief Construct a new empty Quota object
-		 * 
-		 */
-		Quota(void) : Bytes(), fraction_(0), rounding_method_(NEAREST) {}
-		/**
-		 * @brief Copy constructor
-		 * 
-		 * @param other 
-		 */
-		Quota(const Quota &other)
-			: Bytes(other.get()), fraction_(other.fraction_), rounding_method_(other.rounding_method_) {}
-		/**
-		 * @brief Move constructor
-		 * 
-		 * @param other Quota to be moved
-		 */
-		Quota(Quota &&other)
-			: Bytes(std::move(other)), fraction_(std::move(other.fraction_)), rounding_method_(std::move(other.rounding_method_)) {}
-		/**
-		 * @brief Copy assignment
-		 * 
-		 * @param other Quota to be copied
-		 * @return Quota& *this
-		 */
-		Quota &operator=(const Quota &other) {
-			bytes_ = other.bytes_;
-			fraction_ = other.fraction_;
-			rounding_method_ = other.rounding_method_;
-			return *this;
-		}
-		/**
-		 * @brief Assignment move constructor
-		 * 
-		 * @param other Quota to be moved
-		 * @return Quota& *this
-		 */
-		Quota &operator=(Quota &&other) {
-			bytes_ = std::move(other.bytes_);
-			fraction_ = std::move(other.fraction_);
-			rounding_method_ = std::move(other.rounding_method_);
-			return *this;
-		}
-		/**
-		 * @brief Destroy the Quota object
-		 */
-		~Quota() = default;
-		void set_rounding_method(RoundingMethod method) {
-			rounding_method_ = method;
-		}
-		/**
-		 * @brief Get value in bytes
-		 * 
-		 * @return intmax_t 
-		 */
-		intmax_t get(void) const {
-			return round(double(bytes_) * fraction_);
-		}
-		/**
-		 * @brief Get just the fraction as a double
-		 * 
-		 * @return double 
-		 */
-		double get_fraction(void) const {
-			return fraction_;
-		}
-		/**
-		 * @brief Set the fraction
-		 * 
-		 * @param fraction new value for fraction_
-		 */
-		void set_fraction(double fraction) {
-			fraction_ = fraction;
-		}
-	};
-	
-	/**
-	 * @brief Struct for config_map_ entries
-	 * 
-	 */
-	class ConfigNode {
-	private:
-		bool is_copy_; ///< Set in copy constructor to avoid double deletion of *sub_map_
-	public:
-		std::string value_; ///< string from config file after '='
-		std::unordered_map<std::string, ConfigNode> *sub_map_; ///< Pointer to submap for config sections
-		/**
-		 * @brief Construct a new ConfigNode object
-		 * 
-		 * @param value String containing config value or subsection header
-		 * @param sub_map nullptr or pointer to an std::unordered_map<std::string, ffd::ConfigNode> if subsection
-		 */
-		ConfigNode(std::string value, std::unordered_map<std::string, ConfigNode> *sub_map) : is_copy_(false), value_(value), sub_map_(sub_map) {}
-		/**
-		 * @brief Construct a new empty ConfigNode object
-		 * 
-		 */
-		ConfigNode(void) : is_copy_(false), value_(""), sub_map_(nullptr) {}
-		/**
-		 * @brief Copy construct a new ConfigNode object
-		 * 
-		 * Sets is_copy_ flag to prevent double deletion of *sub_map_
-		 * 
-		 * @param other ConfigNode to be copied
-		 */
-		ConfigNode(const ConfigNode &other)
-			: is_copy_(true)
-			, value_(other.value_)
-			, sub_map_(other.sub_map_) {}
-		/**
-		 * @brief Move constructor
-		 * 
-		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
-		 * 
-		 * @param other ConfigNode to be moved
-		 */
-		ConfigNode(ConfigNode &&other)
-			: is_copy_(false)
-			, value_(std::move(other.value_))
-			, sub_map_(std::move(other.sub_map_)) {
-			other.sub_map_ = nullptr;
-		}
-		/**
-		 * @brief Assignment move constructor
-		 * 
-		 * Move value_ and sub_map_ from other to this, and null out sub_map_ pointer in other
-		 * 
-		 * @param other ConfigNode to be moved
-		 * @return ConfigNode& *this
-		 */
-		ConfigNode &operator=(ConfigNode &&other) {
-			is_copy_ = false;
-			value_ = std::move(other.value_);
-			sub_map_ = std::move(other.sub_map_);
-			other.sub_map_ = nullptr;
-			return *this;
-		}
-		/**
-		 * @brief Destroy the ConfigNode object
-		 * 
-		 * Deletes the sub_map_ member if allocated and not a copy
-		 */
-		~ConfigNode() {
-			if (sub_map_ && !is_copy_)
-				delete sub_map_;
-		}
-	};
-
+namespace ffd_internal {
 	/**
 	 * @brief Get config entry as type T from configuration map
 	 * 
@@ -444,13 +41,15 @@ namespace ffd {
 	 * @return T Value returned from config
 	 */
 	template<class T>
-	T get(const std::string &key, const std::unordered_map<std::string, ConfigNode> *config_map) {
-		ConfigNode node = config_map->at(key);
+	T get(const std::string &key, const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
+		ffd::ConfigNode node = config_map->at(key);
 		T result = boost::lexical_cast<T>(node.value_);
 		return result;
 	}
+}
 
-	/**
+namespace ffd {
+    /**
 	 * @brief Main configuration parser class to inherit from in your code
 	 * 
 	 * Example usage:
@@ -553,7 +152,7 @@ namespace ffd {
 		 */
 		template<class T>
 		T get(const std::string &key) const {
-			return ffd::get<T>(key, config_map_ptr_);
+			return ffd_internal::get<T>(key, config_map_ptr_);
 		}
 		/**
 		 * @brief Try to get value from config, default to fallback if fails. Guaranteed no-throw.
@@ -634,7 +233,7 @@ namespace ffd {
 			if (guarded_)
 				throw(ffd::ConfigGuardException("Cannot call get_from while ConfigSubsectionGuard is in scope"));
 			set_subsection(section);
-			T result = ffd::get<T>(key, config_map_ptr_);
+			T result = get<T>(key);
 			reset_subsection();
 			return result;
 		}
@@ -842,55 +441,6 @@ namespace ffd {
 			Quota result = ffd::ConfigParser::get_quota(key, max, fail_flag);
 			reset_subsection();
 			return result;
-		}
-	};
-
-	/**
-	 * @brief Use this to switch to a certain config subsection to get a group of values
-	
-	Inside ConfigParser method:
-	\code
-	{
-		ConfigSubsectionGuard guard(*this, "Subsection 1");
-		int section_1_value = get<int>("Value", -1);
-		// section is switched back when guard goes out of scope
-	}
-	\endcode
-	Any other scope:
-	\code
-	ConfigParser config("/etc/example.conf");
-	{
-		ConfigSubsectionGuard guard(config, "Subsection 1");
-		int section_1_value = config.get<int>("Value", -1);
-		// section is switched back when guard goes out of scope
-	}
-	\endcode
-	Full Example:
-	@include tests/dynamic_subsections/dynamic_subsections.cpp
-	 */
-	class ConfigSubsectionGuard {
-	private:
-		ConfigParser &config_; ///< Reference to ConfigParser or inhereting class
-	public:
-		/**
-		 * @brief Construct a new Config Subsection Guard object
-		 * 
-		 * @param config ///< Reference to a ConfigParser or inhereting class
-		 * @param section ///< Section name to switch to
-		 */
-		ConfigSubsectionGuard(ConfigParser &config, const std::string &section) : config_(config) {
-			if (config_.guarded_)
-				throw(ffd::ConfigGuardException("Tried to guard config when ConfigSubsectionGuard already in scope"));
-			config_.guarded_ = true;
-			config_.set_subsection(section);
-		}
-		/**
-		 * @brief Destroy the Config Subsection Guard object
-		 * 
-		 */
-		~ConfigSubsectionGuard(void) {
-			config_.reset_subsection();
-			config_.guarded_ = false;
 		}
 	};
 }

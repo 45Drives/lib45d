@@ -39,7 +39,7 @@ build/%.o: src/impl/%.cpp
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-clean: clean-build clean-target
+clean: clean-build clean-target clean-tests
 
 clean-build:
 	-rm -rf build
@@ -67,7 +67,7 @@ $(DESTDIR)$(INCLUDE_PREFIX)/45d/%.hpp: src/incl/45d/%.hpp
 uninstall:
 	-rm -f $(DESTDIR)$(LIB_PREFIX)/$(notdir $(SHARED_TARGET)) $(DESTDIR)$(LIB_PREFIX)/$(notdir $(STATIC_TARGET)) $(HEADER_INSTALL_TARGETS)
 
-test:
+test: static
 	$(MAKE) -C tests
 
 clean-tests:

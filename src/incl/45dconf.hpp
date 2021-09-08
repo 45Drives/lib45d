@@ -98,11 +98,22 @@ namespace ffd {
 	};
 
 	/**
+	 * @brief Throw this exception when Quota::parse_fraction() fails to parse string
+	 * 
+	 */
+	class QuotaParseException : public ConfigException {
+	private:
+		std::string what_; ///< String containing explanation message
+	public:
+		QuotaParseException(std::string what) : ConfigException(what) {}
+	};
+
+	/**
 	 * @brief Use this class for byte-formatted values. e.g.: "123 KiB"
 	 * 
 	 */
 	class Bytes {
-	private:
+	protected:
 		intmax_t bytes_;
 	public:
 		enum PrefixType {BINARY, SI};
@@ -128,7 +139,7 @@ namespace ffd {
 		 * 
 		 * @param other Bytes to be copied
 		 */
-		Bytes(const Bytes &other) : bytes_(other.bytes_) {}
+		Bytes(const Bytes &other) : bytes_(other.get()) {}
 		/**
 		 * @brief Move constructor
 		 * 
@@ -142,7 +153,7 @@ namespace ffd {
 		 * @return Bytes& *this
 		 */
 		Bytes &operator=(const Bytes &other) {
-			bytes_ = other.bytes_;
+			bytes_ = other.get();
 			return *this;
 		}
 		/**
@@ -162,9 +173,9 @@ namespace ffd {
 		/**
 		 * @brief Get value in bytes
 		 * 
-		 * @return uintmax_t 
+		 * @return intmax_t 
 		 */
-		uintmax_t get(void) const {
+		intmax_t get(void) const {
 			return bytes_;
 		}
 		/**
@@ -181,7 +192,7 @@ namespace ffd {
 		 * 
 		 * @param val 
 		 */
-		void set(uintmax_t val) {
+		void set(intmax_t val) {
 			bytes_ = val;
 		}
 		/**
@@ -214,19 +225,126 @@ namespace ffd {
 			return is;
 		}
 		friend Bytes operator+(const Bytes &a, const Bytes &b) {
-			return Bytes(a.bytes_ + b.bytes_);
+			return Bytes(a.get() + b.get());
 		}
 		friend Bytes operator-(const Bytes &a, const Bytes &b) {
-			return Bytes(a.bytes_ - b.bytes_);
+			return Bytes(a.get() - b.get());
 		}
 		friend Bytes operator*(const Bytes &a, int &b) {
-			return Bytes(a.bytes_ * b);
+			return Bytes(a.get() * b);
 		}
 		friend Bytes operator*(int a, const Bytes &b) {
 			return b * a;
 		}
 		friend Bytes operator/(const Bytes &a, int &b) {
-			return Bytes(a.bytes_ / b);
+			return Bytes(a.get() / b);
+		}
+	};
+
+	/**
+	 * @brief This class extends ffd::Bytes to specify percents of an amount of bytes.
+	 * 
+	 */
+	class Quota : public Bytes {
+		/**
+		 * @brief 
+		 * 
+		 */
+		enum RoundingMethod {NEAREST, DOWN, UP};
+	private:
+		double fraction_;
+		RoundingMethod rounding_method_;
+		inline intmax_t round(double x) const {
+			switch (rounding_method_) {
+				case RoundingMethod::NEAREST:
+					return int(::round(x));
+				case RoundingMethod::DOWN:
+					return int(x);
+				case RoundingMethod::UP:
+					return int(ceil(x));
+			}
+		}
+		void parse_fraction(const std::string &str);
+	public:
+		/**
+		 * @brief Construct a new Quota object
+		 * 
+		 * @param max Bytes to set maximum amount
+		 * @param str String to be parsed into fraction
+		 */
+		Quota(const Bytes &max, std::string &str, RoundingMethod method = NEAREST);
+		/**
+		 * @brief Construct a new Quota object
+		 * 
+		 * @param max Bytes to set maximum amount
+		 * @param fraction Fraction of max to represent
+		 * @param method Rounding nearest, down, or up
+		 */
+		Quota(const Bytes &max, double fraction = 1.0, RoundingMethod method = NEAREST)
+			: Bytes(max), fraction_(fraction), rounding_method_(method) {}
+		/**
+		 * @brief Construct a new empty Quota object
+		 * 
+		 */
+		Quota(void) : Bytes(), fraction_(0), rounding_method_(NEAREST) {}
+		/**
+		 * @brief Copy constructor
+		 * 
+		 * @param other 
+		 */
+		Quota(const Quota &other)
+			: Bytes(other.get()), fraction_(other.fraction_), rounding_method_(other.rounding_method_) {}
+		/**
+		 * @brief Move constructor
+		 * 
+		 * @param other Quota to be moved
+		 */
+		Quota(Quota &&other)
+			: Bytes(std::move(other)), fraction_(std::move(other.fraction_)), rounding_method_(std::move(other.rounding_method_)) {}
+		/**
+		 * @brief Copy assignment
+		 * 
+		 * @param other Quota to be copied
+		 * @return Quota& *this
+		 */
+		Quota &operator=(const Quota &other) {
+			bytes_ = other.bytes_;
+			fraction_ = other.fraction_;
+			rounding_method_ = other.rounding_method_;
+			return *this;
+		}
+		/**
+		 * @brief Assignment move constructor
+		 * 
+		 * @param other Quota to be moved
+		 * @return Quota& *this
+		 */
+		Quota &operator=(Quota &&other) {
+			bytes_ = std::move(other.bytes_);
+			bytes_ = std::move(other.fraction_);
+			rounding_method_ = std::move(other.rounding_method_);
+			return *this;
+		}
+		/**
+		 * @brief Destroy the Quota object
+		 */
+		~Quota() = default;
+		/**
+		 * @brief Get value in bytes
+		 * 
+		 * @return intmax_t 
+		 */
+		void set_rounding_method(RoundingMethod method) {
+			rounding_method_ = method;
+		}
+		intmax_t get(void) const {
+			return round(double(bytes_) * fraction_);
+		}
+		double get_fraction(void) const {
+			return fraction_;
+		}
+		void set_fraction(double fraction) {
+			fraction_ = fraction;
 		}
 	};
 	

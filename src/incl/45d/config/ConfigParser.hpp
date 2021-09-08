@@ -261,7 +261,7 @@ namespace ffd {
 				reset_subsection();
 				return fallback;
 			}
-			T result = ffd::ConfigParser::get<T>(key, fallback);
+			T result = get<T>(key, fallback);
 			reset_subsection();
 			return result;
 		}
@@ -295,7 +295,7 @@ namespace ffd {
 				else
 					return T();
 			}
-			T result = ffd::ConfigParser::get<T>(key, fail_flag);
+			T result = get<T>(key, fail_flag);
 			reset_subsection();
 			return result;
 		}
@@ -384,7 +384,7 @@ namespace ffd {
 			if (guarded_)
 				throw(ffd::ConfigGuardException("Cannot call get_from while ConfigSubsectionGuard is in scope"));
 			set_subsection(section);
-			Quota result = ffd::ConfigParser::get_quota(key, max);
+			Quota result = get_quota(key, max);
 			reset_subsection();
 			return result;
 		}
@@ -411,7 +411,7 @@ namespace ffd {
 				reset_subsection();
 				return fallback;
 			}
-			Quota result = ffd::ConfigParser::get_quota(key, max, fallback);
+			Quota result = get_quota(key, max, fallback);
 			reset_subsection();
 			return result;
 		}
@@ -438,7 +438,7 @@ namespace ffd {
 				reset_subsection();
 				return Quota();
 			}
-			Quota result = ffd::ConfigParser::get_quota(key, max, fail_flag);
+			Quota result = get_quota(key, max, fail_flag);
 			reset_subsection();
 			return result;
 		}

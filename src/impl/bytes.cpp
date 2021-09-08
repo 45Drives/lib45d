@@ -28,7 +28,7 @@ ffd::Bytes::Bytes(const std::string &str) {
 void ffd::Bytes::set(const std::string &str) {
 	double val;
 	std::smatch m;
-	if (!regex_search(str, m, std::regex("^(-?)\\s*(\\d+\\.?\\d*)\\s*([kKmMgGtTpPeEzZyY]?)(i?)[bB]$"))){
+	if (!regex_search(str, m, std::regex("^(-?)\\s*(\\d+\\.?\\d*)\\s*([kKmMgGtTpPeEzZyY]?)(i?)[bB]\\s*$"))){
 		throw(ffd::ByteParseException("Failed to parse string as bytes: " + str));
 	}
 	int sign = (m.str(1).empty()) ? 1 : -1;
@@ -86,7 +86,7 @@ std::string ffd::Bytes::get_str(ffd::Bytes::PrefixType prefix_type, int precisio
 	const int N_PREFIXES = 9;
 	const char prefixes[N_PREFIXES] = {'\0', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
 	int sign = 1;
-	uintmax_t bytes = bytes_;
+	uintmax_t bytes = get();
 	if (bytes_ < 0) {
 		sign = -1;
 		bytes = -bytes;

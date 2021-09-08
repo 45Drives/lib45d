@@ -1,4 +1,10 @@
-TEST_SUITES = $(shell find . -type d)
+TEST_SUITES = $(wildcard */.)
 
-$(TEST_SUITES):
+$(TEST_SUITES): FORCE
 	$(MAKE) -C $@
+
+clean:
+	for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE clean; done
+
+FORCE:
+

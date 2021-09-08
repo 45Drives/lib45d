@@ -87,12 +87,12 @@ std::string ffd::Bytes::get_str(ffd::Bytes::PrefixType prefix_type, int precisio
 	const char prefixes[N_PREFIXES] = {'\0', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
 	int sign = 1;
 	uintmax_t bytes = get();
+	if(bytes == 0) return "0 B";
 	if (bytes_ < 0) {
 		sign = -1;
 		bytes = -bytes;
 	}
 	std::stringstream formatted_ss;
-	if(bytes_ == 0) return "0 B";
 	double base = (prefix_type == ffd::Bytes::PrefixType::BINARY) ? 1024.0 : 1000;
 	int prefix_ind = std::min(int(log(bytes) / log(base)), N_PREFIXES - 1);
 	double p = pow(base, prefix_ind);

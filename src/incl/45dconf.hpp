@@ -139,7 +139,7 @@ namespace ffd {
 		 * 
 		 * @param other Bytes to be copied
 		 */
-		Bytes(const Bytes &other) : bytes_(other.get()) {}
+		Bytes(const Bytes &other) : bytes_(other.bytes_) {}
 		/**
 		 * @brief Move constructor
 		 * 
@@ -175,7 +175,7 @@ namespace ffd {
 		 * 
 		 * @return intmax_t 
 		 */
-		intmax_t get(void) const {
+		virtual intmax_t get(void) const {
 			return bytes_;
 		}
 		/**
@@ -246,22 +246,25 @@ namespace ffd {
 	 * 
 	 */
 	class Quota : public Bytes {
+	public:
 		/**
-		 * @brief 
+		 * @brief Rounding method to use when reporing bytes
 		 * 
 		 */
 		enum RoundingMethod {NEAREST, DOWN, UP};
 	private:
 		double fraction_;
 		RoundingMethod rounding_method_;
-		inline intmax_t round(double x) const {
+		intmax_t round(double x) const {
 			switch (rounding_method_) {
 				case RoundingMethod::NEAREST:
-					return int(::round(x));
+					return intmax_t(::round(x));
 				case RoundingMethod::DOWN:
-					return int(x);
+					return intmax_t(x);
 				case RoundingMethod::UP:
-					return int(ceil(x));
+					return intmax_t(ceil(x));
+				default:
+					return intmax_t(::round(x));
 			}
 		}
 		void parse_fraction(const std::string &str);
@@ -272,7 +275,7 @@ namespace ffd {
 		 * @param max Bytes to set maximum amount
 		 * @param str String to be parsed into fraction
 		 */
-		Quota(const Bytes &max, std::string &str, RoundingMethod method = NEAREST);
+		Quota(const Bytes &max, const std::string &str, RoundingMethod method = NEAREST);
 		/**
 		 * @brief Construct a new Quota object
 		 * 
@@ -321,7 +324,7 @@ namespace ffd {
 		 */
 		Quota &operator=(Quota &&other) {
 			bytes_ = std::move(other.bytes_);
-			bytes_ = std::move(other.fraction_);
+			fraction_ = std::move(other.fraction_);
 			rounding_method_ = std::move(other.rounding_method_);
 			return *this;
 		}
@@ -329,20 +332,30 @@ namespace ffd {
 		 * @brief Destroy the Quota object
 		 */
 		~Quota() = default;
+		void set_rounding_method(RoundingMethod method) {
+			rounding_method_ = method;
+		}
 		/**
 		 * @brief Get value in bytes
 		 * 
 		 * @return intmax_t 
 		 */
-		void set_rounding_method(RoundingMethod method) {
-			rounding_method_ = method;
-		}
 		intmax_t get(void) const {
 			return round(double(bytes_) * fraction_);
 		}
+		/**
+		 * @brief Get just the fraction as a double
+		 * 
+		 * @return double 
+		 */
 		double get_fraction(void) const {
 			return fraction_;
 		}
+		/**
+		 * @brief Set the fraction
+		 * 
+		 * @param fraction new value for fraction_
+		 */
 		void set_fraction(double fraction) {
 			fraction_ = fraction;
 		}
@@ -525,7 +538,7 @@ namespace ffd {
 		 */
 		std::string dump_str(void) const;
 		/**
-		 * @brief Adapter for ffd::get(). This can throw. Use this in a try...catch block.
+		 * @brief Get value from config map using ffd::get(). This can throw. Use this in a try...catch block.
 		 * 
 		 * @code
 		try {
@@ -561,7 +574,7 @@ namespace ffd {
 				// silently return fallback
 			} catch (const boost::bad_lexical_cast &) {
 				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
-			} catch (const ByteParseException &e) {
+			} catch (const ConfigException &e) {
 				std::cerr << e.what() << std::endl;
 			} catch (const std::exception &e) {
 				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
@@ -593,7 +606,7 @@ namespace ffd {
 				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
 			} catch (const std::out_of_range &) {
 				std::cerr << "Option not in config: " << key << std::endl;
-			} catch (const ByteParseException &e) {
+			} catch (const ConfigException &e) {
 				std::cerr << e.what() << std::endl;
 			} catch (const std::exception &e) {
 				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
@@ -621,8 +634,9 @@ namespace ffd {
 			if (guarded_)
 				throw(ffd::ConfigGuardException("Cannot call get_from while ConfigSubsectionGuard is in scope"));
 			set_subsection(section);
-			return ffd::get<T>(key, config_map_ptr_);
+			T result = ffd::get<T>(key, config_map_ptr_);
 			reset_subsection();
+			return result;
 		}
 		/**
 		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,const T&) const noexcept, return fallback if the subsection DNE
@@ -648,8 +662,9 @@ namespace ffd {
 				reset_subsection();
 				return fallback;
 			}
-			return ffd::ConfigParser::get<T>(key, fallback);
+			T result = ffd::ConfigParser::get<T>(key, fallback);
 			reset_subsection();
+			return result;
 		}
 		/**
 		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,bool*) const noexcept, set fail_flag if the subsection DNE
@@ -673,7 +688,7 @@ namespace ffd {
 			try {
 				set_subsection(section);
 			} catch (const std::out_of_range &) {
-				std::cerr << "Section not in config." << std::endl;
+				std::cerr << "Section not in config: " << section << std::endl;
 				*fail_flag = true;
 				reset_subsection();
 				if (std::is_fundamental<T>::value)
@@ -681,8 +696,152 @@ namespace ffd {
 				else
 					return T();
 			}
-			return ffd::ConfigParser::get<T>(key, fail_flag);
+			T result = ffd::ConfigParser::get<T>(key, fail_flag);
 			reset_subsection();
+			return result;
+		}
+		/**
+		 * @brief Get quota from config map using ffd::get(). This can throw. Use this in a try...catch block.
+		 * 
+		 * @code
+		ffd::Bytes total(1024);
+		try {
+			ffd::Quota quota = get("Quota", total);
+		} catch (const ffd::ConfigException &err) {
+			std::cerr << err.what();
+		}
+		 * @endcode
+		 * @param key Key to index config_map_
+		 * @param max Maximum number of bytes
+		 * @return ffd::Quota Value returned from config
+		 */
+		Quota get_quota(const std::string &key, const Bytes &max) const {
+			return Quota(max, get<std::string>(key));
+		}
+		/**
+		 * @brief Try to get Quota from config, default to fallback if fails. Guaranteed no-throw.
+		 * 
+		 * @param key Key to index config_map_
+		 * @param max Maximum number of bytes
+		 * @param fallback Default value to return if ffd::get() fails.
+		 * @return T Value returned from config
+		 */
+		Quota get_quota(const std::string &key, const Bytes &max, const Quota &fallback) const noexcept {
+			try {
+				return get_quota(key, max);
+			} catch (const std::out_of_range &) {
+				// silently return fallback
+			} catch (const boost::bad_lexical_cast &) {
+				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
+			} catch (const ConfigException &e) {
+				std::cerr << e.what() << std::endl;
+			} catch (const std::exception &e) {
+				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+			} catch (const boost::exception &e) {
+				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+			} catch ( ... ) {
+				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
+			}
+			return fallback;
+		}
+		/**
+		 * @brief Try to get Quota from config. If ffd::get fails,
+		 * return Quota(void) and set fail_flag. Guaranteed no-throw. Prints message
+		 * to std::cerr to explain error.
+		 * 
+		 * @param key Key to index config_map_
+		 * @param max Maximum number of bytes
+		 * @param fail_flag Pointer to flag to set if ffd::get() fails
+		 * @return T Value returned from config
+		 */
+		Quota get_quota(const std::string &key, const Bytes &max, bool *fail_flag) const noexcept {
+			try {
+				return get_quota(key, max);
+			} catch (const boost::bad_lexical_cast &) {
+				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
+			} catch (const std::out_of_range &) {
+				std::cerr << "Option not in config: " << key << std::endl;
+			} catch (const ConfigException &e) {
+				std::cerr << e.what() << std::endl;
+			} catch (const std::exception &e) {
+				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+			} catch (const boost::exception &e) {
+				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+			} catch ( ... ) {
+				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
+			}
+			*fail_flag = true;
+			return Quota();
+		}
+		/**
+		 * @brief Adapter for ffd::get(). Sets config_map_ptr_ to address of sub config with name section. This can throw.
+		 * 
+		 * @param section Subsection heading from config
+		 * @param key Key to index config_map_
+		 * @param max Maximum number of bytes
+		 * @return Quota Value returned from config
+		 */
+		Quota get_quota_from(const std::string &section, const std::string &key, const Bytes &max) {
+			if (guarded_)
+				throw(ffd::ConfigGuardException("Cannot call get_from while ConfigSubsectionGuard is in scope"));
+			set_subsection(section);
+			Quota result = ffd::ConfigParser::get_quota(key, max);
+			reset_subsection();
+			return result;
+		}
+		/**
+		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,const T&) const noexcept, return fallback if the subsection DNE
+		 * 
+		 * Example:
+		 * @include tests/subsections/subsections.cpp
+		 * 
+		 * @param section Config section name to get value from
+		 * @param key Key identifying value in config
+		 * @param max Maximum number of bytes
+		 * @param fallback Returned if error or DNE
+		 * @return Quota Value returned from config or fallback
+		 */
+		Quota get_quota_from(const std::string &section, const std::string &key, const Bytes &max, const Quota &fallback) noexcept {
+			if (guarded_) {
+				std::cerr << "Cannot call get_from while ConfigSubsectionGuard is in scope" << std::endl;
+				return fallback;
+			}
+			try {
+				set_subsection(section);
+			} catch (const std::out_of_range &) {
+				reset_subsection();
+				return fallback;
+			}
+			Quota result = ffd::ConfigParser::get_quota(key, max, fallback);
+			reset_subsection();
+			return result;
+		}
+		/**
+		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,bool*) const noexcept, set fail_flag if the subsection DNE
+		 * 
+		 * @param section Config section name to get value from
+		 * @param key Key identifying value in config
+		 * @param max Maximum number of bytes
+		 * @param fail_flag Pointer to flag to be set if error or DNE
+		 * @return Quota Value returned from config or T() or 0
+		 */
+		Quota get_quota_from(const std::string &section, const std::string &key, const Bytes &max, bool *fail_flag) noexcept {
+			if (guarded_) {
+				std::cerr << "Cannot call get_from while ConfigSubsectionGuard is in scope" << std::endl;
+				*fail_flag = true;
+				return Quota();
+			}
+			try {
+				set_subsection(section);
+			} catch (const std::out_of_range &) {
+				std::cerr << "Section not in config." << std::endl;
+				*fail_flag = true;
+				reset_subsection();
+				return Quota();
+			}
+			Quota result = ffd::ConfigParser::get_quota(key, max, fail_flag);
+			reset_subsection();
+			return result;
 		}
 	};
 

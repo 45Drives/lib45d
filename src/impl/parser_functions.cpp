@@ -50,10 +50,18 @@ inline bool check_if_heading(const std::string &record) {
 	return true; // section header found
 }
 
+inline bool check_if_entry(const std::string &record) {
+	std::string::size_type start = record.find_first_not_of(" \t");
+	std::string::size_type equals = record.find_first_of('=');
+	return start != std::string::npos
+		&& equals != std::string::npos
+		&& equals > start;
+}
+
 l::RecordType l::check_record_type(const std::string &record) {
 	if (check_if_heading(record))
 		return l::RecordType::HEADING;
-	if (record.find('=') != std::string::npos)
+	if (check_if_entry(record))
 		return l::RecordType::ENTRY;
 	std::string::const_iterator itr = record.begin();
 	while (itr != record.end() && (*itr == ' ' || *itr == '\t'))

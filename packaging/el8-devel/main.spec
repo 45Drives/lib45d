@@ -25,12 +25,9 @@ make dev
 %install
 make DESTDIR=%{buildroot} DEVEL=1 install
 
-%post
-ldconfig -v
-
 %files
-/opt/45drives/*
-/etc/ld.so.conf.d/45drives.conf
+/usr/include/45d/*
+/usr/lib/*
 
 %changelog
 * Thu Sep 09 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.0-1

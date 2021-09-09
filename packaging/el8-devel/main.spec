@@ -8,6 +8,7 @@ License: ::package_licence::
 URL: ::package_url::
 Source0: %{name}-%{version}.tar.gz
 BuildArch: ::package_architecture_el::
+Requires: boost-devel
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 

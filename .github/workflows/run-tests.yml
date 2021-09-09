@@ -1,4 +1,4 @@
-name: run-tests
+name: Tests
 
 # Trigger this when a pull request is merged (which implies pushing to master).
 on:

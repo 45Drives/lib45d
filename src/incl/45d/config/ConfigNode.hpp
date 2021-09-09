@@ -38,12 +38,12 @@ namespace ffd {
 		 * @param value String containing config value or subsection header
 		 * @param sub_map nullptr or pointer to an std::unordered_map<std::string, ffd::ConfigNode> if subsection
 		 */
-		ConfigNode(std::string value, std::unordered_map<std::string, ConfigNode> *sub_map) : is_copy_(false), value_(value), sub_map_(sub_map) {}
+		ConfigNode(std::string value, std::unordered_map<std::string, ConfigNode> *sub_map) : value_(value), sub_map_(sub_map), is_copy_(false) {}
 		/**
 		 * @brief Construct a new empty ConfigNode object
 		 * 
 		 */
-		ConfigNode(void) : is_copy_(false), value_(""), sub_map_(nullptr) {}
+		ConfigNode(void) : value_(""), sub_map_(nullptr), is_copy_(false) {}
 		/**
 		 * @brief Copy construct a new ConfigNode object
 		 * 
@@ -52,9 +52,9 @@ namespace ffd {
 		 * @param other ConfigNode to be copied
 		 */
 		ConfigNode(const ConfigNode &other)
-			: is_copy_(true)
-			, value_(other.value_)
-			, sub_map_(other.sub_map_) {}
+			: value_(other.value_)
+			, sub_map_(other.sub_map_)
+			, is_copy_(true) {}
 		/**
 		 * @brief Move constructor
 		 * 
@@ -63,9 +63,9 @@ namespace ffd {
 		 * @param other ConfigNode to be moved
 		 */
 		ConfigNode(ConfigNode &&other)
-			: is_copy_(false)
-			, value_(std::move(other.value_))
-			, sub_map_(std::move(other.sub_map_)) {
+			: value_(std::move(other.value_))
+			, sub_map_(std::move(other.sub_map_))
+			, is_copy_(false) {
 			other.sub_map_ = nullptr;
 		}
 		/**
@@ -77,9 +77,9 @@ namespace ffd {
 		 * @return ConfigNode& *this
 		 */
 		ConfigNode &operator=(ConfigNode &&other) {
-			is_copy_ = false;
 			value_ = std::move(other.value_);
 			sub_map_ = std::move(other.sub_map_);
+			is_copy_ = false;
 			other.sub_map_ = nullptr;
 			return *this;
 		}

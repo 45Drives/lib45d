@@ -29,6 +29,12 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/exception/diagnostic_information.hpp>
 
+/**
+ * @brief Namespace for internal use, not to be exposed to ffd
+ * 
+ * @private
+ * 
+ */
 namespace ffd_internal {
 	/**
 	 * @brief Get config entry as type T from configuration map
@@ -53,7 +59,7 @@ namespace ffd {
 	 * @brief Main configuration parser class to inherit from in your code
 	 * 
 	 * Example usage:
-	 * @include tests/simple/simple.cpp
+	 * @include tests/config/simple/simple.cpp
 	 * 
 	 */
 	class ConfigParser {
@@ -99,7 +105,7 @@ namespace ffd {
 		 * @brief Try to get value from config, default to fallback if fails. Guaranteed no-throw.
 		 * 
 		 * Example:
-		 * @include tests/fallback/fallback.cpp
+		 * @include tests/config/fallback/fallback.cpp
 		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
@@ -131,7 +137,7 @@ namespace ffd {
 		 * to std::cerr to explain error.
 		 * 
 		 * Example:
-		 * @include tests/simple/simple.cpp
+		 * @include tests/config/simple/simple.cpp
 		 * 
 		 * @tparam T Type of variable to return
 		 * @param key Key to index config_map_
@@ -182,7 +188,7 @@ namespace ffd {
 		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,const T&) const noexcept, return fallback if the subsection DNE
 		 * 
 		 * Example:
-		 * @include tests/subsections/subsections.cpp
+		 * @include tests/config/subsections/subsections.cpp
 		 * 
 		 * @tparam T Type to return
 		 * @param section Config section name to get value from
@@ -333,7 +339,7 @@ namespace ffd {
 		 * @brief Get value from config subsection using ConfigParser::get(const std::string&,const T&) const noexcept, return fallback if the subsection DNE
 		 * 
 		 * Example:
-		 * @include tests/subsections/subsections.cpp
+		 * @include tests/config/subsections/subsections.cpp
 		 * 
 		 * @param section Config section name to get value from
 		 * @param key Key identifying value in config

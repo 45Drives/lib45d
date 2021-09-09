@@ -44,7 +44,7 @@ namespace ffd {
 	}
 	\endcode
 	Full Example:
-	@include tests/dynamic_subsections/dynamic_subsections.cpp
+	@include tests/config/dynamic_subsections/dynamic_subsections.cpp
 	 */
 	class ConfigSubsectionGuard {
 	public:

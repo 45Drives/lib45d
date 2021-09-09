@@ -1,5 +1,11 @@
 /**
-@mainpage lib45dconf
+@mainpage lib45d 45Drives C++ Library
+@section doc_sections Documentation for specific parts:
+    - @ref config_mainpage
+    - @ref ffd::Bytes
+    - @ref ffd::Quota
+
+@page config_mainpage Configuration Parser
 
 @section doc_sec Documentation
 Class to inherit: @ref ffd::ConfigParser
@@ -10,12 +16,12 @@ and call ffd::ConfigParser::get() to initialize the config class's members.
 
 @section examp_sec Example Usage
 @subsection fail_flag Fail Flag
-@include tests/simple/simple.cpp
+@include tests/config/simple/simple.cpp
 @subsection fallback Fallback Values
-@include tests/fallback/fallback.cpp
+@include tests/config/fallback/fallback.cpp
 @subsection subsection_static Static Subsections
-@include tests/subsections/subsections.cpp
+@include tests/config/subsections/subsections.cpp
 @subsection subsection_dynamic Dynamic Subsections
 using @ref ffd::ConfigSubsectionGuard
-@include tests/dynamic_subsections/dynamic_subsections.cpp
+@include tests/config/dynamic_subsections/dynamic_subsections.cpp
  */

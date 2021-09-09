@@ -10,15 +10,15 @@ CFLAGS = -g -std=c++11 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
 LIBS =-static -L$(LIB_LOCATION)/dist/static -l45d
 
 all: print-message $(TEST_TARGETS) $(TEST_OUTPUTS)
-	@echo "################################"
-	@echo "# CONFIG PARSER TESTS COMPLETE"
-	@echo "################################"
+	@echo " #"
+	@echo " # CONFIG PARSER TESTS COMPLETE"
+	@echo " ################################"
 test: all
 
 print-message:
-	@echo "################################"
-	@echo "# RUNNING CONFIG PARSER TESTS"
-	@echo "################################"
+	@echo " ################################"
+	@echo " # RUNNING CONFIG PARSER TESTS"
+	@echo " #"
 
 %.test: %.cpp $(LIB_LOCATION)/dist/static/lib45d.a
 	mkdir -p $(dir $@)

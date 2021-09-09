@@ -1,14 +1,14 @@
 TEST_SUITES := $(wildcard */.)
 
 all: print-message $(TEST_SUITES)
-	@echo "################################"
+	@echo "#"
 	@echo "# TESTS COMPLETE"
 	@echo "################################"
 
 print-message:
 	@echo "################################"
 	@echo "# RUNNING TESTS"
-	@echo "################################"
+	@echo "#"
 
 $(TEST_SUITES): FORCE
 	@$(MAKE) -C $@ --no-print-directory

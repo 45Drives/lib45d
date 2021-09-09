@@ -1,4 +1,5 @@
-![build and test status](https://github.com/45drives/lib45d/actions/workflows/run-tests.yml/badge.svg)
+![build test status](https://github.com/45drives/lib45d/actions/workflows/test-build.yml/badge.svg)
+![runtime test status](https://github.com/45drives/lib45d/actions/workflows/test-runtime.yml/badge.svg)
 
 # lib45d
 45Drives C++ Library

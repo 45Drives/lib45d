@@ -1,4 +1,4 @@
-name: Tests
+name: Build
 
 # Trigger this when a pull request is merged (which implies pushing to master).
 on:
@@ -13,4 +13,6 @@ jobs:
     - name: Git Checkout
       uses: actions/checkout@v2
     - name: Run Tests
-      run:  make test
+      run:  make dev
+    - name: Cleanup
+      run: echo rm -rf "${{ github.workspace }}"

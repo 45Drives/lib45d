@@ -1,3 +1,3 @@
-## lib45dconf 0.2.0-1
+## lib45d 0.2.0-1
 
-* Rename 45d_conf to 45dconf for consistency
+* Split out header file into multiple files and make library more generic.

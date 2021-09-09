@@ -2,7 +2,7 @@
  * @code
  */
 
-#include "45dconf.hpp"
+#include <45d/config/ConfigParser.hpp>
 #include <cassert>
 #include <iostream>
 

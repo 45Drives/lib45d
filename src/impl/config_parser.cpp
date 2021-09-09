@@ -1,24 +1,26 @@
 /*
 	Copyright (C) 2021 Joshua Boudreau <jboudreau@45drives.com>
 
-	This file is part of lib45dconf.
+	This file is part of lib45d.
 
-	lib45dconf is free software: you can redistribute it and/or modify
+	lib45d is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
 
-	lib45dconf is distributed in the hope that it will be useful,
+	lib45d is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with lib45dconf.  If not, see <https://www.gnu.org/licenses/>.
+	along with lib45d.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#include "45dconf.hpp"
-#include "parser_functions.hpp"
+#include "45d/config/ConfigParser.hpp"
+#include "local/parser_functions.hpp"
+
+#include <fstream>
 
 ffd::ConfigParser::ConfigParser(std::string path) : guarded_(false), config_map_ptr_(&config_map_), path_(path) {
 	std::ifstream file(path_);
@@ -87,9 +89,9 @@ std::string ffd::ConfigParser::dump_str(void) const {
 }
 
 template<>
-bool ffd::get<bool>(const std::string &key, const std::unordered_map<std::string, ConfigNode> *config_map) {
+bool ffd_internal::get<bool>(const std::string &key, const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
 	std::stringstream ss;
-	ConfigNode node = config_map->at(key);
+	ffd::ConfigNode node = config_map->at(key);
 	ss.str(node.value_);
 	bool result;
 	ss >> std::boolalpha >> result;

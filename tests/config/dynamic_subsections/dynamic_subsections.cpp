@@ -1,7 +1,8 @@
 /**
  * @code
  */
-#include "45dconf.hpp"
+#include <45d/config/ConfigParser.hpp>
+#include <45d/config/ConfigSubsectionGuard.hpp>
 #include <cassert>
 #include <iostream>
 #include <vector>

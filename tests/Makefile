@@ -1,27 +1,20 @@
-TEST_SOURCES = $(shell find . -name *.cpp)
-TEST_TARGETS = $(patsubst %.cpp, %.test, $(TEST_SOURCES))
-TEST_INPUTS = $(shell find . -name *.conf)
-TEST_OUTPUTS = $(patsubst %.conf, %.out, $(TEST_INPUTS))
+TEST_SUITES := $(wildcard */.)
 
-CC = g++
-CFLAGS = -g -std=c++11 -Wall -Wextra -I../src/incl
-LIBS =-static -L../dist/static -l45dconf
+all: print-message $(TEST_SUITES)
+	@echo "#"
+	@echo "# TESTS COMPLETE"
+	@echo "################################"
 
-all: $(TEST_TARGETS)
+print-message:
+	@echo "################################"
+	@echo "# RUNNING TESTS"
+	@echo "#"
 
-%.test: %.cpp ../dist/static/lib45dconf.a
-	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $< $(LIBS) -o $@
-
-../dist/static/lib45dconf.a:
-	cd .. && make static && cd -
-
-%.out: %.conf
-	@$(shell find $(dir $@) -name *.test) $< > $@ 2>&1
-	@diff $@ $(patsubst %.out, %.gold, $@) && echo $@ PASSED || echo $@ FAILED
-
-test: clean
-test: all $(TEST_OUTPUTS)
+$(TEST_SUITES): FORCE
+	@$(MAKE) -C $@ --no-print-directory
 
 clean:
-	-rm -f $(TEST_TARGETS) $(TEST_OUTPUTS)
+	for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE clean; done
+
+FORCE:
+

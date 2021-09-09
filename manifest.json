@@ -1,12 +1,12 @@
 {
     "__version": "45D-R1",
-    "name": "lib45dconf",
-    "title": "lib45dconf",
+    "name": "lib45d",
+    "title": "lib45d",
     "prerelease": true,
     "version": "0.2.0",
     "buildVersion": "1",
     "author": "Joshua Boudreau <jboudreau@45drives.com>",
-    "url": "https://github.com/45Drives/lib45dconf",
+    "url": "https://github.com/45Drives/lib45d",
     "category": "utils",
     "priority": "optional",
     "licence": "GPL-3.0+",
@@ -16,8 +16,8 @@
         "arch": "x86_64"
     },
     "description": {
-        "long": "C++ INI Style Configuration Parser",
-        "short": "C++ INI Style Configuration Parser"
+        "long": "C++ Libraries and Headers for 45Drives",
+        "short": "C++ Libraries and Headers for 45Drives"
     },
     "defaults": {
         "urgency": "medium"

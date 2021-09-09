@@ -25,7 +25,7 @@
 
 namespace ffd {
     /**
-	 * @brief Struct for config_map_ entries
+	 * @brief Class for config_map_ entries
 	 * 
 	 */
 	class ConfigNode {

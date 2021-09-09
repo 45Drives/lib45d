@@ -11,7 +11,7 @@ print-message:
 	@echo "################################"
 
 $(TEST_SUITES): FORCE
-	$(MAKE) -C $@
+	@$(MAKE) -C $@ --no-print-directory
 
 clean:
 	for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE clean; done

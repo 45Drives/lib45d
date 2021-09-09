@@ -22,8 +22,10 @@ print-message:
 %.test: %.cpp $(LIB_LOCATION)/dist/static/lib45d.a
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
-%.out: %.test
-	@echo -n "$<: "  && ./$< > $@ 2>&1 && echo PASSED || ( echo FAILED && exit 1 )
+%.out: %.test FORCE
+	@echo -n "$<: " && ./$< > $@ 2>&1 && echo PASSED || ( echo FAILED && cat $@ && exit 1 )
 
 clean:
 	-rm -f $(TEST_TARGETS) $(TEST_OUTPUTS)
+
+FORCE:

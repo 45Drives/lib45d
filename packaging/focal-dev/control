@@ -9,4 +9,4 @@ Homepage: ::package_url::
 Package: ::package_name::-dev
 Architecture: ::package_architecture_deb::
 Description: ::package_description_short::
-Depends: libboost-dev
+Depends: ::package_dependencies_deb_focal_dev::

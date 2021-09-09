@@ -25,7 +25,6 @@ make
 make DESTDIR=%{buildroot} install
 
 %files
-/usr/include/45d/*
 /usr/lib/*
 
 %changelog

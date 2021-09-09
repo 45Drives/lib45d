@@ -155,7 +155,7 @@ namespace ffd {
 		friend Bytes operator/(const Bytes &a, int b) {
 			return Bytes(a.get() / b);
 		}
-		friend Bytes operator==(const Bytes &a, const Bytes &b) {
+		friend bool operator==(const Bytes &a, const Bytes &b) {
 			return a.get() == b.get();
 		}
 	protected:

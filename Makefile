@@ -81,4 +81,4 @@ docs: api-doc dev-doc
 	mv doc/html $@
 
 clean-docs:
-	-rm -rf doc/html
+	-rm -rf api-doc dev-doc

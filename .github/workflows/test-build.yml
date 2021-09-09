@@ -15,4 +15,4 @@ jobs:
     - name: Run Tests
       run:  make dev
     - name: Cleanup
-      run: echo rm -rf "${{ github.workspace }}"
+      run: rm -rf "${{ github.workspace }}"

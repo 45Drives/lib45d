@@ -31,4 +31,4 @@ jobs:
         echo ""
         echo "GitHub pages branch: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/tree/gh-pages"
     - name: Cleanup
-      run: echo rm -rf "${{ github.workspace }}"
+      run: rm -rf "${{ github.workspace }}"

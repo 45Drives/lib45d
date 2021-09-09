@@ -1,3 +1,3 @@
-## lib45d 0.2.0-1
+## lib45d 0.2.0-2
 
-* Split out header file into multiple files and make library more generic.
+* Set up conflicts between regular and devel packages.

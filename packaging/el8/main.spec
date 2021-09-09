@@ -29,6 +29,8 @@ make DESTDIR=%{buildroot} install
 /usr/lib/*
 
 %changelog
+* Thu Sep 09 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.0-2
+- Set up conflicts between regular and devel packages.
 * Thu Sep 09 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.0-1
 - Split out header file into multiple files and make library more generic.
 * Thu Aug 05 2021 Joshua Boudreau <jboudreau@45drives.com> 0.1.0-2

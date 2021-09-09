@@ -1,3 +1,3 @@
-## lib45dconf 0.1.0-2
+## lib45d 0.2.0-1
 
-* Fix devel packaging.
+* Split out header file into multiple files and make library more generic.

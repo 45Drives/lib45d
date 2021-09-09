@@ -10,6 +10,7 @@ depends=('boost-libs')
 makedepends=('boost-libs')
 optdepends=()
 source=("$pkgname-$pkgver.tar.gz")
+conflicts=("lib45d")
 
 build() {
     cd "$srcdir/$pkgname-$pkgver"

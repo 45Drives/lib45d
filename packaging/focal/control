@@ -9,3 +9,4 @@ Homepage: ::package_url::
 Package: ::package_name::
 Architecture: ::package_architecture_deb::
 Description: ::package_description_short::
+Conflicts: lib45d-dev

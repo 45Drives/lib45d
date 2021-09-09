@@ -9,6 +9,7 @@ URL: ::package_url::
 Source0: %{name}-%{version}.tar.gz
 BuildArch: ::package_architecture_el::
 Requires: ::package_dependencies_el_el8_devel::
+Conflicts: lib45d
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 

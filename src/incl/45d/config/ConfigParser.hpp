@@ -62,65 +62,6 @@ namespace ffd {
 		 * @ref ConfigSubsectionGuard
 		 */
 		friend class ConfigSubsectionGuard;
-	private:
-		/**
-		 * @brief true if a ConfigSubsectionGuard is in scope
-		 * Set in ConfigSubsectionGuard::ConfigSubsectionGuard()
-		 * Cleared in ConfigSubsectionGuard::~ConfigSubsectionGuard()
-		 */
-		bool guarded_;
-		std::unordered_map<std::string, ConfigNode> *config_map_ptr_; ///< Pointer to current config map
-		std::string path_; ///< Path to config file
-		std::unordered_map<std::string, ConfigNode> config_map_; ///< Map of config keys (std::string) to values (ConfigNode)
-		/**
-		 * @brief Iterate each line of config file and determine how to parse with l::check_record_type()
-		 * 
-		| Case | Function Called |
-		| ---- | --------------- |
-		| l::RecordType::UNK | prints error message and continues |
-		| l::RecordType::ENTRY | ConfigParser::parse_entry() |
-		| l::RecordType::HEADING | ConfigParser::parse_heading() |
-		| l::RecordType::EMPTY | continues |
-		 * 
-		 * @param file Opened file stream for config file
-		 */
-		void parse(std::ifstream &file);
-		/**
-		 * @brief Extract value from config line and insert ConfigNode into config_map_
-		 * 
-		 * @param line String containing some form of "key = value"
-		 */
-		void parse_entry(const std::string &line);
-		/**
-		 * @brief Create new subconfig
-		 * 
-		 * construct new ConfigNode containing name and new config map,
-		 * assign config_map_ptr_ to address of new config map,
-		 * place into global config_map_,
-		 * push address of new ConfigNode into sub_confs_
-		 * 
-		 * @param line String containing some form of "[Section Name]"
-		 */
-		void parse_heading(const std::string &line);
-		/**
-		 * @brief Update config_map_ptr_ to the subconfig map for section
-		 * 
-		 * @param section The config section to set to
-		 */
-		void set_subsection(const std::string &section) {
-			config_map_ptr_ = config_map_.at(section).sub_map_;
-			if(config_map_ptr_ == nullptr)
-				throw std::out_of_range("ConfigNode has no sub_map_");
-		}
-		/**
-		 * @brief Set config_map_ptr_ back to the address of config_map_
-		 * 
-		 */
-		void reset_subsection(void) noexcept {
-			config_map_ptr_ = &config_map_;
-		}
-	protected:
-		std::vector<ConfigNode *> sub_confs_; ///< Vector of config subsections
 	public:
 		/**
 		 * @brief Construct a new Config Parser object
@@ -441,6 +382,65 @@ namespace ffd {
 			Quota result = get_quota(key, max, fail_flag);
 			reset_subsection();
 			return result;
+		}
+	protected:
+		std::vector<ConfigNode *> sub_confs_; ///< Vector of config subsections
+	private:
+		/**
+		 * @brief true if a ConfigSubsectionGuard is in scope
+		 * Set in ConfigSubsectionGuard::ConfigSubsectionGuard()
+		 * Cleared in ConfigSubsectionGuard::~ConfigSubsectionGuard()
+		 */
+		bool guarded_;
+		std::unordered_map<std::string, ConfigNode> *config_map_ptr_; ///< Pointer to current config map
+		std::string path_; ///< Path to config file
+		std::unordered_map<std::string, ConfigNode> config_map_; ///< Map of config keys (std::string) to values (ConfigNode)
+		/**
+		 * @brief Iterate each line of config file and determine how to parse with l::check_record_type()
+		 * 
+		| Case | Function Called |
+		| ---- | --------------- |
+		| l::RecordType::UNK | prints error message and continues |
+		| l::RecordType::ENTRY | ConfigParser::parse_entry() |
+		| l::RecordType::HEADING | ConfigParser::parse_heading() |
+		| l::RecordType::EMPTY | continues |
+		 * 
+		 * @param file Opened file stream for config file
+		 */
+		void parse(std::ifstream &file);
+		/**
+		 * @brief Extract value from config line and insert ConfigNode into config_map_
+		 * 
+		 * @param line String containing some form of "key = value"
+		 */
+		void parse_entry(const std::string &line);
+		/**
+		 * @brief Create new subconfig
+		 * 
+		 * construct new ConfigNode containing name and new config map,
+		 * assign config_map_ptr_ to address of new config map,
+		 * place into global config_map_,
+		 * push address of new ConfigNode into sub_confs_
+		 * 
+		 * @param line String containing some form of "[Section Name]"
+		 */
+		void parse_heading(const std::string &line);
+		/**
+		 * @brief Update config_map_ptr_ to the subconfig map for section
+		 * 
+		 * @param section The config section to set to
+		 */
+		void set_subsection(const std::string &section) {
+			config_map_ptr_ = config_map_.at(section).sub_map_;
+			if(config_map_ptr_ == nullptr)
+				throw std::out_of_range("ConfigNode has no sub_map_");
+		}
+		/**
+		 * @brief Set config_map_ptr_ back to the address of config_map_
+		 * 
+		 */
+		void reset_subsection(void) noexcept {
+			config_map_ptr_ = &config_map_;
 		}
 	};
 }

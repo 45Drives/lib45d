@@ -29,8 +29,6 @@ namespace ffd {
 	 * 
 	 */
 	class ConfigNode {
-	private:
-		bool is_copy_; ///< Set in copy constructor to avoid double deletion of *sub_map_
 	public:
 		std::string value_; ///< string from config file after '='
 		std::unordered_map<std::string, ConfigNode> *sub_map_; ///< Pointer to submap for config sections
@@ -94,5 +92,7 @@ namespace ffd {
 			if (sub_map_ && !is_copy_)
 				delete sub_map_;
 		}
+	private:
+		bool is_copy_; ///< Set in copy constructor to avoid double deletion of *sub_map_
 	};
 }

@@ -28,8 +28,6 @@ namespace ffd {
 	 * 
 	 */
 	class ConfigException : public std::exception {
-	private:
-		std::string what_; ///< String containing explanation message
 	public:
 		/**
 		 * @brief Construct a new Exception object
@@ -45,6 +43,8 @@ namespace ffd {
 		const char *what(void) const noexcept {
 			return what_.c_str();
 		}
+	private:
+		std::string what_; ///< String containing explanation message
 	};
 
 	/**

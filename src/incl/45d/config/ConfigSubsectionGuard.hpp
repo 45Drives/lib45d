@@ -47,8 +47,6 @@ namespace ffd {
 	@include tests/dynamic_subsections/dynamic_subsections.cpp
 	 */
 	class ConfigSubsectionGuard {
-	private:
-		ConfigParser &config_; ///< Reference to ConfigParser or inhereting class
 	public:
 		/**
 		 * @brief Construct a new Config Subsection Guard object
@@ -70,5 +68,7 @@ namespace ffd {
 			config_.reset_subsection();
 			config_.guarded_ = false;
 		}
+	private:
+		ConfigParser &config_; ///< Reference to ConfigParser or inhereting class
 	};
 }

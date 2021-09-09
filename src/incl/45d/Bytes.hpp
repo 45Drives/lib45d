@@ -146,14 +146,17 @@ namespace ffd {
 		friend Bytes operator-(const Bytes &a, const Bytes &b) {
 			return Bytes(a.get() - b.get());
 		}
-		friend Bytes operator*(const Bytes &a, int &b) {
+		friend Bytes operator*(const Bytes &a, int b) {
 			return Bytes(a.get() * b);
 		}
 		friend Bytes operator*(int a, const Bytes &b) {
 			return b * a;
 		}
-		friend Bytes operator/(const Bytes &a, int &b) {
+		friend Bytes operator/(const Bytes &a, int b) {
 			return Bytes(a.get() / b);
+		}
+		friend Bytes operator==(const Bytes &a, const Bytes &b) {
+			return a.get() == b.get();
 		}
 	protected:
 		bytes_type bytes_;

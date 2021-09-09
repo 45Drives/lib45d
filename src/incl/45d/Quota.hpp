@@ -29,7 +29,15 @@ namespace ffd {
 	 */
 	class Quota : public Bytes {
 	public:
-		enum RoundingMethod {NEAREST, DOWN, UP}; ///< Rounding method to use when reporing bytes
+		/**
+		 * @brief Rounding method enum
+		 * 
+		 */
+		enum RoundingMethod {
+			NEAREST, ///< Round to nearest whole byte
+			DOWN, ///< Floor
+			UP ///< Ceiling
+		}; 
 		/**
 		 * @brief Construct a new Quota object
 		 * 
@@ -120,9 +128,21 @@ namespace ffd {
 		void set_fraction(double fraction) {
 			fraction_ = fraction;
 		}
+		/**
+		 * @brief Parse str from a percentage to a decimal fraction, assigning it to fraction_.
+		 * 
+		 * @param str 
+		 */
+		void parse_fraction(const std::string &str);
 	private:
-		double fraction_;
-		RoundingMethod rounding_method_;
+		double fraction_; ///< The percent of bytes_ to report with get() and get_str()
+		RoundingMethod rounding_method_; ///< Rounding method to use when reporing bytes
+		/**
+		 * @brief Round a double according to rounding_method_, called by get()
+		 * 
+		 * @param x The number to round, most  likely double(bytes_) * fraction_
+		 * @return bytes_type 
+		 */
 		bytes_type round(double x) const {
 			switch (rounding_method_) {
 				case RoundingMethod::NEAREST:
@@ -135,6 +155,5 @@ namespace ffd {
 					return bytes_type(::round(x));
 			}
 		}
-		void parse_fraction(const std::string &str);
 	};
 }

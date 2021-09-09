@@ -30,10 +30,9 @@ namespace ffd {
 	 * 
 	 */
 	class Bytes {
-	protected:
-		intmax_t bytes_;
 	public:
-		enum PrefixType {BINARY, SI};
+		typedef off64_t bytes_type; ///< Type to store number of bytes
+		enum PrefixType {BINARY, SI}; ///< BINARY for multiples of 1024, SI for multiples of 1000
 		/**
 		 * @brief Construct a new Bytes object from formatted string
 		 * 
@@ -45,7 +44,7 @@ namespace ffd {
 		 * 
 		 * @param bytes 
 		 */
-		Bytes(intmax_t bytes) : bytes_(bytes) {}
+		Bytes(bytes_type bytes) : bytes_(bytes) {}
 		/**
 		 * @brief Construct a new empty Bytes object
 		 * 
@@ -90,9 +89,9 @@ namespace ffd {
 		/**
 		 * @brief Get value in bytes
 		 * 
-		 * @return intmax_t 
+		 * @return bytes_type 
 		 */
-		virtual intmax_t get(void) const {
+		virtual bytes_type get(void) const {
 			return bytes_;
 		}
 		/**
@@ -109,7 +108,7 @@ namespace ffd {
 		 * 
 		 * @param val 
 		 */
-		void set(intmax_t val) {
+		void set(bytes_type val) {
 			bytes_ = val;
 		}
 		/**
@@ -156,5 +155,7 @@ namespace ffd {
 		friend Bytes operator/(const Bytes &a, int &b) {
 			return Bytes(a.get() / b);
 		}
+	protected:
+		bytes_type bytes_;
 	};
 }

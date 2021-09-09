@@ -82,7 +82,7 @@ void ffd::Bytes::set(const std::string &str) {
 		default:
 			throw(ffd::ByteParseException(std::string("Invalid unit prefix: ") + prefix + " (" + str + ")"));
 	}
-	bytes_ = sign * val * pow(base, exp);
+	bytes_ = double(sign) * val * pow(base, exp);
 }
 
 std::string ffd::Bytes::get_str(ffd::Bytes::PrefixType prefix_type, int precision) const {

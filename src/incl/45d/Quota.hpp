@@ -29,28 +29,7 @@ namespace ffd {
 	 */
 	class Quota : public Bytes {
 	public:
-		/**
-		 * @brief Rounding method to use when reporing bytes
-		 * 
-		 */
-		enum RoundingMethod {NEAREST, DOWN, UP};
-	private:
-		double fraction_;
-		RoundingMethod rounding_method_;
-		intmax_t round(double x) const {
-			switch (rounding_method_) {
-				case RoundingMethod::NEAREST:
-					return intmax_t(::round(x));
-				case RoundingMethod::DOWN:
-					return intmax_t(x);
-				case RoundingMethod::UP:
-					return intmax_t(ceil(x));
-				default:
-					return intmax_t(::round(x));
-			}
-		}
-		void parse_fraction(const std::string &str);
-	public:
+		enum RoundingMethod {NEAREST, DOWN, UP}; ///< Rounding method to use when reporing bytes
 		/**
 		 * @brief Construct a new Quota object
 		 * 
@@ -118,11 +97,11 @@ namespace ffd {
 			rounding_method_ = method;
 		}
 		/**
-		 * @brief Get value in bytes
+		 * @brief Get value in bytes equal to total bytes_ * fraction_
 		 * 
-		 * @return intmax_t 
+		 * @return bytes_type 
 		 */
-		intmax_t get(void) const {
+		bytes_type get(void) const {
 			return round(double(bytes_) * fraction_);
 		}
 		/**
@@ -141,5 +120,21 @@ namespace ffd {
 		void set_fraction(double fraction) {
 			fraction_ = fraction;
 		}
+	private:
+		double fraction_;
+		RoundingMethod rounding_method_;
+		bytes_type round(double x) const {
+			switch (rounding_method_) {
+				case RoundingMethod::NEAREST:
+					return bytes_type(::round(x));
+				case RoundingMethod::DOWN:
+					return bytes_type(x);
+				case RoundingMethod::UP:
+					return bytes_type(ceil(x));
+				default:
+					return bytes_type(::round(x));
+			}
+		}
+		void parse_fraction(const std::string &str);
 	};
 }

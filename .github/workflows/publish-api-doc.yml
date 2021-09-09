@@ -30,5 +30,3 @@ jobs:
         echo "Formatted dev docs:  https://$REPO_OWNER.github.io/$REPO_NAME/dev-doc"
         echo ""
         echo "GitHub pages branch: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/tree/gh-pages"
-    - name: Cleanup
-      run: rm -rf "${{ github.workspace }}"

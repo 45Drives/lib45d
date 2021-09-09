@@ -14,5 +14,3 @@ jobs:
       uses: actions/checkout@v2
     - name: Run Tests
       run:  make dev
-    - name: Cleanup
-      run: rm -rf "${{ github.workspace }}"

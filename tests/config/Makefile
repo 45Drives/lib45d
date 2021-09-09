@@ -1,16 +1,24 @@
 LIB_LOCATION = ../..
 
-TEST_SOURCES = $(wildcard */*.cpp)
-TEST_TARGETS = $(patsubst %.cpp, %.test, $(TEST_SOURCES))
-TEST_INPUTS = $(wildcard */*.conf)
-TEST_OUTPUTS = $(patsubst %.conf, %.out, $(TEST_INPUTS))
+TEST_SOURCES := $(wildcard */*.cpp)
+TEST_TARGETS := $(patsubst %.cpp, %.test, $(TEST_SOURCES))
+TEST_INPUTS := $(wildcard */*.conf)
+TEST_OUTPUTS := $(patsubst %.conf, %.out, $(TEST_INPUTS))
 
 CC = g++
 CFLAGS = -g -std=c++11 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
 LIBS =-static -L$(LIB_LOCATION)/dist/static -l45d
 
-all: $(TEST_OUTPUTS)
+all: print-message $(TEST_OUTPUTS)
+	@echo "################################"
+	@echo "# CONFIG PARSER TESTS COMPLETE"
+	@echo "################################"
 test: all
+
+print-message:
+	@echo "################################"
+	@echo "# RUNNING CONFIG PARSER TESTS"
+	@echo "################################"
 
 %.test: %.cpp $(LIB_LOCATION)/dist/static/lib45d.a
 	mkdir -p $(dir $@)

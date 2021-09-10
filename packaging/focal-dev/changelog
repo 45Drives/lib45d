@@ -1,3 +1,9 @@
+lib45d (0.2.1-2focal) focal; urgency=medium
+
+  * Fix arch devel packaging.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Fri, 10 Sep 2021 10:50:50 -0300
+
 lib45d (0.2.1-1focal) focal; urgency=medium
 
   * Allow ffd::Quota string constructor to parse Bytes and get ratio to max.

@@ -29,6 +29,8 @@ make DESTDIR=%{buildroot} install
 /usr/lib/*
 
 %changelog
+* Fri Sep 10 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.1-2
+- Fix arch devel packaging.
 * Fri Sep 10 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.1-1
 - Allow ffd::Quota string constructor to parse Bytes and get ratio to max.
 - Add an ffd::Quota constructor that takes two ffd::Bytes objects.

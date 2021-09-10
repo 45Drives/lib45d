@@ -54,6 +54,9 @@ namespace ffd {
 		 */
 		Quota(const Bytes &max, double fraction = 1.0, RoundingMethod method = NEAREST)
 			: Bytes(max), fraction_(fraction), rounding_method_(method) {}
+		Quota(const Bytes &max, const Bytes &allotted, RoundingMethod method = NEAREST)
+			: Bytes(max), fraction_(allotted / max)
+			, rounding_method_(method) {}
 		/**
 		 * @brief Construct a new empty Quota object
 		 * 
@@ -65,14 +68,16 @@ namespace ffd {
 		 * @param other 
 		 */
 		Quota(const Quota &other)
-			: Bytes(other.get()), fraction_(other.fraction_), rounding_method_(other.rounding_method_) {}
+			: Bytes(other.get()), fraction_(other.fraction_)
+			, rounding_method_(other.rounding_method_) {}
 		/**
 		 * @brief Move constructor
 		 * 
 		 * @param other Quota to be moved
 		 */
 		Quota(Quota &&other)
-			: Bytes(std::move(other)), fraction_(std::move(other.fraction_)), rounding_method_(std::move(other.rounding_method_)) {}
+			: Bytes(std::move(other)), fraction_(std::move(other.fraction_))
+			, rounding_method_(std::move(other.rounding_method_)) {}
 		/**
 		 * @brief Copy assignment
 		 * 

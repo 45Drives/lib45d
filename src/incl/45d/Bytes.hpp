@@ -160,6 +160,21 @@ namespace ffd {
 		friend bool operator==(const Bytes &a, const Bytes &b) {
 			return a.get() == b.get();
 		}
+		friend bool operator!=(const Bytes &a, const Bytes &b) {
+			return !(operator==(a, b));
+		}
+		friend bool operator<(const Bytes &a, const Bytes &b) {
+			return a.get() < b.get();
+		}
+		friend bool operator>(const Bytes &a, const Bytes &b) {
+			return b.get() < a.get();
+		}
+		friend bool operator<=(const Bytes &a, const Bytes &b) {
+			return !(operator>(a, b));
+		}
+		friend bool operator>=(const Bytes &a, const Bytes &b) {
+			return !(operator<(a, b));
+		}
 	protected:
 		bytes_type bytes_;
 		/**

@@ -112,11 +112,13 @@ namespace ffd {
 			bytes_ = val;
 		}
 		/**
-		 * @brief Set value from formatted string
+		 * @brief Set value from formatted string /\d+(.\d*)?\s*[kmgtpezy]?i?b/i
 		 * 
 		 * @param str 
 		 */
-		void set(const std::string &str);
+		void set(const std::string &str){
+			bytes_ = parse_bytes(str);
+		}
 		/**
 		 * @brief Stream insertion operator
 		 * 
@@ -160,5 +162,12 @@ namespace ffd {
 		}
 	protected:
 		bytes_type bytes_;
+		/**
+		 * @brief Parse bytes from string
+		 * 
+		 * @param str String to parse
+		 * @return bytes_type Bytes to return
+		 */
+		bytes_type parse_bytes(const std::string &str) const;
 	};
 }

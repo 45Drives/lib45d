@@ -129,11 +129,20 @@ namespace ffd {
 			fraction_ = fraction;
 		}
 		/**
-		 * @brief Parse str from a percentage to a decimal fraction, assigning it to fraction_.
+		 * @brief Set fraction from formatted string /\d+(.\d*)?\s*%?/
 		 * 
 		 * @param str 
 		 */
-		void parse_fraction(const std::string &str);
+		void set_fraction(const std::string &str){
+			fraction_ = parse_fraction(str);
+		}
+		/**
+		 * @brief Parse str from a percentage to a decimal fraction
+		 * 
+		 * @param str String to parse
+		 * @return double Fraction to return
+		 */
+		double parse_fraction(const std::string &str);
 	private:
 		double fraction_; ///< The percent of bytes_ to report with get() and get_str()
 		RoundingMethod rounding_method_; ///< Rounding method to use when reporing bytes

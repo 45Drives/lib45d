@@ -119,15 +119,15 @@ namespace ffd {
 			} catch (const std::out_of_range &) {
 				// silently return fallback
 			} catch (const boost::bad_lexical_cast &) {
-				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
+				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const ConfigException &e) {
-				std::cerr << e.what() << std::endl;
+				report_error(e.what());
 			} catch (const std::exception &e) {
-				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
 			} catch (const boost::exception &e) {
-				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
-				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
+				report_error("Unexplained exception caught while getting " + key);
 			}
 			return fallback;
 		}
@@ -149,17 +149,17 @@ namespace ffd {
 			try {
 				return get<T>(key);
 			} catch (const boost::bad_lexical_cast &) {
-				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
+				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const std::out_of_range &) {
-				std::cerr << "Option not in config: " << key << std::endl;
+				report_error("Option not in config: " + key);
 			} catch (const ConfigException &e) {
-				std::cerr << e.what() << std::endl;
+				report_error(e.what());
 			} catch (const std::exception &e) {
-				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
 			} catch (const boost::exception &e) {
-				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
-				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
+				report_error("Unexplained exception caught while getting " + key);
 			}
 			*fail_flag = true;
 			if (std::is_fundamental<T>::value)
@@ -278,15 +278,15 @@ namespace ffd {
 			} catch (const std::out_of_range &) {
 				// silently return fallback
 			} catch (const boost::bad_lexical_cast &) {
-				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
+				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const ConfigException &e) {
-				std::cerr << e.what() << std::endl;
+				report_error(e.what());
 			} catch (const std::exception &e) {
-				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
 			} catch (const boost::exception &e) {
-				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
-				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
+				report_error("Unexplained exception caught while getting " + key);
 			}
 			return fallback;
 		}
@@ -304,17 +304,17 @@ namespace ffd {
 			try {
 				return get_quota(key, max);
 			} catch (const boost::bad_lexical_cast &) {
-				std::cerr << "Invalid configuration entry format: " << key << " = " << config_map_.at(key).value_ << std::endl;
+				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const std::out_of_range &) {
-				std::cerr << "Option not in config: " << key << std::endl;
+				report_error("Option not in config: " + key);
 			} catch (const ConfigException &e) {
-				std::cerr << e.what() << std::endl;
+				report_error(e.what());
 			} catch (const std::exception &e) {
-				std::cerr << "Unexpected std::exception while getting " << key << ": " << e.what() << std::endl;
+				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
 			} catch (const boost::exception &e) {
-				std::cerr << "Unexpected boost::exception while getting " << key << ": " << boost::diagnostic_information(e) << std::endl;
+				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
-				std::cerr << "Unexplained exception caught while getting " << key << std::endl;
+				report_error("Unexplained exception caught while getting " + key);
 			}
 			*fail_flag = true;
 			return Quota();
@@ -391,6 +391,7 @@ namespace ffd {
 		}
 	protected:
 		std::vector<ConfigNode *> sub_confs_; ///< Vector of config subsections
+		std::string current_section_; ///< Name of current section, set by set_subsection()
 	private:
 		/**
 		 * @brief true if a ConfigSubsectionGuard is in scope
@@ -440,6 +441,7 @@ namespace ffd {
 			config_map_ptr_ = config_map_.at(section).sub_map_;
 			if(config_map_ptr_ == nullptr)
 				throw std::out_of_range("ConfigNode has no sub_map_");
+			current_section_ = section;
 		}
 		/**
 		 * @brief Set config_map_ptr_ back to the address of config_map_
@@ -447,6 +449,18 @@ namespace ffd {
 		 */
 		void reset_subsection(void) noexcept {
 			config_map_ptr_ = &config_map_;
+			current_section_ = "";
+		}
+		/**
+		 * @brief Print error message to stderr, conditionally
+		 * prepended with current subsection name
+		 * 
+		 * @param message 
+		 */
+		void report_error(const std::string &message) const noexcept {
+			if (config_map_ptr_ != &config_map_)
+				std::cerr << "[" << current_section_ << "]: ";
+			std::cerr << message << std::endl;
 		}
 	};
 }

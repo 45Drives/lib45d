@@ -2,6 +2,18 @@
 #include <string>
 #include <cassert>
 
+void test_construction(void) {
+    ffd::Bytes a(100);
+
+    std::cout << "Testing construction from \"50%\" == from 0.5 == from max/2 == from bytes string" << std::endl;
+    ffd::Quota str_quota(a, "50%");
+    ffd::Quota double_quota(a, 0.5);
+    ffd::Quota bytes_quota(a, a/2);
+    ffd::Quota bytes_str_quota(a, (a/2).get_str());
+    assert(str_quota == double_quota && double_quota == bytes_quota && bytes_quota == bytes_str_quota);
+    std::cout << "OK" << std::endl;
+}
+
 void test_math(void) {
     ffd::Bytes bytes(1000); // 1 KB
     ffd::Quota quota(bytes); // 100% initially
@@ -13,6 +25,14 @@ void test_math(void) {
     std::cout << "asserting 50% of " << bytes << " is " << bytes << " / 2" << std::endl;
     quota.set_fraction(0.5);
     assert(quota == bytes / 2);
+    std::cout << "OK" << std::endl;
+
+    std::cout << "asserting (quota)" << quota << " / (bytes)" << bytes << " is 0.5" << std::endl;
+    assert(quota / bytes == 0.5);
+    std::cout << "OK" << std::endl;
+
+    std::cout << "asserting (bytes)" << bytes << " / (quota)" << quota << " is 2.0" << std::endl;
+    assert(bytes / quota == 2.0);
     std::cout << "OK" << std::endl;
 }
 
@@ -62,6 +82,7 @@ void test_rounding(void) {
 }
 
 int main() {
+    test_construction();
     test_math();
     test_string();
     test_rounding();

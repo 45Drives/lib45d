@@ -1,3 +1,9 @@
+lib45d (0.2.2-1focal) focal; urgency=medium
+
+  * Report which subsection errors happen in.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Fri, 10 Sep 2021 11:51:56 -0300
+
 lib45d (0.2.1-2focal) focal; urgency=medium
 
   * Fix arch devel packaging.

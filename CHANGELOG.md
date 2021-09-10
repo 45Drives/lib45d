@@ -1,3 +1,3 @@
-## lib45d 0.2.1-2
+## lib45d 0.2.2-1
 
-* Fix arch devel packaging.
+* Report which subsection errors happen in.

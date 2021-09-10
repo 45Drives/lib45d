@@ -31,6 +31,8 @@ make DESTDIR=%{buildroot} DEVEL=1 install
 /usr/lib/*
 
 %changelog
+* Fri Sep 10 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.2-1
+- Report which subsection errors happen in.
 * Fri Sep 10 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.1-2
 - Fix arch devel packaging.
 * Fri Sep 10 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.1-1

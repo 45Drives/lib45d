@@ -29,6 +29,11 @@ make DESTDIR=%{buildroot} install
 /usr/lib/*
 
 %changelog
+* Fri Sep 10 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.1-1
+- Allow ffd::Quota string constructor to parse Bytes and get ratio to max.
+- Add an ffd::Quota constructor that takes two ffd::Bytes objects.
+- Add ffd::Quota method to get maximum bytes.
+- Add ffd::Bytes comparison operators and division resulting in double.
 * Thu Sep 09 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.0-2
 - Set up conflicts between regular and devel packages.
 * Thu Sep 09 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.0-1

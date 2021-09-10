@@ -1,3 +1,12 @@
+lib45d (0.2.1-1focal) focal; urgency=medium
+
+  * Allow ffd::Quota string constructor to parse Bytes and get ratio to max.
+  * Add an ffd::Quota constructor that takes two ffd::Bytes objects.
+  * Add ffd::Quota method to get maximum bytes.
+  * Add ffd::Bytes comparison operators and division resulting in double.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Fri, 10 Sep 2021 09:00:00 -0300
+
 lib45d (0.2.0-2focal) focal; urgency=medium
 
   * Set up conflicts between regular and devel packages.

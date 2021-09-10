@@ -19,5 +19,6 @@ build() {
 
 package() {
     cd "$srcdir/$pkgname-$pkgver"
+    export DEVEL=1
     make DESTDIR="$pkgdir" PKG_FQPV="$pkgver-$pkgrel" DEVEL=1 install
 }

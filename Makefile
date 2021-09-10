@@ -49,7 +49,6 @@ clean-target:
 
 ifdef DEVEL
 install: dev $(HEADER_INSTALL_TARGETS)
-	echo $(HEADER_INSTALL_TARGETS)
 else
 install: default
 endif

@@ -46,6 +46,6 @@ double ffd::Quota::parse_fraction(const std::string &str) {
 		} catch (const ffd::ByteParseException &e) {
 			throw ffd::QuotaParseException(e.what());
 		}
-		return limit / bytes_;
+		return double(limit) / double(bytes_);
 	}
 }

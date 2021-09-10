@@ -4,13 +4,14 @@
 
 void test_construction(void) {
     ffd::Bytes a(100);
-
-    std::cout << "Testing construction from \"50%\" == from 0.5 == from max/2 == from bytes string" << std::endl;
+    
+    std::cout << "max = " << a << std::endl;
+    std::cout << "Testing construction from \"50%\" == from 0.5 == from max/2 == from bytes string == " << a.get() / 2 << std::endl;
     ffd::Quota str_quota(a, "50%");
     ffd::Quota double_quota(a, 0.5);
     ffd::Quota bytes_quota(a, a/2);
     ffd::Quota bytes_str_quota(a, (a/2).get_str());
-    assert(str_quota == double_quota && double_quota == bytes_quota && bytes_quota == bytes_str_quota);
+    assert(str_quota == double_quota && double_quota == bytes_quota && bytes_quota == bytes_str_quota && bytes_str_quota == a.get() / 2);
     std::cout << "OK" << std::endl;
 }
 

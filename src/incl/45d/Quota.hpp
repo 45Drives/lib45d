@@ -113,6 +113,14 @@ namespace ffd {
 			return round(double(bytes_) * fraction_);
 		}
 		/**
+		 * @brief Get the max number of bytes from parent
+		 * 
+		 * @return bytes_type 
+		 */
+		bytes_type get_max(void) const {
+			return bytes_;
+		}
+		/**
 		 * @brief Get just the fraction as a double
 		 * 
 		 * @return double 

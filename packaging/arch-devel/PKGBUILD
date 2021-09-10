@@ -11,6 +11,7 @@ makedepends=('boost-libs')
 optdepends=()
 source=("$pkgname-$pkgver.tar.gz")
 conflicts=("lib45d")
+options=("staticlibs")
 
 build() {
     cd "$srcdir/$pkgname-$pkgver"
@@ -19,6 +20,5 @@ build() {
 
 package() {
     cd "$srcdir/$pkgname-$pkgver"
-    export DEVEL=1
     make DESTDIR="$pkgdir" PKG_FQPV="$pkgver-$pkgrel" DEVEL=1 install
 }

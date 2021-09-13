@@ -142,6 +142,14 @@ namespace ffd {
 			bytes.set(str);
 			return is;
 		}
+		Bytes &operator+=(const Bytes &other) {
+			bytes_ += other.get();
+			return *this;
+		}
+		Bytes &operator-=(const Bytes &other) {
+			bytes_ -= other.get();
+			return *this;
+		}
 		friend Bytes operator+(const Bytes &a, const Bytes &b) {
 			return Bytes(a.get() + b.get());
 		}

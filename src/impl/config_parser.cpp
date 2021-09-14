@@ -90,10 +90,20 @@ std::string ffd::ConfigParser::dump_str(void) const {
 
 template<>
 bool ffd_internal::get<bool>(const std::string &key, const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
-	std::stringstream ss;
 	ffd::ConfigNode node = config_map->at(key);
-	ss.str(node.value_);
+	std::stringstream ss(node.value_);
+	ss.exceptions(std::ios::failbit | std::ios::badbit);
 	bool result;
 	ss >> std::boolalpha >> result;
+	return result;
+}
+
+template<>
+std::string ffd_internal::get<std::string>(const std::string &key, const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
+	ffd::ConfigNode node = config_map->at(key);
+	std::stringstream ss(node.value_);
+	ss.exceptions(std::ios::failbit | std::ios::badbit);
+	std::string result;
+	getline(ss, result);
 	return result;
 }

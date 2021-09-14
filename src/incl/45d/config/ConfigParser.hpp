@@ -26,8 +26,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <boost/lexical_cast.hpp>
-#include <boost/exception/diagnostic_information.hpp>
+#include <sstream>
 
 /**
  * @brief Namespace for internal use, not to be exposed to ffd
@@ -49,7 +48,10 @@ namespace ffd_internal {
 	template<class T>
 	T get(const std::string &key, const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
 		ffd::ConfigNode node = config_map->at(key);
-		T result = boost::lexical_cast<T>(node.value_);
+		std::stringstream ss(node.value_);
+		ss.exceptions(std::ios::failbit | std::ios::badbit);
+		T result;
+		ss >> result;
 		return result;
 	}
 }
@@ -118,14 +120,12 @@ namespace ffd {
 				return get<T>(key);
 			} catch (const std::out_of_range &) {
 				// silently return fallback
-			} catch (const boost::bad_lexical_cast &) {
+			} catch (const std::ios_base::failure &) {
 				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const ConfigException &e) {
 				report_error(e.what());
 			} catch (const std::exception &e) {
 				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
-			} catch (const boost::exception &e) {
-				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
 				report_error("Unexplained exception caught while getting " + key);
 			}
@@ -148,7 +148,7 @@ namespace ffd {
 		T get(const std::string &key, bool *fail_flag) const noexcept {
 			try {
 				return get<T>(key);
-			} catch (const boost::bad_lexical_cast &) {
+			} catch (const std::ios_base::failure &) {
 				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const std::out_of_range &) {
 				report_error("Option not in config: " + key);
@@ -156,8 +156,6 @@ namespace ffd {
 				report_error(e.what());
 			} catch (const std::exception &e) {
 				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
-			} catch (const boost::exception &e) {
-				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
 				report_error("Unexplained exception caught while getting " + key);
 			}
@@ -277,14 +275,12 @@ namespace ffd {
 				return get_quota(key, max);
 			} catch (const std::out_of_range &) {
 				// silently return fallback
-			} catch (const boost::bad_lexical_cast &) {
+			} catch (const std::ios_base::failure &) {
 				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const ConfigException &e) {
 				report_error(e.what());
 			} catch (const std::exception &e) {
 				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
-			} catch (const boost::exception &e) {
-				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
 				report_error("Unexplained exception caught while getting " + key);
 			}
@@ -303,7 +299,7 @@ namespace ffd {
 		Quota get_quota(const std::string &key, const Bytes &max, bool *fail_flag) const noexcept {
 			try {
 				return get_quota(key, max);
-			} catch (const boost::bad_lexical_cast &) {
+			} catch (const std::ios_base::failure &) {
 				report_error("Invalid configuration entry format: " + key + " = " + config_map_.at(key).value_);
 			} catch (const std::out_of_range &) {
 				report_error("Option not in config: " + key);
@@ -311,8 +307,6 @@ namespace ffd {
 				report_error(e.what());
 			} catch (const std::exception &e) {
 				report_error("Unexpected std::exception while getting " + key + ": " + e.what());
-			} catch (const boost::exception &e) {
-				report_error("Unexpected boost::exception while getting " + key + ": " + boost::diagnostic_information(e));
 			} catch ( ... ) {
 				report_error("Unexplained exception caught while getting " + key);
 			}

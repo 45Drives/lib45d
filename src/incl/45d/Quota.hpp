@@ -68,7 +68,7 @@ namespace ffd {
 		 * @param other 
 		 */
 		Quota(const Quota &other)
-			: Bytes(other.get()), fraction_(other.fraction_)
+			: Bytes(other.bytes_), fraction_(other.fraction_)
 			, rounding_method_(other.rounding_method_) {}
 		/**
 		 * @brief Move constructor

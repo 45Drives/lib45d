@@ -1,3 +1,10 @@
+lib45d (0.2.3-1focal) focal; urgency=medium
+
+  * Add += and -= operators for ffd::Bytes.
+  * Remove dependency for boost::lexical_cast.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Tue, 14 Sep 2021 08:03:28 -0300
+
 lib45d (0.2.2-1focal) focal; urgency=medium
 
   * Report which subsection errors happen in.

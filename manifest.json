@@ -3,7 +3,7 @@
     "name": "lib45d",
     "title": "lib45d",
     "prerelease": false,
-    "version": "0.2.2",
+    "version": "0.2.3",
     "buildVersion": "1",
     "author": "Joshua Boudreau <jboudreau@45drives.com>",
     "url": "https://github.com/45Drives/lib45d",
@@ -24,12 +24,10 @@
     },
     "dependencies": {
         "deb": {
-            "focal_dev": [
-            ]
+            "focal_dev": []
         },
         "el": {
-            "el8_devel": [
-            ]
+            "el8_devel": []
         }
     },
     "releases": [
@@ -72,7 +70,7 @@
     ],
     "changelog": {
         "urgency": "medium",
-        "version": "0.2.2",
+        "version": "0.2.3",
         "buildVersion": "1",
         "ignore": [],
         "date": null,

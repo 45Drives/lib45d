@@ -1,3 +1,4 @@
-## lib45d 0.2.2-1
+## lib45d 0.2.3-1
 
-* Report which subsection errors happen in.
+* Add += and -= operators for ffd::Bytes.
+* Remove dependency for boost::lexical_cast.

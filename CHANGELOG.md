@@ -1,3 +1,3 @@
-## lib45d 0.2.3-2
+## lib45d 0.2.4-1
 
-* Fix el8-devel packaging.
+* Fixed copy constructor of Quota to not multiply by fraction while copying base Bytes.

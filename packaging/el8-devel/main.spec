@@ -30,6 +30,9 @@ make DESTDIR=%{buildroot} DEVEL=1 install
 /usr/lib/*
 
 %changelog
+* Tue Sep 14 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.4-1
+- Fixed copy constructor of Quota to not multiply by fraction while copying base
+  Bytes.
 * Tue Sep 14 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.3-2
 - Fix el8-devel packaging.
 * Tue Sep 14 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.3-1

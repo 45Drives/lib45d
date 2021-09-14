@@ -55,7 +55,7 @@ namespace ffd {
 		 * 
 		 * @param other Bytes to be copied
 		 */
-		Bytes(const Bytes &other) : bytes_(other.bytes_) {}
+		Bytes(const Bytes &other) : bytes_(other.get()) {}
 		/**
 		 * @brief Move constructor
 		 * 

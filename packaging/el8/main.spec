@@ -29,6 +29,8 @@ make DESTDIR=%{buildroot} install
 /usr/lib/*
 
 %changelog
+* Tue Sep 14 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.3-2
+- Fix el8-devel packaging.
 * Tue Sep 14 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.3-1
 - Add += and -= operators for ffd::Bytes.
 - Remove dependency for boost::lexical_cast.

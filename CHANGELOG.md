@@ -1,4 +1,3 @@
-## lib45d 0.2.3-1
+## lib45d 0.2.3-2
 
-* Add += and -= operators for ffd::Bytes.
-* Remove dependency for boost::lexical_cast.
+* Fix el8-devel packaging.

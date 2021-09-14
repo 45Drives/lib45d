@@ -25,12 +25,10 @@
     "dependencies": {
         "deb": {
             "focal_dev": [
-                "libboost-dev"
             ]
         },
         "el": {
             "el8_devel": [
-                "boost-devel"
             ]
         }
     },

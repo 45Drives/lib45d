@@ -25,3 +25,9 @@ and call ffd::ConfigParser::get() to initialize the config class's members.
 using @ref ffd::ConfigSubsectionGuard
 @include tests/config/dynamic_subsections/dynamic_subsections.cpp
  */
+
+/**
+ * @brief 45Drives namespace
+ * 
+ */
+namespace ffd {}

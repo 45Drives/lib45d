@@ -21,7 +21,6 @@
 #pragma once
 
 #include <45d/Exceptions.hpp>
-#include <string>
 
 namespace ffd {
     /**

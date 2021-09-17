@@ -21,7 +21,7 @@
 #pragma once
 
 #include <45d/config/ConfigNode.hpp>
-#include <45d/Exceptions.hpp>
+#include <45d/config/Exceptions.hpp>
 #include <45d/Quota.hpp>
 #include <string>
 #include <unordered_map>

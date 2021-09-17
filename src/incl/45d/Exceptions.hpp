@@ -20,14 +20,14 @@
 
 #pragma once
 
-#include <exception>
+#include <string>
 
 namespace ffd {
-    /** Exceptions
+    /**
 	 * @brief Exceptions thrown by this library
 	 * 
 	 */
-	class Exception : public std::exception {
+	class Exception {
 	public:
 		/**
 		 * @brief Construct a new Exception object

@@ -27,14 +27,14 @@ namespace ffd {
 	 * @brief Exceptions thrown by this library
 	 * 
 	 */
-	class ConfigException : public std::exception {
+	class Exception : public std::exception {
 	public:
 		/**
 		 * @brief Construct a new Exception object
 		 * 
 		 * @param what String containing explanation message
 		 */
-		ConfigException(std::string what) : what_(what) {}
+		Exception(const std::string &what) noexcept : what_(what) {}
 		/**
 		 * @brief Return string containing explanation message
 		 * 
@@ -48,52 +48,24 @@ namespace ffd {
 	};
 
 	/**
-	 * @brief Throw this exception when the config file fails to open
-	 * 
-	 */
-	class NoConfigException : public ConfigException {
-	public:
-		NoConfigException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
-	 * @brief Throw this exception when a config entry is missing
-	 * 
-	 */
-	class MissingOptionException : public ConfigException {
-	public:
-		MissingOptionException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
-	 * @brief Throw this exception when a ConfigGuard is constructed 
-	 * or get_from() is called when the config is already guarded
-	 * 
-	 */
-	class ConfigGuardException : public ConfigException {
-	public:
-		ConfigGuardException(std::string what) : ConfigException(what) {}
-	};
-
-	/**
 	 * @brief Throw this exception when Bytes::set() fails to parse string
 	 * 
 	 */
-	class ByteParseException : public ConfigException {
+	class ByteParseException : public Exception {
 	private:
 		std::string what_; ///< String containing explanation message
 	public:
-		ByteParseException(std::string what) : ConfigException(what) {}
+		ByteParseException(const std::string &what) noexcept : Exception(what) {}
 	};
 
 	/**
 	 * @brief Throw this exception when Quota::parse_fraction() fails to parse string
 	 * 
 	 */
-	class QuotaParseException : public ConfigException {
+	class QuotaParseException : public Exception {
 	private:
 		std::string what_; ///< String containing explanation message
 	public:
-		QuotaParseException(std::string what) : ConfigException(what) {}
+		QuotaParseException(const std::string &what) noexcept : Exception(what) {}
 	};
 }

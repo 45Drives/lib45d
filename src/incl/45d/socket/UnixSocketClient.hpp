@@ -43,22 +43,22 @@ namespace ffd {
             memset(&server_addr_, 0, sizeof(server_addr_));
             server_addr_.sun_family = AF_UNIX;
             if (path.length() >= sizeof(server_addr_.sun_path))
-                throw SocketAddressException("Socket address too long");
+                throw SocketAddressException("Socket address too long", ENAMETOOLONG);
             strncpy(server_addr_.sun_path, path.c_str(), sizeof(server_addr_.sun_path) - 1);
+            io_fd_ = fd_;
         }
         /**
-         * @brief Make connection to socket. Also sets internal io_fd_ for later use.
+         * @brief Make connection to socket.
          * 
          * @return int fd for socket
          */
         int connect() {
-            int connection_fd = ::connect(fd_, (sockaddr *) &server_addr_, sizeof(server_addr_));
-            if (connection_fd == -1) {
+            int res = ::connect(fd_, (sockaddr *) &server_addr_, sizeof(server_addr_));
+            if (res == -1) {
                 int error = errno;
-                throw SocketConnectException(strerror(error));
+                throw SocketConnectException(strerror(error), error);
             }
-            io_fd_ = connection_fd;
-            return connection_fd;
+            return io_fd_;
         }
     private:
         struct sockaddr_un server_addr_; ///< Unix socket address struct

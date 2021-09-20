@@ -1,6 +1,11 @@
 #include <45d/socket/UnixSocketClient.hpp>
 #include <iostream>
-#include <cstring>
+
+#if __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 32)
+char *strerrorname_np(int err) {
+    return nullptr;
+}
+#endif
 
 int main(void) {
     ffd::UnixSocketClient *client;

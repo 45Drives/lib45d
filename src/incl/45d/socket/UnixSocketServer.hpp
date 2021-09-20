@@ -66,19 +66,19 @@ namespace ffd {
          * @return int fd of connection
          */
         int wait_for_connection() {
-            socklen_t peer_addr_size = sizeof(peer_addr_);
-            int connection_fd = accept(fd_, (sockaddr *) &peer_addr_, &peer_addr_size);
+            int connection_fd = accept(fd_, NULL, NULL);
             if (connection_fd == -1) {
                 int error = errno;
-                throw SocketAcceptException(strerror(error));
+                throw SocketAcceptException(strerror(error), error);
             }
+            connections_.push_back(connection_fd);
             io_fd_ = connection_fd;
             return connection_fd;
         }
     private:
         const int domain_; ///< Socket domain, always AF_UNIX
         const std::string socket_path_; ///< Path to socket inode, equal to address
-        struct sockaddr_un sock_addr_, peer_addr_; ///< Unix socket address structs
+        struct sockaddr_un sock_addr_; ///< Unix socket address structs
         std::vector<int> connections_; ///< vector of open connections for closing in dtor
         /**
          * @brief Set up socket address structs and bind to the address inode path
@@ -93,7 +93,7 @@ namespace ffd {
             int res = ::bind(fd_, (sockaddr *) &sock_addr_, sizeof(sock_addr_));
             if (res == -1) {
                 int error = errno;
-                throw SocketBindException(strerror(error));
+                throw SocketBindException(strerror(error), error);
             }
         }
         /**
@@ -105,7 +105,7 @@ namespace ffd {
             int res = ::listen(fd_, backlog);
             if (res == -1) {
                 int error = errno;
-                throw SocketListenException(strerror(error));
+                throw SocketListenException(strerror(error), error);
             }
         }
     };

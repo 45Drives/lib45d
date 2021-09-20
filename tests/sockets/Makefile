@@ -1,10 +1,8 @@
 LIB_LOCATION = ../..
 
-TEST_SOURCES := $(wildcard *.cpp)
-TEST_TARGETS := $(patsubst %.cpp, %.test, $(TEST_SOURCES))
-TEST_OUTPUTS := $(patsubst %.test, %.out, $(TEST_TARGETS))
+TEST_SUITES := $(wildcard */.)
 
-all: print-message $(TEST_TARGETS) $(TEST_OUTPUTS)
+all: print-message $(TEST_SUITES)
 	@echo -e " #"
 	@echo -e " # ${call colour_text,SOCKET TESTS COMPLETE,$(GREEN)}"
 	@echo -e " ################################"
@@ -14,5 +12,11 @@ print-message:
 	@echo -e " ################################"
 	@echo -e " # ${call colour_text,RUNNING SOCKET TESTS,$(CYAN)}"
 	@echo -e " #"
+
+$(TEST_SUITES): FORCE
+	@$(MAKE) -C $@ --no-print-directory
+
+clean:
+	for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE clean; done
 
 FORCE:

@@ -3,6 +3,7 @@
 
 #if __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 32)
 char *strerrorname_np(int err) {
+    (void) err;
     return nullptr;
 }
 #endif

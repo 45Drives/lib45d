@@ -29,13 +29,21 @@ extern "C" {
 }
 
 namespace ffd {
+    /**
+     * @brief Default parameters for sockets
+     * 
+     */
     namespace Socket {
         const int _backlog_default = 50;
+        /**
+         * @brief Size of recv buffer. Can be overridden by defining FFD_SOCKET_BUFF_SZ before including header.
+         * 
+         */
         const int _buff_sz = 
-#ifndef SOCKET_BUFF_SZ
+#ifndef FFD_SOCKET_BUFF_SZ
         1024;
 #else
-        SOCKET_BUFF_SZ;
+        FFD_SOCKET_BUFF_SZ;
 #endif
     }
     /**
@@ -110,8 +118,8 @@ namespace ffd {
         /**
          * @brief Receive a string
          * 
-         * @param fd Optional file descriptor for connection
          * @param flags see man send(2)
+         * @param fd Optional file descriptor for connection
          * @return std::string 
          */
         std::string receive_data(int flags = 0, int fd = 0) {
@@ -136,6 +144,6 @@ namespace ffd {
     protected:
         int fd_; ///< File descriptor of socket
         int io_fd_; ///< Connection fd
-        char ACK;
+        char ACK; ///< char to send for acknowledging reception
     };
 }

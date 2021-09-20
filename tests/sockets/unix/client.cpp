@@ -1,5 +1,6 @@
 #include <45d/socket/UnixSocketClient.hpp>
 #include <iostream>
+#include <cstring>
 
 int main(void) {
     ffd::UnixSocketClient *client;

@@ -1,5 +1,6 @@
 #include <45d/socket/UnixSocketServer.hpp>
 #include <iostream>
+#include <cstring>
 
 int main(void) {
     ffd::UnixSocketServer *server;

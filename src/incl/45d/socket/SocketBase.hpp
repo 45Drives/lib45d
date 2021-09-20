@@ -31,7 +31,12 @@ extern "C" {
 namespace ffd {
     namespace Socket {
         const int _backlog_default = 50;
-        const int _buff_sz = 1024;
+        const int _buff_sz = 
+#ifndef SOCKET_BUFF_SZ
+        1024;
+#else
+        SOCKET_BUFF_SZ;
+#endif
     }
     /**
      * @brief Base Unix Socket Class for opening and closing the socket
@@ -49,11 +54,12 @@ namespace ffd {
          * @param type Usually SOCK_STREAM
          * @param protocol Normally just 0
          */
-        SocketBase(int domain, int type, int protocol = 0) {
+        SocketBase(int domain, int type, int protocol = 0)
+            : ACK('\6') {
             int res = socket(domain, type, protocol);
             if (res == -1) {
                 int error = errno;
-                throw SocketCreateException(strerror(error));
+                throw SocketCreateException(strerror(error), error);
             }
             fd_ = res;
         }
@@ -63,11 +69,7 @@ namespace ffd {
          * 
          */
         ~SocketBase() {
-            int res = close(fd_);
-            if (res == -1) {
-                int error = errno;
-                throw SocketCloseException(strerror(error));
-            }
+            close(fd_);
         }
         /**
          * @brief Close a connection
@@ -81,31 +83,38 @@ namespace ffd {
             int res = close(fd);
             if (res == -1) {
                 int error = errno;
-                throw SocketCloseException(strerror(error));
+                throw SocketCloseException(strerror(error), error);
             }
         }
         /**
          * @brief Send a string
          * 
          * @param str Message to send
+         * @param flags see man send(2)
          * @param fd Optional file descriptor for connection
          */
-        void send_data(const std::string &str, int fd = 0) {
+        void send_data(const std::string &str, int flags = 0, int fd = 0) {
             if (fd == 0)
                 fd = io_fd_;
-            int res = write(io_fd_, (void *)str.c_str(), str.length()+1);
+            int res = send(fd, (void *)str.c_str(), str.length(), flags);
             if (res == -1) {
                 int error = errno;
-                throw SocketWriteException(strerror(error));
+                throw SocketWriteException(strerror(error), error);
+            }
+            char ack_check;
+            recv(fd, &ack_check, 1, 0);
+            if (ack_check != ACK) {
+                throw SocketWriteException("ACK failed");
             }
         }
         /**
          * @brief Receive a string
          * 
          * @param fd Optional file descriptor for connection
+         * @param flags see man send(2)
          * @return std::string 
          */
-        std::string receive_data(int fd = 0) {
+        std::string receive_data(int flags = 0, int fd = 0) {
             std::string result;
             if (fd == 0)
                 fd = io_fd_;
@@ -113,20 +122,20 @@ namespace ffd {
             memset(&buff, 0, sizeof(buff));
             int bytes_read = 0;
             do {
-                bytes_read = read(fd, &buff, sizeof(buff) - 1);
-                if (bytes_read > 0) {
-                    buff[bytes_read] = '\0';
-                    result += buff;
+                bytes_read = recv(fd, &buff, sizeof(buff) - 1, flags);
+                if (bytes_read == -1) {
+                    int error = errno;
+                    throw SocketReadException(strerror(error), error);
                 }
-            } while (bytes_read > 0);
-            if (bytes_read == -1) {
-                int error = errno;
-                throw SocketReadException(strerror(error));
-            }
+                buff[bytes_read] = '\0';
+                result += buff;
+            } while (bytes_read > 0 && recv(fd, &buff, sizeof(buff) - 1, MSG_PEEK | MSG_DONTWAIT) > 0);
+            send(fd, &ACK, 1, 0);
             return result;
         }
     protected:
         int fd_; ///< File descriptor of socket
         int io_fd_; ///< Connection fd
+        char ACK;
     };
 }

@@ -29,6 +29,8 @@ make DESTDIR=%{buildroot} install
 /usr/lib/*
 
 %changelog
+* Mon Sep 20 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.1-1
+- Update documentation for sockets
 * Mon Sep 20 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.0-1
 - Add unix domain socket classes.
 * Tue Sep 14 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.4-1

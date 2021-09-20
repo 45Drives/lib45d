@@ -1,3 +1,3 @@
-## lib45d 0.3.0-1
+## lib45d 0.3.1-1
 
-* Add unix domain socket classes.
+* Update documentation for sockets

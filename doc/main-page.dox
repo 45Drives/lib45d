@@ -4,6 +4,7 @@
     - @ref config_mainpage
     - @ref ffd::Bytes
     - @ref ffd::Quota
+    - @ref ffd::SocketBase
 
 @page config_mainpage Configuration Parser
 

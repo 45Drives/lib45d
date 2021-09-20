@@ -1,3 +1,9 @@
+lib45d (0.3.0-1focal) focal; urgency=medium
+
+  * Add unix domain socket classes.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Mon, 20 Sep 2021 13:43:52 -0300
+
 lib45d (0.2.4-1focal) focal; urgency=medium
 
   * Fixed copy constructor of Quota to not multiply by fraction while copying base

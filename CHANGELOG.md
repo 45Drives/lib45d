@@ -1,3 +1,3 @@
-## lib45d 0.2.4-1
+## lib45d 0.3.0-1
 
-* Fixed copy constructor of Quota to not multiply by fraction while copying base Bytes.
+* Add unix domain socket classes.

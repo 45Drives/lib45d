@@ -30,6 +30,8 @@ make DESTDIR=%{buildroot} DEVEL=1 install
 /usr/lib/*
 
 %changelog
+* Mon Sep 20 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.0-1
+- Add unix domain socket classes.
 * Tue Sep 14 2021 Joshua Boudreau <jboudreau@45drives.com> 0.2.4-1
 - Fixed copy constructor of Quota to not multiply by fraction while copying base
   Bytes.

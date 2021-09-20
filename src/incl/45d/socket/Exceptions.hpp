@@ -29,7 +29,7 @@ namespace ffd {
      */
     class SocketException : public Exception {
     public:
-        SocketException(const std::string &what) : Exception(what) {}
+        SocketException(const std::string &what, int err = 0) : Exception(what, err) {}
     };
 
     /**
@@ -38,7 +38,7 @@ namespace ffd {
      */
     class SocketCreateException : public SocketException {
     public:
-        SocketCreateException(const std::string &what) : SocketException(what) {}
+        SocketCreateException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     /**
@@ -47,7 +47,7 @@ namespace ffd {
      */
     class SocketCloseException : public SocketException {
     public:
-        SocketCloseException(const std::string &what) : SocketException(what) {}
+        SocketCloseException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     /**
@@ -56,7 +56,7 @@ namespace ffd {
      */
     class SocketAddressException : public SocketException {
     public:
-        SocketAddressException(const std::string &what) : SocketException(what) {}
+        SocketAddressException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     /**
@@ -65,12 +65,12 @@ namespace ffd {
      */
     class SocketBindException : public SocketException {
     public:
-        SocketBindException(const std::string &what) : SocketException(what) {}
+        SocketBindException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     class SocketListenException : public SocketException {
     public:
-        SocketListenException(const std::string &what) : SocketException(what) {}
+        SocketListenException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     /**
@@ -79,7 +79,7 @@ namespace ffd {
      */
     class SocketAcceptException : public SocketException {
     public:
-        SocketAcceptException(const std::string &what) : SocketException(what) {}
+        SocketAcceptException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     /**
@@ -88,7 +88,7 @@ namespace ffd {
      */
     class SocketConnectException : public SocketException {
     public:
-        SocketConnectException(const std::string &what) : SocketException(what) {}
+        SocketConnectException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     /**
@@ -97,7 +97,7 @@ namespace ffd {
      */
     class SocketWriteException : public SocketException {
     public:
-        SocketWriteException(const std::string &what) : SocketException(what) {}
+        SocketWriteException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 
     /**
@@ -106,6 +106,6 @@ namespace ffd {
      */
     class SocketReadException : public SocketException {
     public:
-        SocketReadException(const std::string &what) : SocketException(what) {}
+        SocketReadException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
 }

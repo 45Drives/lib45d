@@ -33,8 +33,9 @@ namespace ffd {
 		 * @brief Construct a new Exception object
 		 * 
 		 * @param what String containing explanation message
+		 * @param err Optionally pass errno
 		 */
-		Exception(const std::string &what) noexcept : what_(what) {}
+		Exception(const std::string &what, int err = 0) noexcept : what_(what), errno_(err) {}
 		/**
 		 * @brief Return string containing explanation message
 		 * 
@@ -43,8 +44,17 @@ namespace ffd {
 		const char *what(void) const noexcept {
 			return what_.c_str();
 		}
+		/**
+		 * @brief Get the errno relating to the error, 0 if not set.
+		 * 
+		 * @return int 
+		 */
+		int get_errno(void) const noexcept {
+			return errno_;
+		}
 	private:
 		std::string what_; ///< String containing explanation message
+		int errno_; ///< Optionally save errno if applicable
 	};
 
 	/**

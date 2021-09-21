@@ -29,6 +29,8 @@ make DESTDIR=%{buildroot} install
 /usr/lib/*
 
 %changelog
+* Tue Sep 21 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.3-1
+- Add socket method to shutdown socket.
 * Tue Sep 21 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.2-1
 - Add ability to send and receive std::vector<std::string> through sockets.
 * Mon Sep 20 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.1-1

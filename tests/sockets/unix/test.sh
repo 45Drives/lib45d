@@ -22,4 +22,5 @@ if [[ "$res" != "0" ]]; then
 fi
 
 diff client.out client.gold
+diff server.out server.gold
 exit $?

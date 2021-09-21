@@ -1,3 +1,3 @@
-## lib45d 0.3.1-1
+## lib45d 0.3.2-1
 
-* Update documentation for sockets
+* Add ability to send and receive std::vector<std::string> through sockets.

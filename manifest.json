@@ -3,7 +3,7 @@
     "name": "lib45d",
     "title": "lib45d",
     "prerelease": false,
-    "version": "0.3.1",
+    "version": "0.3.2",
     "buildVersion": "1",
     "author": "Joshua Boudreau <jboudreau@45drives.com>",
     "url": "https://github.com/45Drives/lib45d",
@@ -70,7 +70,7 @@
     ],
     "changelog": {
         "urgency": "medium",
-        "version": "0.3.1",
+        "version": "0.3.2",
         "buildVersion": "1",
         "ignore": [],
         "date": null,

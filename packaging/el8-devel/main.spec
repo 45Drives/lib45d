@@ -30,6 +30,8 @@ make DESTDIR=%{buildroot} DEVEL=1 install
 /usr/lib/*
 
 %changelog
+* Tue Sep 21 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.2-1
+- Add ability to send and receive std::vector<std::string> through sockets.
 * Mon Sep 20 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.1-1
 - Update documentation for sockets
 * Mon Sep 20 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.0-1

@@ -1,3 +1,6 @@
+// very small buffer
+#define SOCKET_BUFF_SZ 4
+
 #include <45d/socket/UnixSocketServer.hpp>
 #include <iostream>
 
@@ -23,7 +26,7 @@ int main(void) {
 
         std::string message;
         do {
-            message = server->receive_data();
+            server->receive_data(message);
             std::cout << message << std::endl;
         } while (!message.empty() && message != "EOF");
 

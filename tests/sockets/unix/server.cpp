@@ -23,7 +23,7 @@ int main(void) {
 
         std::string message;
         do {
-            message = server->receive_data();
+            server->receive_data(message);
             std::cout << message << std::endl;
         } while (!message.empty() && message != "EOF");
 

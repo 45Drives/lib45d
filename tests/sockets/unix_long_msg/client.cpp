@@ -36,7 +36,7 @@ int main(void) {
 
         std::string message;
         do {
-            message = client->receive_data();
+            client->receive_data(message);
             std::cout << message << std::endl;
         } while (!message.empty() && message != "EOF");
         

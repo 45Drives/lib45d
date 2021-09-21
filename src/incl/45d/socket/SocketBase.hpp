@@ -21,6 +21,8 @@
 #pragma once
 
 #include <45d/socket/Exceptions.hpp>
+#include <vector>
+#include <sstream>
 
 extern "C" {
     #include <sys/socket.h>
@@ -34,7 +36,7 @@ namespace ffd {
      * 
      */
     namespace Socket {
-        const int _backlog_default = 50;
+        const int _backlog_default = 50; ///< Number of connections to queue
         /**
          * @brief Size of recv buffer. Can be overridden by defining FFD_SOCKET_BUFF_SZ before including header.
          * 
@@ -45,6 +47,7 @@ namespace ffd {
 #else
         FFD_SOCKET_BUFF_SZ;
 #endif
+        const char _rec_delim = 0x1E; ///< Record separator character
     }
     /**
      * @brief Base Unix Socket Class for opening and closing the socket
@@ -116,14 +119,31 @@ namespace ffd {
             }
         }
         /**
-         * @brief Receive a string
+         * @brief Send a vector as a record separator (0x1E) delimited string
          * 
+         * @param vec Vector to send
          * @param flags see man send(2)
          * @param fd Optional file descriptor for connection
-         * @return std::string 
          */
-        std::string receive_data(int flags = 0, int fd = 0) {
-            std::string result;
+        void send_data(const std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+            std::string payload;
+            std::vector<std::string>::const_iterator itr = vec.begin();
+            payload = *itr;
+            ++itr;
+            for ( ; itr != vec.end(); ++itr) {
+                payload += Socket::_rec_delim + *itr;
+            }
+            send_data(payload, flags, fd);
+        }
+        /**
+         * @brief Receive a string
+         * 
+         * @param payload Received message returned by reference
+         * @param flags see man send(2)
+         * @param fd Optional file descriptor for connection
+         */
+        void receive_data(std::string &payload, int flags = 0, int fd = 0) {
+            payload = "";
             if (fd == 0)
                 fd = io_fd_;
             char buff[Socket::_buff_sz];
@@ -136,10 +156,25 @@ namespace ffd {
                     throw SocketReadException(strerror(error), error);
                 }
                 buff[bytes_read] = '\0';
-                result += buff;
+                payload += buff;
             } while (bytes_read > 0 && recv(fd, &buff, sizeof(buff) - 1, MSG_PEEK | MSG_DONTWAIT) > 0);
             send(fd, &ACK, 1, 0);
-            return result;
+        }
+        /**
+         * @brief Receive a vector as a record separator (0x1E) delimited string
+         * 
+         * @param vec Received vector returned by reference
+         * @param flags see man send(2)
+         * @param fd Optional file descriptor for connection
+         */
+        void receive_data(std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+            vec.clear();
+            std::string payload, record;
+            receive_data(payload, flags, fd);
+            std::stringstream ss(payload);
+            while (std::getline(ss, record, Socket::_rec_delim)) {
+                vec.push_back(record);
+            }
         }
     protected:
         int fd_; ///< File descriptor of socket

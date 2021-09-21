@@ -176,6 +176,18 @@ namespace ffd {
                 vec.push_back(record);
             }
         }
+        /**
+         * @brief Call shutdown() on the socket fd, waking any blocked threads.
+         * 
+         * @param how Either SHUT_RD, SHUT_WR, or SHUT_RDWR
+         */
+        void shutdown(int how = SHUT_RDWR) {
+            int res = ::shutdown(fd_, how);
+            if (res == -1) {
+                int error = errno;
+                throw SocketShutdownException(strerror(error), error);
+            }
+        }
     protected:
         int fd_; ///< File descriptor of socket
         int io_fd_; ///< Connection fd

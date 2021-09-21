@@ -108,4 +108,13 @@ namespace ffd {
     public:
         SocketReadException(const std::string &what, int err = 0) : SocketException(what, err) {}
     };
+
+    /**
+     * @brief Thrown when shutdown() fails
+     * 
+     */
+    class SocketShutdownException : public SocketException {
+    public:
+        SocketShutdownException(const std::string &what, int err = 0) : SocketException(what, err) {}
+    };
 }

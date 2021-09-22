@@ -1,3 +1,3 @@
-## lib45d 0.3.3-1
+## lib45d 0.3.4-1
 
-* Add socket method to shutdown socket.
+* Add sync and async options for send/receive data with sockets.

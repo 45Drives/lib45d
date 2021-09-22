@@ -1,3 +1,9 @@
+lib45d (0.3.4-1focal) focal; urgency=medium
+
+  * Add sync and async options for send/receive data with sockets.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Wed, 22 Sep 2021 11:32:24 -0300
+
 lib45d (0.3.3-1focal) focal; urgency=medium
 
   * Add socket method to shutdown socket.

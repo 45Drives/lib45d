@@ -3,7 +3,7 @@
     "name": "lib45d",
     "title": "lib45d",
     "prerelease": false,
-    "version": "0.3.3",
+    "version": "0.3.4",
     "buildVersion": "1",
     "author": "Joshua Boudreau <jboudreau@45drives.com>",
     "url": "https://github.com/45Drives/lib45d",
@@ -73,10 +73,8 @@
         "version": "0.3.4",
         "buildVersion": "1",
         "ignore": [],
-        "date": "2021-09-22T14:32:24.088829",
+        "date": null,
         "packager": "Joshua Boudreau <jboudreau@45drives.com>",
-        "changes": [
-            "Add sync and async options for send/receive data with sockets."
-        ]
+        "changes": []
     }
 }

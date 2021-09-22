@@ -1,18 +1,19 @@
 ﻿---
-AccessModifierOffset: '-1'
-AlignAfterOpenBracket: AlwaysBreak
+AccessModifierOffset: '-4'
+AlignAfterOpenBracket: Align
+AlignConsecutiveBitFields: AcrossEmptyLinesAndComments
 AlignConsecutiveMacros: 'true'
 AlignConsecutiveAssignments: 'false'
 AlignConsecutiveDeclarations: 'false'
 AlignEscapedNewlines: DontAlign
-AlignOperands: 'true'
+AlignOperands: AlignAfterOperator
 AlignTrailingComments: 'true'
 AllowAllArgumentsOnNextLine: 'true'
-AllowAllConstructorInitializersOnNextLine: 'true'
+AllowAllConstructorInitializersOnNextLine: 'false'
 AllowAllParametersOfDeclarationOnNextLine: 'true'
 AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: None
 AllowShortLoopsOnASingleLine: 'false'
@@ -23,17 +24,34 @@ BinPackArguments: 'false'
 BinPackParameters: 'false'
 BreakAfterJavaFieldAnnotations: 'true'
 BreakBeforeBinaryOperators: NonAssignment
-BreakBeforeBraces: Attach
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: 'true'
+  AfterClass: 'false'
+  AfterControlStatement: Never
+  AfterEnum: 'false'
+  AfterFunction: 'false'
+  AfterNamespace: 'false'
+  AfterStruct: 'false'
+  AfterUnion: 'false'
+  AfterExternBlock: 'false'
+  BeforeCatch: 'false'
+  BeforeElse: 'false'
+  BeforeLambdaBody: 'false'
+  BeforeWhile: 'false'
 BreakBeforeTernaryOperators: 'true'
 BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: 'false'
 ColumnLimit: '100'
 CompactNamespaces: 'false'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
 Cpp11BracedListStyle: 'true'
+EmptyLineBeforeAccessModifier: Never
 FixNamespaceComments: 'true'
 IncludeBlocks: Regroup
 IndentCaseLabels: 'true'
+IndentExternBlock: Indent
 IndentPPDirectives: AfterHash
 IndentWidth: '4'
 JavaScriptQuotes: Leave

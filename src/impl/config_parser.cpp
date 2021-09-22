@@ -16,13 +16,16 @@
 	You should have received a copy of the GNU General Public License
 	along with lib45d.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 #include "45d/config/ConfigParser.hpp"
 #include "local/parser_functions.hpp"
 
 #include <fstream>
 
-ffd::ConfigParser::ConfigParser(std::string path) : guarded_(false), config_map_ptr_(&config_map_), path_(path) {
+ffd::ConfigParser::ConfigParser(std::string path)
+	: guarded_(false)
+	, config_map_ptr_(&config_map_)
+	, path_(path) {
 	std::ifstream file(path_);
 	if (!file)
 		throw(ffd::NoConfigException("No config file at " + path_));
@@ -34,7 +37,7 @@ ffd::ConfigParser::ConfigParser(std::string path) : guarded_(false), config_map_
 void ffd::ConfigParser::parse(std::ifstream &file) {
 	std::string line;
 	while (getline(file, line)) {
-		switch(l::check_record_type(line)) {
+		switch (l::check_record_type(line)) {
 			case l::RecordType::UNK:
 				std::cerr << "Unknown config entry: " << line << std::endl;
 				break;
@@ -89,7 +92,8 @@ std::string ffd::ConfigParser::dump_str(void) const {
 }
 
 template<>
-bool ffd_internal::get<bool>(const std::string &key, const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
+bool ffd_internal::get<bool>(const std::string &key,
+							 const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
 	ffd::ConfigNode node = config_map->at(key);
 	std::stringstream ss(node.value_);
 	ss.exceptions(std::ios::failbit | std::ios::badbit);
@@ -99,7 +103,9 @@ bool ffd_internal::get<bool>(const std::string &key, const std::unordered_map<st
 }
 
 template<>
-std::string ffd_internal::get<std::string>(const std::string &key, const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
+std::string
+ffd_internal::get<std::string>(const std::string &key,
+							   const std::unordered_map<std::string, ffd::ConfigNode> *config_map) {
 	ffd::ConfigNode node = config_map->at(key);
 	std::stringstream ss(node.value_);
 	ss.exceptions(std::ios::failbit | std::ios::badbit);

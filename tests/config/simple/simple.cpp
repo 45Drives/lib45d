@@ -8,7 +8,7 @@
 
 /**
  * @brief Test implmentation of an ffd::ConfigParser with important fields
- * 
+ *
  */
 class ConfigFailFlag : public ffd::ConfigParser {
 	bool parse_failed_ = false;
@@ -19,10 +19,11 @@ public:
 	float float_test_ = get<float>("Float Test", &parse_failed_);
 	double double_test_ = get<double>("Double Test", &parse_failed_);
 	std::string string_test_ = get<std::string>("String Test", &parse_failed_);
-	
+
 	ConfigFailFlag(std::string path) : ffd::ConfigParser(path) {
 		if (parse_failed_)
-			throw ffd::MissingOptionException("################ Config Fail Flag ################\nOne or more options missing from configuration.");
+			throw ffd::MissingOptionException(
+				"################ Config Fail Flag ################\nOne or more options missing from configuration.");
 	}
 	void dump(void) {
 		std::cout << "Bool Test: " << std::boolalpha << bool_test_ << std::endl;
@@ -37,7 +38,7 @@ public:
 	}
 };
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	assert(argc == 2);
 	{
 		try {

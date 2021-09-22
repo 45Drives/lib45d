@@ -24,42 +24,42 @@
 /**
  * @brief Local functions used in the compiled library
  * @private
- * 
+ *
  */
 namespace l {
 	/**
-	* @brief Types of records in config file, returned by l::check_record_type()
-	* @private
-	*/
+	 * @brief Types of records in config file, returned by l::check_record_type()
+	 * @private
+	 */
 	enum class RecordType {
 		UNK = -1, ///< unknown record type
-		ENTRY, ///< "key = value" pair
-		HEADING, ///< [string] style subsection header
-		EMPTY ///< empty string
+		ENTRY,    ///< "key = value" pair
+		HEADING,  ///< [string] style subsection header
+		EMPTY     ///< empty string
 	};
 
 	/**
-	* @brief Modifies str by removing whitespace from beginning and end
-	* 
-	* @param str String to be modified
-	* @private
-	*/
+	 * @brief Modifies str by removing whitespace from beginning and end
+	 *
+	 * @param str String to be modified
+	 * @private
+	 */
 	void strip_whitespace(std::string &str);
 
 	/**
-	* @brief Modifies str by removing anything after a '#' (inclusive)
-	* 
-	* @param str String to be modified
-	* @private
-	*/
+	 * @brief Modifies str by removing anything after a '#' (inclusive)
+	 *
+	 * @param str String to be modified
+	 * @private
+	 */
 	void remove_comments(std::string &str);
 
 	/**
-	* @brief Returns l::RecordType based on contents of record
-	* 
-	* @param record line of config file to check
-	* @return RecordType 
-	* @private
-	*/
+	 * @brief Returns l::RecordType based on contents of record
+	 *
+	 * @param record line of config file to check
+	 * @return RecordType
+	 * @private
+	 */
 	RecordType check_record_type(const std::string &record);
-}
+} // namespace l

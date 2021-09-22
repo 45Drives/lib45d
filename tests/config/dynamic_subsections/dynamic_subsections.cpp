@@ -35,20 +35,19 @@ public:
 	float float_test_ = get<float>("Float Test", -1.0);
 	double double_test_ = get<double>("Double Test", -1.0);
 	std::string string_test_ = get<std::string>("String Test", "fallback");
-	
-	DynamicSubsectionConfig(const std::string &path, std::vector<SubConf> &sub_confs) : ConfigParser(path) {
+
+	DynamicSubsectionConfig(const std::string &path, std::vector<SubConf> &sub_confs)
+		: ConfigParser(path) {
 		for (ffd::ConfigNode *i : sub_confs_) {
 			{
 				ffd::ConfigSubsectionGuard guard(*this, i->value_);
-				sub_confs.emplace_back(SubConf{
-					i->value_,
-					get<bool>("Bool Test", false),
-					get<int>("Integer Test", -1),
-					get<unsigned>("Unsigned Test", (unsigned)-1),
-					get<float>("Float Test", -1.0),
-					get<double>("Double Test", -1.0),
-					get<std::string>("String Test", "fallback")
-				});
+				sub_confs.emplace_back(SubConf{ i->value_,
+												get<bool>("Bool Test", false),
+												get<int>("Integer Test", -1),
+												get<unsigned>("Unsigned Test", (unsigned)-1),
+												get<float>("Float Test", -1.0),
+												get<double>("Double Test", -1.0),
+												get<std::string>("String Test", "fallback") });
 			}
 		}
 	}

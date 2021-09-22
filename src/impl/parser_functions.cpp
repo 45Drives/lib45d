@@ -18,6 +18,7 @@
  */
 
 #include "local/parser_functions.hpp"
+
 #include <string>
 
 void l::strip_whitespace(std::string &str) {
@@ -41,21 +42,19 @@ void l::remove_comments(std::string &str) {
 inline bool check_if_heading(const std::string &record) {
 	std::string::size_type first_not_space = record.find_first_not_of(" \t");
 	if (first_not_space == std::string::npos)
-		return false; // all whitespace
+		return false;                   // all whitespace
 	if (record[first_not_space] != '[') // first non-whitespace must be '['
-		return false; // character other than '['
+		return false;                   // character other than '['
 	std::string::size_type closing_bracket = record.find(']', first_not_space);
 	if (closing_bracket == std::string::npos)
 		return false; // no closing ']'
-	return true; // section header found
+	return true;      // section header found
 }
 
 inline bool check_if_entry(const std::string &record) {
 	std::string::size_type start = record.find_first_not_of(" \t");
 	std::string::size_type equals = record.find_first_of('=');
-	return start != std::string::npos
-		&& equals != std::string::npos
-		&& equals > start;
+	return start != std::string::npos && equals != std::string::npos && equals > start;
 }
 
 l::RecordType l::check_record_type(const std::string &record) {

@@ -46,7 +46,7 @@ BreakStringLiterals: 'false'
 ColumnLimit: '100'
 CompactNamespaces: 'false'
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
-Cpp11BracedListStyle: 'true'
+Cpp11BracedListStyle: 'false'
 EmptyLineBeforeAccessModifier: Never
 FixNamespaceComments: 'true'
 IncludeBlocks: Regroup

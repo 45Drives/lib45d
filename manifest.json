@@ -70,11 +70,13 @@
     ],
     "changelog": {
         "urgency": "medium",
-        "version": "0.3.3",
+        "version": "0.3.4",
         "buildVersion": "1",
         "ignore": [],
-        "date": null,
+        "date": "2021-09-22T14:32:24.088829",
         "packager": "Joshua Boudreau <jboudreau@45drives.com>",
-        "changes": []
+        "changes": [
+            "Add sync and async options for send/receive data with sockets."
+        ]
     }
 }

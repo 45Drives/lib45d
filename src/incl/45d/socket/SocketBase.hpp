@@ -104,7 +104,7 @@ namespace ffd {
 		 * @param flags see man send(2)
 		 * @param fd Optional file descriptor for connection
 		 */
-		void send_data(const std::string &str, int flags = 0, int fd = 0) {
+		void send_data_async(const std::string &str, int flags = 0, int fd = 0) {
 			if (fd == 0)
 				fd = io_fd_;
 			int res = send(fd, (void *)str.c_str(), str.length(), flags);
@@ -112,11 +112,30 @@ namespace ffd {
 				int error = errno;
 				throw SocketWriteException(strerror(error), error);
 			}
-			char ack_check;
-			recv(fd, &ack_check, 1, 0);
-			if (ack_check != ACK) {
-				throw SocketWriteException("ACK failed");
-			}
+		}
+		/**
+		 * @brief Send a string and wait for ACK
+		 *
+		 * @param str Message to send
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void send_data_sync(const std::string &str, int flags = 0, int fd = 0) {
+			if (fd == 0)
+				fd = io_fd_;
+			send_data_async(str, flags, fd);
+			get_ack(fd);
+		}
+		/**
+		 * @brief Send a string and wait for ACK (alias for ffd::SocketBase::send_data_sync(const
+		 * std::string&, int, int))
+		 *
+		 * @param str Message to send
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void send_data(const std::string &str, int flags = 0, int fd = 0) {
+			send_data_sync(str, flags, fd);
 		}
 		/**
 		 * @brief Send a vector as a record separator (0x1E) delimited string
@@ -125,7 +144,7 @@ namespace ffd {
 		 * @param flags see man send(2)
 		 * @param fd Optional file descriptor for connection
 		 */
-		void send_data(const std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+		void send_data_async(const std::vector<std::string> &vec, int flags = 0, int fd = 0) {
 			std::string payload;
 			std::vector<std::string>::const_iterator itr = vec.begin();
 			payload = *itr;
@@ -133,7 +152,29 @@ namespace ffd {
 			for (; itr != vec.end(); ++itr) {
 				payload += Socket::_rec_delim + *itr;
 			}
-			send_data(payload, flags, fd);
+			send_data_async(payload, flags, fd);
+		}
+		/**
+		 * @brief Send a vector as a record separator (0x1E) delimited string and wait for ACK
+		 *
+		 * @param vec Vector to send
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void send_data_sync(const std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+			send_data_async(vec, flags, fd);
+			get_ack(fd);
+		}
+		/**
+		 * @brief Send a vector as a record separator (0x1E) delimited string and wait for ACK
+		 * (alias for ffd::SocketBase::send_data_sync(const std::vector<std::string>&, int, int))
+		 *
+		 * @param vec Vector to send
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void send_data(const std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+			send_data_sync(vec, fd, flags);
 		}
 		/**
 		 * @brief Receive a string
@@ -142,7 +183,7 @@ namespace ffd {
 		 * @param flags see man send(2)
 		 * @param fd Optional file descriptor for connection
 		 */
-		void receive_data(std::string &payload, int flags = 0, int fd = 0) {
+		void receive_data_async(std::string &payload, int flags = 0, int fd = 0) {
 			payload = "";
 			if (fd == 0)
 				fd = io_fd_;
@@ -159,7 +200,28 @@ namespace ffd {
 				payload += buff;
 			} while (bytes_read > 0
 					 && recv(fd, &buff, sizeof(buff) - 1, MSG_PEEK | MSG_DONTWAIT) > 0);
-			send(fd, &ACK, 1, 0);
+		}
+		/**
+		 * @brief Receive a string and reply with ACK
+		 *
+		 * @param payload Received message returned by reference
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void receive_data_sync(std::string &payload, int flags = 0, int fd = 0) {
+			receive_data_async(payload, flags, fd);
+			send_ack(fd);
+		}
+		/**
+		 * @brief Receive a string and reply with ACK (alias for
+		 * ffd::SocketBase::receive_data_sync(std::string&, int, int))
+		 *
+		 * @param payload Received message returned by reference
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void receive_data(std::string &payload, int flags = 0, int fd = 0) {
+			receive_data_sync(payload, flags, fd);
 		}
 		/**
 		 * @brief Receive a vector as a record separator (0x1E) delimited string
@@ -168,14 +230,36 @@ namespace ffd {
 		 * @param flags see man send(2)
 		 * @param fd Optional file descriptor for connection
 		 */
-		void receive_data(std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+		void receive_data_async(std::vector<std::string> &vec, int flags = 0, int fd = 0) {
 			vec.clear();
 			std::string payload, record;
-			receive_data(payload, flags, fd);
+			receive_data_async(payload, flags, fd);
 			std::stringstream ss(payload);
 			while (std::getline(ss, record, Socket::_rec_delim)) {
 				vec.push_back(record);
 			}
+		}
+		/**
+		 * @brief Receive a vector as a record separator (0x1E) delimited string and reply with ACK
+		 *
+		 * @param vec Received vector returned by reference
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void receive_data_sync(std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+			receive_data_async(vec, flags, fd);
+			send_ack(fd);
+		}
+		/**
+		 * @brief Receive a vector as a record separator (0x1E) delimited string and reply with ACK
+		 * (alias for ffd::SocketBase::receive_data_sync(std::vector<std::string>&, int, int))
+		 *
+		 * @param vec Received vector returned by reference
+		 * @param flags see man send(2)
+		 * @param fd Optional file descriptor for connection
+		 */
+		void receive_data(std::vector<std::string> &vec, int flags = 0, int fd = 0) {
+			receive_data_sync(vec, flags, fd);
 		}
 		/**
 		 * @brief Call shutdown() on the socket fd, waking any blocked threads.
@@ -193,5 +277,20 @@ namespace ffd {
 		int fd_;    ///< File descriptor of socket
 		int io_fd_; ///< Connection fd
 		char ACK;   ///< char to send for acknowledging reception
+	private:
+		void get_ack(int fd) {
+			if (fd == 0)
+				fd = io_fd_;
+			char ack_check;
+			recv(fd, &ack_check, 1, 0);
+			if (ack_check != ACK) {
+				throw SocketWriteException("ACK failed");
+			}
+		}
+		void send_ack(int fd) {
+			if (fd == 0)
+				fd = io_fd_;
+			send(fd, &ACK, 1, 0);
+		}
 	};
 } // namespace ffd

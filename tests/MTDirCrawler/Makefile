@@ -7,8 +7,8 @@ TEST_OUTPUTS := $(patsubst %.test, %.out, $(TEST_TARGETS))
 TEST_ENV = ./test_env
 
 CC = g++
-CFLAGS = -g -std=c++17 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
-LIBS = -lpthread -L$(LIB_LOCATION)/dist/static -l:lib45d.a
+CFLAGS = -g -std=c++11 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
+LIBS = -static -lboost_filesystem -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
 
 all: $(TEST_ENV) $(TEST_TARGETS)
 
@@ -30,7 +30,7 @@ $(TEST_ENV): $(TEST_ENV).tar.gz
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
 %.out: %.test FORCE
-	@echo -n "$<: " && ./$< $(shell pwd)/$(TEST_ENV) > $@ 2>&1 && echo -e "${call colour_text,PASSED,$(GREEN)}" || ( echo -e "${call colour_text,FAILED,$(RED)}" && cat $@ && exit 1 )
+	@echo -n "$<: " && ./$< "$(shell pwd)/$(TEST_ENV)" '*' $(shell nproc) > $@ 2>&1 && [[ $$(cat $@) == "200" ]] && echo -e "${call colour_text,PASSED,$(GREEN)}" || ( echo -e "${call colour_text,FAILED,$(RED)}" && cat $@ && exit 1 )
 
 clean:
 	-rm -rf $(TEST_ENV) $(TEST_TARGETS) $(TEST_OUTPUTS)

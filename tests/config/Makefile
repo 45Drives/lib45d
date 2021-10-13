@@ -9,11 +9,12 @@ CC = g++
 CFLAGS = -g -std=c++11 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
 LIBS =-static -L$(LIB_LOCATION)/dist/static -l45d
 
-all: print-message $(TEST_TARGETS) $(TEST_OUTPUTS)
+all: $(TEST_TARGETS)
+
+test: print-message all $(TEST_OUTPUTS)
 	@echo -e " #"
 	@echo -e " # ${call colour_text,CONFIG PARSER TESTS COMPLETE,$(GREEN)}"
 	@echo -e " ################################"
-test: all
 
 print-message:
 	@echo -e " ################################"

@@ -14,21 +14,33 @@ define colour_text_top
 \033[$(2)$(1)\033[0m
 endef
 
-all: print-message $(TEST_SUITES)
+all: print-build-message build-tests
+	@echo -e "#"
+	@echo -e "# ${call colour_text_top,TESTS BUILT,$(GREEN)}"
+	@echo -e "################################"
+
+print-build-message:
+	@echo -e "################################"
+	@echo -e "# ${call colour_text_top,BUILDING TESTS,$(CYAN)}"
+	@echo -e "#"
+
+test: all print-test-message run-tests
 	@echo -e "#"
 	@echo -e "# ${call colour_text_top,TESTS COMPLETE,$(GREEN)}"
 	@echo -e "################################"
 
-print-message:
+print-test-message:
 	@echo -e "################################"
 	@echo -e "# ${call colour_text_top,RUNNING TESTS,$(CYAN)}"
 	@echo -e "#"
 
-$(TEST_SUITES): FORCE
-	@$(MAKE) -C $@ --no-print-directory
+build-tests:
+	@for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE --no-print-directory || exit 1; done
+
+run-tests:
+	@for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE test --no-print-directory || exit 1; done
 
 clean:
-	for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE clean; done
+	@for SUITE in $(TEST_SUITES); do $(MAKE) -C $$SUITE clean; done
 
 FORCE:
-

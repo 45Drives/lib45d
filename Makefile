@@ -67,7 +67,7 @@ uninstall:
 	-rm -f $(DESTDIR)$(LIB_PREFIX)/$(notdir $(SHARED_TARGET)) $(DESTDIR)$(LIB_PREFIX)/$(notdir $(STATIC_TARGET)) $(HEADER_INSTALL_TARGETS)
 
 test: static
-	$(MAKE) -C tests
+	$(MAKE) test -C tests
 
 clean-tests:
 	$(MAKE) clean -C tests

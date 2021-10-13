@@ -9,7 +9,9 @@ CC = g++
 CFLAGS = -g -std=c++11 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
 LIBS = -static -L$(LIB_LOCATION)/dist/static -l45d
 
-test: $(CLIENT) $(SERVER)
+all: $(CLIENT) $(SERVER)
+
+test: all
 	@echo -n "unix domain socket vector: " && ./test.sh && echo -e "${call colour_text,PASSED,$(GREEN)}" || ( echo -e "${call colour_text,FAILED,$(RED)}" && cat client.out server.out && exit 1 )
 
 %.test: %.cpp $(LIB_LOCATION)/dist/static/lib45d.a

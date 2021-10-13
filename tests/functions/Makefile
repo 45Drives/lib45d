@@ -12,12 +12,12 @@ all: $(TEST_TARGETS)
 
 test: print-message all $(TEST_OUTPUTS)
 	@echo -e " #"
-	@echo -e " # ${call colour_text,INTERNAL FUNCS TESTS COMPLETE,$(GREEN)}"
+	@echo -e " # ${call colour_text,FUNCTIONS TESTS COMPLETE,$(GREEN)}"
 	@echo -e " ################################"
 
 print-message:
 	@echo -e " ################################"
-	@echo -e " # ${call colour_text,TESTING INTERNAL FUNCS,$(CYAN)}"
+	@echo -e " # ${call colour_text,TESTING FUNCTIONS,$(CYAN)}"
 	@echo -e " #"
 
 %.test: %.cpp $(LIB_LOCATION)/dist/static/lib45d.a

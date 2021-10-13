@@ -7,8 +7,8 @@ TEST_OUTPUTS := $(patsubst %.test, %.out, $(TEST_TARGETS))
 TEST_ENV = ./test_env
 
 CC = g++
-CFLAGS = -g -std=c++11 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
-LIBS = -static -lboost_filesystem -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
+CFLAGS = -g -std=c++17 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
+LIBS = -static -static-libstdc++ -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
 
 all: $(TEST_ENV) $(TEST_TARGETS)
 

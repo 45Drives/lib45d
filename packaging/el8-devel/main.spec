@@ -30,6 +30,8 @@ make DESTDIR=%{buildroot} DEVEL=1 install
 /usr/lib/*
 
 %changelog
+* Tue Dec 07 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.6-1
+- Catch possible exception in catch of noexcept methods for ConfigParser.
 * Tue Dec 07 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.5-1
 - Add multi-threaded directory tree crawler class that executes a callback on each
   filesystem entry.

@@ -1,3 +1,9 @@
+lib45d (0.3.6-1focal) focal; urgency=medium
+
+  * Catch possible exception in catch of noexcept methods for ConfigParser.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Tue, 07 Dec 2021 11:12:15 -0400
+
 lib45d (0.3.5-1focal) focal; urgency=medium
 
   * Add multi-threaded directory tree crawler class that executes a callback on each

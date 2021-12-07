@@ -123,8 +123,12 @@ namespace ffd {
 			} catch (const std::out_of_range &) {
 				// silently return fallback
 			} catch (const std::ios_base::failure &) {
-				report_error("Invalid configuration entry format: " + key + " = "
+				try {
+					report_error("Invalid configuration entry format: " + key + " = "
 							 + config_map_.at(key).value_);
+				} catch (const std::out_of_range &) {
+					report_error("Invalid configuration entry format for " + key);
+				}
 			} catch (const ConfigException &e) {
 				report_error(e.what());
 			} catch (const std::exception &e) {
@@ -152,8 +156,12 @@ namespace ffd {
 			try {
 				return get<T>(key);
 			} catch (const std::ios_base::failure &) {
-				report_error("Invalid configuration entry format: " + key + " = "
+				try {
+					report_error("Invalid configuration entry format: " + key + " = "
 							 + config_map_.at(key).value_);
+				} catch (const std::out_of_range &) {
+					report_error("Invalid configuration entry format for " + key);
+				}
 			} catch (const std::out_of_range &) {
 				report_error("Option not in config: " + key);
 			} catch (const ConfigException &e) {
@@ -288,8 +296,12 @@ namespace ffd {
 			} catch (const std::out_of_range &) {
 				// silently return fallback
 			} catch (const std::ios_base::failure &) {
-				report_error("Invalid configuration entry format: " + key + " = "
+				try {
+					report_error("Invalid configuration entry format: " + key + " = "
 							 + config_map_.at(key).value_);
+				} catch (const std::out_of_range &) {
+					report_error("Invalid configuration entry format for " + key);
+				}
 			} catch (const ConfigException &e) {
 				report_error(e.what());
 			} catch (const std::exception &e) {
@@ -313,8 +325,12 @@ namespace ffd {
 			try {
 				return get_quota(key, max);
 			} catch (const std::ios_base::failure &) {
-				report_error("Invalid configuration entry format: " + key + " = "
+				try {
+					report_error("Invalid configuration entry format: " + key + " = "
 							 + config_map_.at(key).value_);
+				} catch (const std::out_of_range &) {
+					report_error("Invalid configuration entry format for " + key);
+				}
 			} catch (const std::out_of_range &) {
 				report_error("Option not in config: " + key);
 			} catch (const ConfigException &e) {

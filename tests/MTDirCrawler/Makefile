@@ -10,6 +10,8 @@ CC = g++
 CFLAGS = -g -std=c++17 -Wall -Wextra -I$(LIB_LOCATION)/src/incl
 LIBS = -static -static-libstdc++ -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
 
+SHELL := /bin/bash
+
 all: $(TEST_ENV) $(TEST_TARGETS)
 
 test: print-message all $(TEST_OUTPUTS)

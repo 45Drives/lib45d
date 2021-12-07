@@ -461,9 +461,13 @@ namespace ffd {
 		 * @param section The config section to set to
 		 */
 		void set_subsection(const std::string &section) {
-			config_map_ptr_ = config_map_.at(section).sub_map_;
+			try {
+				config_map_ptr_ = config_map_.at(section).sub_map_;
+			} catch (const std::out_of_range &) {
+				throw std::out_of_range("No subconfig with name `" + section + "`");
+			}
 			if (config_map_ptr_ == nullptr)
-				throw std::out_of_range("ConfigNode has no sub_map_");
+				throw std::out_of_range("`" + section + "` is not a subsection.");
 			current_section_ = section;
 		}
 		/**

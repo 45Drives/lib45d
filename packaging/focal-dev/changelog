@@ -1,3 +1,11 @@
+lib45d (0.3.5-1focal) focal; urgency=medium
+
+  * Add multi-threaded directory tree crawler class that executes a callback on each
+    filesystem entry.
+  * Better error reporting while changing subsection.
+
+ -- Joshua Boudreau <jboudreau@45drives.com>  Tue, 07 Dec 2021 10:42:54 -0400
+
 lib45d (0.3.4-1focal) focal; urgency=medium
 
   * Add sync and async options for send/receive data with sockets.

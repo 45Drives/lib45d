@@ -3,7 +3,7 @@
     "name": "lib45d",
     "title": "lib45d",
     "prerelease": false,
-    "version": "0.3.4",
+    "version": "0.3.5",
     "buildVersion": "1",
     "author": "Joshua Boudreau <jboudreau@45drives.com>",
     "url": "https://github.com/45Drives/lib45d",
@@ -73,10 +73,8 @@
         "version": "0.3.5",
         "buildVersion": "1",
         "ignore": [],
-        "date": "2021-10-13T16:52:04.575665",
+        "date": null,
         "packager": "Joshua Boudreau <jboudreau@45drives.com>",
-        "changes": [
-            "Add multi-threaded directory tree crawler class that executes a callback on each filesystem entry."
-        ]
+        "changes": []
     }
 }

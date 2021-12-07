@@ -1,3 +1,4 @@
-## lib45d 0.3.4-1
+## lib45d 0.3.5-1
 
-* Add sync and async options for send/receive data with sockets.
+* Add multi-threaded directory tree crawler class that executes a callback on each filesystem entry.
+* Better error reporting while changing subsection.

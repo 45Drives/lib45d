@@ -30,6 +30,10 @@ make DESTDIR=%{buildroot} DEVEL=1 install
 /usr/lib/*
 
 %changelog
+* Tue Dec 07 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.5-1
+- Add multi-threaded directory tree crawler class that executes a callback on each
+  filesystem entry.
+- Better error reporting while changing subsection.
 * Wed Sep 22 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.4-1
 - Add sync and async options for send/receive data with sockets.
 * Tue Sep 21 2021 Joshua Boudreau <jboudreau@45drives.com> 0.3.3-1

@@ -22,6 +22,7 @@
 #include "45d/Exceptions.hpp"
 
 #include <cmath>
+#include <cstdint>
 #include <iomanip>
 #include <regex>
 
